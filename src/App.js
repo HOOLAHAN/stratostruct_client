@@ -9,7 +9,7 @@ function App() {
     <div className="App">
       <BrowserRouter>
         <Navbar />
-        <div classname="pages">
+        <div className="pages">
           <Routes>
             <Route
             path="/"
