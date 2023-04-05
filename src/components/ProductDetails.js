@@ -19,7 +19,7 @@ const ProductDetails = ({ product }) => {
       <h4>Component Name: {product.component_name}</h4>
       <p><strong>Component Type: {product.component_type}</strong></p>
       <p><strong>Suppliers List: TBC</strong></p>
-      <span onClick={handleClickProduct}>delete</span>
+      <span className='material-symbols-outlined' onClick={handleClickProduct}>delete</span>
     </div>
   )
 }
