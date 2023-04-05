@@ -1,13 +1,16 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
+import { useSuppliersContext } from "../hooks/useSuppliersContext";
+import { useProductsContext } from "../hooks/useProductsContext"
 
 // components
 import ProductDetails from '../components/ProductDetails';
+import ProductForm from "../components/ProductForm.js";
 import SupplierDetails from "../components/SupplierDetails";
+import SupplierForm from "../components/SupplierForm";
 
 const Home = () => {
-  const [products, setProducts] = useState(null)
-  const [suppliers, setSuppliers] = useState(null)
-
+  const { suppliers, dispatchSuppliers } = useSuppliersContext()
+  const { products, dispatchProducts } = useProductsContext()
 
   useEffect(() => {
   const fetchProducts = async () => {
@@ -15,11 +18,11 @@ const Home = () => {
     const json = await response.json()
 
     if (response.ok) {
-      setProducts(json)
+      dispatchProducts({type: 'SET_PRODUCTS', payload: json})
     }
   }
   fetchProducts()
-  }, [])
+  }, [dispatchProducts])
 
   useEffect(() => {
     const fetchSuppliers = async () => {
@@ -27,22 +30,24 @@ const Home = () => {
       const json = await response.json()
   
       if (response.ok) {
-        setSuppliers(json)
+        dispatchSuppliers({type: 'SET_SUPPLIERS', payload: json})
       }
     }
     fetchSuppliers()
-    }, [])
+    }, [dispatchSuppliers])
 
   return (
     <div className="home">
-      <div className="products">
-        {products && products.map((product) => (
-          <ProductDetails key={product._id} product={product}/>
-          ))}
-      </div>
+      <SupplierForm />
+      <ProductForm />
       <div className="products">
         {suppliers && suppliers.map((supplier) => (
           <SupplierDetails key={supplier._id} supplier={supplier}/>
+          ))}
+      </div>
+      <div className="products">
+        {products && products.map((product) => (
+          <ProductDetails key={product._id} product={product}/>
           ))}
       </div>
     </div>
