@@ -8,7 +8,7 @@ const SupplierForm = () => {
   const [postcode, setPostcode] = useState('')
   const [products, setProducts] = useState([])
   const [error, setError] = useState(null)
-
+  const [emptyFields, setEmptyFields] = useState([])
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -26,12 +26,14 @@ const SupplierForm = () => {
 
     if (!response.ok) {
       setError(json.error)
+      setEmptyFields(json.emptyFields)
     }
     if (response.ok) {
       setError(null)
       setName('')
       setPostcode('')
       setProducts([])
+      setEmptyFields([])
       console.log("New Supplier Added", json)
       dispatchSuppliers({type: 'CREATE_SUPPLIER', payload: json})
     }
@@ -45,18 +47,21 @@ const SupplierForm = () => {
         type="text"
         onChange={(e) => setName(e.target.value)}
         value={name}
+        className={emptyFields.includes('name') ? 'error' : ''}
       />
       <label>Postcode:</label>
       <input
         type="text"
         onChange={(e) => setPostcode(e.target.value)}
         value={postcode}
+        className={emptyFields.includes('postcode') ? 'error' : ''}
       />
       <label>Products:</label>
       <input
         type="text"
         onChange={(e) => setProducts(e.target.value)}
         value={products}
+        className={emptyFields.includes('products') ? 'error' : ''}
       />
       <button>Add Supplier</button>
       {error && <div className="error">{error}</div>}

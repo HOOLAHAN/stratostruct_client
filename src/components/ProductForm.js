@@ -7,7 +7,7 @@ const ProductForm = () => {
   const [component_type, setComponentType] = useState('')
   const [component_name, setComponentName] = useState('')
   const [error, setError] = useState(null)
-
+  const [emptyFields, setEmptyFields] = useState([])
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -25,14 +25,15 @@ const ProductForm = () => {
 
     if (!response.ok) {
       setError(json.error)
+      setEmptyFields(json.emptyFields)
     }
     if (response.ok) {
       setError(null)
       setComponentType('')
       setComponentName('')
+      setEmptyFields([])
       console.log("New Product Added", json)
       dispatchProducts({type: 'CREATE_PRODUCT', payload: json})
-
     }
   }
 
@@ -44,12 +45,14 @@ const ProductForm = () => {
         type="text"
         onChange={(e) => setComponentType(e.target.value)}
         value={component_type}
+        className={emptyFields.includes('component_type') ? 'error' : ''}
       />
       <label>Component Name:</label>
       <input
         type="text"
         onChange={(e) => setComponentName(e.target.value)}
         value={component_name}
+        className={emptyFields.includes('component_name') ? 'error' : ''}
       />
       <button>Add Product</button>
       {error && <div className="error">{error}</div>}
