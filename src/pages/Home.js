@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { useSuppliersContext } from "../hooks/useSuppliersContext";
-import { useProductsContext } from "../hooks/useProductsContext"
+import { useProductsContext } from "../hooks/useProductsContext";
+import { useAuthContext } from '../hooks/useAuthContext';
 
 // components
 import ProductDetails from '../components/ProductDetails';
@@ -11,30 +12,45 @@ import SupplierForm from "../components/SupplierForm";
 const Home = () => {
   const { suppliers, dispatchSuppliers } = useSuppliersContext()
   const { products, dispatchProducts } = useProductsContext()
+  const { user } = useAuthContext()
 
   useEffect(() => {
-  const fetchProducts = async () => {
-    const response = await fetch('/api/products') //update endpoint for production
-    const json = await response.json()
+    const fetchProducts = async () => {
+      const response = await fetch('/api/products', {
+        headers: {
+          'Authorization': `Bearer ${user.token}`
+        }
+      }) //update endpoint for production
 
-    if (response.ok) {
-      dispatchProducts({type: 'SET_PRODUCTS', payload: json})
+      const json = await response.json()
+
+      if (response.ok) {
+        dispatchProducts({type: 'SET_PRODUCTS', payload: json})
+      }
     }
-  }
-  fetchProducts()
-  }, [dispatchProducts])
+    if (user) {
+      fetchProducts()
+    }
+  }, [dispatchProducts, user])
 
   useEffect(() => {
     const fetchSuppliers = async () => {
-      const response = await fetch('/api/suppliers') //update endpoint for production
+      const response = await fetch('/api/suppliers', {
+        headers: {
+          'Authorization': `Bearer ${user.token}`
+        }
+      }) //update endpoint for production
+
       const json = await response.json()
   
       if (response.ok) {
         dispatchSuppliers({type: 'SET_SUPPLIERS', payload: json})
       }
     }
-    fetchSuppliers()
-    }, [dispatchSuppliers])
+    if (user) {
+      fetchSuppliers()
+    }
+    }, [dispatchSuppliers, user])
 
   return (
     <div className="home">

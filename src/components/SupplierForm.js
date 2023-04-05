@@ -1,9 +1,12 @@
 import { useState } from "react"
 import { useSuppliersContext } from "../hooks/useSuppliersContext.js";
+import { useAuthContext } from "../hooks/useAuthContext.js"
 
 
 const SupplierForm = () => {
   const { dispatchSuppliers } = useSuppliersContext()
+  const { user } = useAuthContext()
+
   const [name, setName] = useState('')
   const [postcode, setPostcode] = useState('')
   const [products, setProducts] = useState([])
@@ -13,13 +16,19 @@ const SupplierForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault()
 
+    if (!user) {
+      setError('You must be logged in')
+      return
+    }
+
     const supplier = {name, postcode, products}
     
     const response = await fetch('/api/suppliers', {
       method: 'POST',
       body: JSON.stringify(supplier),
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${user.token}`
       }
     })
     const json = await response.json()

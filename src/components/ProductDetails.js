@@ -1,11 +1,19 @@
 import { useProductsContext } from "../hooks/useProductsContext"
+import { useAuthContext } from "../hooks/useAuthContext.js"
 
 const ProductDetails = ({ product }) => {
   const { dispatchProducts } = useProductsContext()
+  const { user } = useAuthContext()
 
   const handleClickProduct = async () => {
+    if (!user) {
+      return
+    }
     const response = await fetch('/api/products/' + product._id, {
-      method: 'DELETE'
+      method: 'DELETE',
+      headers: {
+        'Authorization': `Bearer ${user.token}`
+      }
     })
     const json = await response.json()
 
