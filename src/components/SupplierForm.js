@@ -1,9 +1,9 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useSuppliersContext } from "../hooks/useSuppliersContext.js";
 import { useAuthContext } from "../hooks/useAuthContext.js"
 
 
-const SupplierForm = () => {
+const SupplierForm = ({cart}) => {
   const { dispatchSuppliers } = useSuppliersContext()
   const { user } = useAuthContext()
 
@@ -12,6 +12,10 @@ const SupplierForm = () => {
   const [products, setProducts] = useState([])
   const [error, setError] = useState(null)
   const [emptyFields, setEmptyFields] = useState([])
+
+  useEffect(() => {
+    setProducts(cart);
+  }, [cart]);
 
   const handleSubmit = async (e) => {
     e.preventDefault()

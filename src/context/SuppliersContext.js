@@ -10,7 +10,7 @@ export const suppliersReducer = (state, action) => {
       }
     case 'CREATE_SUPPLIER':
       return {
-        suppliers: [action.payload, ...state.suppliers]
+        suppliers: [action.payload, ...(state.suppliers || [])]
       }
     case 'DELETE_SUPPLIER':
       return {

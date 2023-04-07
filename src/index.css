@@ -126,3 +126,114 @@ form.signup, form.login {
   background: #fff;
   border-radius: 4px;
 }
+
+.product-card {
+  background: #fff;
+  border-radius: 4px;
+  margin: 20px auto;
+  padding: 20px;
+  position: relative;
+  box-shadow: 2px 2px 5px rgba(0,0,0,0.05);
+}
+
+/* .product-card h4,
+.product-card p {
+  display: inline-block;
+} */
+
+.product-card {
+  background: #fff;
+  border-radius: 4px;
+  margin: 20px auto;
+  padding: 20px;
+  position: relative;
+  box-shadow: 2px 2px 5px rgba(0,0,0,0.05);
+}
+.product-card h4 {
+  margin: 0 0 0px 0;
+  font-size: 1.2em;
+  color: var(--primary);
+}
+.product-card p {
+  margin: 0;
+  font-size: 0.9em;
+  color: #555;
+}
+.product-card span {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  cursor: pointer;
+  background: #f1f1f1;
+  padding: 6px;
+  border-radius: 50%;
+  color: #333;
+}
+.product-card button {
+  background: #fff;
+  color: var(--primary);
+  border: 2px solid var(--primary);
+  padding: 6px 10px;
+  border-radius: 4px;
+  font-family: "Poppins";
+  cursor: pointer;
+  font-size: 1em;
+  margin-left: 10px;
+}
+
+.cart {
+  background: #fff;
+  border-radius: 4px;
+  margin: 20px auto;
+  padding: 20px;
+  position: relative;
+  box-shadow: 2px 2px 5px rgba(0,0,0,0.05);
+  min-width: 400px;
+}
+.cart h4 {
+  margin: 0 0 10px 0;
+  font-size: 1.2em;
+  color: var(--primary);
+}
+.cart p {
+  margin: 0;
+  font-size: 0.9em;
+  color: #555;
+}
+
+.product-card {
+  position: relative;
+  display: inline-block;
+  margin: 10px;
+}
+
+.product-card-dropdown {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 1;
+  min-width: 200px;
+  padding: 10px;
+  background-color: #fff;
+  border: 1px solid #ddd;
+}
+
+.product-card:hover .product-card-dropdown {
+  display: block;
+}
+
+.product-card-dropdown ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.product-card-dropdown ul li {
+  padding: 5px;
+  cursor: pointer;
+}
+
+.product-card-dropdown ul li:hover {
+  background-color: #eee;
+}
