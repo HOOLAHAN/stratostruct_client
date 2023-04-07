@@ -35,21 +35,112 @@ const NewSupplier = () => {
       setCart((prevCart) => [...prevCart, product]);
     }
   };
-  console.log(cart)
   
   return (
     <div className="home">
       <SupplierForm cart={cart}/>
-      <div className="cart">
+      {/* <div className="cart">
         <h4>Products List:</h4>
         <ul>
           {cart.map((product) => (
             <li key={product._id}>{product.component_name} ({product.component_type}) </li>
           ))}
         </ul>
+      </div> */}
+      <br/>
+      <div className="product-card">
+        <h4>Flooring</h4>
+        {products && products.filter(product => product.component_type === 'Flooring').map((product) => (
+          <ProductCard 
+            key={product._id} 
+            product={product}
+            onAddToCart={handleAddToCart}
+          />
+        ))}
       </div>
       <div className="product-card">
-        {products && products.map((product) => (
+        <h4>Column</h4>
+        {products && products.filter(product => product.component_type === 'Column').map((product) => (
+          <ProductCard 
+            key={product._id} 
+            product={product}
+            onAddToCart={handleAddToCart}
+          />
+        ))}
+      </div>
+      <div className="product-card">
+        <h4>Beam</h4>
+        {products && products.filter(product => product.component_type === 'Beam').map((product) => (
+          <ProductCard 
+            key={product._id} 
+            product={product}
+            onAddToCart={handleAddToCart}
+          />
+        ))}
+      </div>
+      <div className="product-card">
+        <h4>Wall</h4>
+        {products && products.filter(product => product.component_type === 'Wall').map((product) => (
+          <ProductCard 
+            key={product._id} 
+            product={product}
+            onAddToCart={handleAddToCart}
+          />
+        ))}
+      </div>
+      <div className="product-card">
+        <h4>Stair</h4>
+        {products && products.filter(product => product.component_type === 'Stair').map((product) => (
+          <ProductCard 
+            key={product._id} 
+            product={product}
+            onAddToCart={handleAddToCart}
+          />
+        ))}
+      </div>
+      <div className="product-card">
+        <h4>Casettes</h4>
+        {products && products.filter(product => product.component_type === 'Casettes').map((product) => (
+          <ProductCard 
+            key={product._id} 
+            product={product}
+            onAddToCart={handleAddToCart}
+          />
+        ))}
+      </div>
+      <div className="product-card">
+        <h4>Modules</h4>
+        {products && products.filter(product => product.component_type === 'Modules').map((product) => (
+          <ProductCard 
+            key={product._id} 
+            product={product}
+            onAddToCart={handleAddToCart}
+          />
+        ))}
+      </div>
+      <div className="product-card">
+        <h4>Cages</h4>
+        {products && products.filter(product => product.component_type === 'Cages').map((product) => (
+          <ProductCard 
+            key={product._id} 
+            product={product}
+            onAddToCart={handleAddToCart}
+          />
+        ))}
+      </div>
+      <div className="product-card">
+        <h4>Other</h4>
+        {products && products.filter(product => product.component_type === 'Other').map((product) => (
+          <ProductCard 
+            key={product._id} 
+            product={product}
+            onAddToCart={handleAddToCart}
+          />
+        ))}
+      </div>
+      <div className="product-card">
+        <h4>Innovative Materials</h4>
+        {products && products.filter(product => product.component_type === 'Innovative Materials').map((product) => (
           <ProductCard 
             key={product._id} 
             product={product}

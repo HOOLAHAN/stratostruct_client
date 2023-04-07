@@ -190,11 +190,13 @@ form.signup, form.login {
   box-shadow: 2px 2px 5px rgba(0,0,0,0.05);
   min-width: 400px;
 }
+
 .cart h4 {
   margin: 0 0 10px 0;
   font-size: 1.2em;
   color: var(--primary);
 }
+
 .cart p {
   margin: 0;
   font-size: 0.9em;
@@ -236,4 +238,11 @@ form.signup, form.login {
 
 .product-card-dropdown ul li:hover {
   background-color: #eee;
+}
+
+
+.product-sections {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  grid-gap: 20px;
 }
