@@ -38,15 +38,9 @@ const NewSupplier = () => {
   
   return (
     <div className="home">
+      <div className='supplier-form'>
       <SupplierForm cart={cart}/>
-      {/* <div className="cart">
-        <h4>Products List:</h4>
-        <ul>
-          {cart.map((product) => (
-            <li key={product._id}>{product.component_name} ({product.component_type}) </li>
-          ))}
-        </ul>
-      </div> */}
+      </div>
       <br/>
       <div className="product-card">
         <h4>Flooring</h4>
