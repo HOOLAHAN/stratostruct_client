@@ -12,7 +12,7 @@ const SupplierForm = ({ cart }) => {
   const [products, setProducts] = useState([]);
   const [error, setError] = useState(null);
   const [emptyFields, setEmptyFields] = useState([]);
-  const [formSubmitted, setFormSubmitted] = useState(false);
+  // const [formSubmitted, setFormSubmitted] = useState(false);
 
   useEffect(() => {
     setProducts(cart);
@@ -20,7 +20,7 @@ const SupplierForm = ({ cart }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setFormSubmitted(true);
+    // setFormSubmitted(true);
 
     if (!user) {
       setError('You must be logged in');
