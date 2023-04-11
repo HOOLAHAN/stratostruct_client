@@ -6,7 +6,6 @@ import { useAuthContext } from '../hooks/useAuthContext';
 // components
 import ProductDetails from '../components/ProductDetails';
 import SupplierDetails from "../components/SupplierDetails";
-// import SupplierForm from "../components/SupplierForm";
 
 const Home = () => {
   const { suppliers, dispatchSuppliers } = useSuppliersContext()

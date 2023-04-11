@@ -7,7 +7,7 @@ import ProductCard from '../components/ProductCard';
 import SupplierForm from "../components/SupplierForm";
 import ProductForm from "../components/ProductForm";
 
-const NewSupplier = () => {
+const AddSupplyChainData = () => {
   const { products, dispatchProducts } = useProductsContext()
   const { user } = useAuthContext()
   const [cart, setCart] = useState([]);
@@ -202,4 +202,4 @@ const NewSupplier = () => {
   )
 }
 
-export default NewSupplier;
+export default AddSupplyChainData;
