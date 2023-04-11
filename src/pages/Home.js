@@ -5,9 +5,8 @@ import { useAuthContext } from '../hooks/useAuthContext';
 
 // components
 import ProductDetails from '../components/ProductDetails';
-import ProductForm from "../components/ProductForm.js";
 import SupplierDetails from "../components/SupplierDetails";
-import SupplierForm from "../components/SupplierForm";
+// import SupplierForm from "../components/SupplierForm";
 
 const Home = () => {
   const { suppliers, dispatchSuppliers } = useSuppliersContext()
@@ -54,8 +53,6 @@ const Home = () => {
 
   return (
     <div className="home">
-      <SupplierForm />
-      <ProductForm />
       <div className="products">
         {suppliers && suppliers.map((supplier) => (
           <SupplierDetails key={supplier._id} supplier={supplier}/>

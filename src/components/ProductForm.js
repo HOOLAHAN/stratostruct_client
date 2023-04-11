@@ -49,12 +49,32 @@ const ProductForm = () => {
     <form className="create" onSubmit={handleSubmit}>
       <h3>Add a Product</h3>
       <label>Component Type:</label>
-      <input
-        type="text"
+      <select
         onChange={(e) => setComponentType(e.target.value)}
         value={component_type}
         className={emptyFields.includes('component_type') ? 'error' : ''}
-      />
+        style={{
+          padding: '10px',
+          marginTop: '10px',
+          marginBottom: '20px',
+          width: '100%',
+          border: '1px solid #ddd',
+          borderRadius: '4px',
+          boxSizing: 'border-box',
+        }}
+      >
+        <option value="">Select Component Type</option>
+        <option value="Flooring">Flooring</option>
+        <option value="Column">Column</option>
+        <option value="Beam">Beam</option>
+        <option value="Wall">Wall</option>
+        <option value="Stair">Stair</option>
+        <option value="Casettes">Casettes</option>
+        <option value="Modules">Modules</option>
+        <option value="Cages">Cages</option>
+        <option value="Other">Other</option>
+        <option value="Innovative Materials">Innovative Materials</option>
+      </select>
       <label>Component Name:</label>
       <input
         type="text"

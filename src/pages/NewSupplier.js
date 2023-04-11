@@ -5,6 +5,7 @@ import { useAuthContext } from '../hooks/useAuthContext';
 // components
 import ProductCard from '../components/ProductCard';
 import SupplierForm from "../components/SupplierForm";
+import ProductForm from "../components/ProductForm";
 
 const NewSupplier = () => {
   const { products, dispatchProducts } = useProductsContext()
@@ -80,6 +81,7 @@ const NewSupplier = () => {
   
   return (
     <div className="home">
+      <ProductForm />
       <div className='supplier-form'>
       <SupplierForm cart={cart}/>
       </div>
