@@ -10,7 +10,8 @@ const ViableSupplierForm = ({ cart, suppliers }) => {
   const [error, setError] = useState(null);
   const [emptyFields, setEmptyFields] = useState([]);
   const [updatedCart, setUpdatedCart] = useState([])
-
+  const [formSubmitted, setFormSubmitted] = useState(false);
+  
   useEffect(() => {
     setCartArray(cart);
   }, [cart]);
@@ -64,7 +65,7 @@ const ViableSupplierForm = ({ cart, suppliers }) => {
     
     findViableSupplier(cartArray, sitePostcode, cart)
     // console.log('viable suppliers button hit')
-
+    setFormSubmitted(true);
   }
 
   return (
@@ -92,7 +93,7 @@ const ViableSupplierForm = ({ cart, suppliers }) => {
       
       <div className="products">
         <h3>Stockists:</h3>
-        {updatedCart && 
+        {formSubmitted && updatedCart && 
             updatedCart.map((item) => (
             <StockistCard key={item._id} item={item} />
             ))}
