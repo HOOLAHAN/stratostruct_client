@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react"
 import { useAuthContext } from "../hooks/useAuthContext.js"
-import Stockists from "./Stockists.js"
+import StockistCard from './StockistCard'
+
 
 const ViableSupplierForm = ({ cart, suppliers }) => {
   const { user } = useAuthContext();
@@ -26,11 +27,12 @@ const ViableSupplierForm = ({ cart, suppliers }) => {
         const supplier = suppliers[j];
         const productIds = supplier.products.map((p) => p._id);
         if (productIds.includes(product)) {
-          console.log('it does include the product!')
+          // console.log('it does include the product!')
           if (!cartArray[i].stockists) {
             cartArray[i].stockists = [];
           }
           cartArray[i].stockists.push(supplier);
+
         }
       }
     }
@@ -61,7 +63,7 @@ const ViableSupplierForm = ({ cart, suppliers }) => {
     setEmptyFields([])
     
     findViableSupplier(cartArray, sitePostcode, cart)
-    console.log('viable suppliers button hit')
+    // console.log('viable suppliers button hit')
 
   }
 
@@ -85,15 +87,15 @@ const ViableSupplierForm = ({ cart, suppliers }) => {
           ))}
         </ul>
       </div>
-      {/* <input type="hidden" value={JSON.stringify(products)} /> */}
       <button>Find Suppliers</button>
       {error && <div className="error">{error}</div>}
       
       <div className="products">
         <h3>Stockists:</h3>
         {updatedCart && 
-          <Stockists updatedCart={updatedCart}/>
-          }
+            updatedCart.map((item) => (
+            <StockistCard key={item._id} item={item} />
+            ))}
       </div>
     </form>
   );

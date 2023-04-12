@@ -10,7 +10,7 @@ const StockistCard = ({ item }) => {
       <br/>
       <h4 style={{ display: 'inline-block' }}>Stockists:  </h4>
       {item.stockists && item.stockists.map((stockistItem) => (
-        <p style={{ display: 'inline-block', marginLeft: '5px' }} key={stockistItem.id}><strong>
+        <p style={{ display: 'inline-block', marginLeft: '5px' }} key={stockistItem._id}><strong>
           {stockistItem.name}, 
           </strong></p>
       ))}

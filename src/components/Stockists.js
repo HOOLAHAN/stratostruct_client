@@ -1,15 +1,15 @@
-import StockistCard from './StockistCard'
+// import StockistCard from './StockistCard'
 
-const Stockists = ( {updatedCart}) => {
+// const Stockists = ( {updatedCart}) => {
 
-  return (
-    <div>
-        {updatedCart.map((item) => (
-        <StockistCard key={item.id} item={item} />
-      ))}
-    </div>
-  )
+//   return (
+//     <div>
+//         {updatedCart.map((item) => (
+//         <StockistCard key={item.id} item={item} />
+//       ))}
+//     </div>
+//   )
 
-}
+// }
 
-export default Stockists
+// export default Stockists
