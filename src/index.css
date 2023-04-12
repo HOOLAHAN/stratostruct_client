@@ -38,7 +38,11 @@ header a {
   /* grid-template-columns: 3fr 1fr; */
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   /* gap: 100px; */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
+
 .product-details {
   background: #fff;
   border-radius: 4px;
@@ -67,7 +71,14 @@ header a {
   border-radius: 50%;
   color: #333;
 }
-/* new workout form */
+
+.product-sections {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  grid-gap: 20px;
+}
+
+/* new form */
 label, input {
   display: block;
 }
@@ -100,6 +111,13 @@ div.error {
 input.error {
   border: 1px solid var(--error);
 }
+
+.supplier-form {
+  align-self: flex-start;
+  margin-bottom: 1rem;
+  position: relative;
+}
+
 /* navbar */
 nav {
   display: flex;
@@ -119,6 +137,7 @@ nav button {
   font-size: 1em;
   margin-left: 10px;
 }
+
 /* auth forms */
 form.signup, form.login {
   max-width: 400px;
@@ -137,25 +156,19 @@ form.signup, form.login {
   box-shadow: 2px 2px 5px rgba(0,0,0,0.05);
 }
 
+/* product-card */
 .product-card {
   background: #fff;
   border-radius: 4px;
-  margin: 20px auto;
   padding: 20px;
   position: relative;
   box-shadow: 2px 2px 5px rgba(0,0,0,0.05);
-}
-
-.product-card {
   position: relative;
   display: inline-block;
-  /* margin: 10px; */
   width: 100%;
   max-width: 400px;
-  margin-bottom: 20px;
   flex-basis: calc(33.33% - 20px);
 }
-
 
 .product-card h4 {
   margin: 0 0 0px 0;
@@ -189,6 +202,11 @@ form.signup, form.login {
   margin-left: 10px;
 }
 
+.product-card:last-child {
+  margin-right: 0;
+}
+
+/* cart */
 .cart {
   /* max-width: 400px; */
   width: 100%;
@@ -216,31 +234,3 @@ form.signup, form.login {
   font-size: 0.9em;
   color: #555;
 }
-
-.product-sections {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  grid-gap: 20px;
-}
-
-
-.supplier-form {
-  align-self: flex-start;
-  margin-bottom: 1rem;
-  /* position: relative;   */
-  position: absolute;
-  /* top: 50%;
-  left: 50%; */
-  /* transform: translate(-50%, -50%); */
-}
-
-.home {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.product-card:last-child {
-    margin-right: 0;
-  }
-
