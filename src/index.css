@@ -154,6 +154,8 @@ form.signup, form.login {
   /* padding: 20px; */
   position: relative;
   box-shadow: 2px 2px 5px rgba(0,0,0,0.05);
+  display: flex;
+  flex-direction: column;
 }
 
 /* product-card */
