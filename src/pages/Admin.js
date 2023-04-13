@@ -60,6 +60,8 @@ const AddSupplyChainData = () => {
     }));
   };
 
+  // console.log(cart)
+
   return (
     <div className="home">
       <ProductForm />
@@ -85,6 +87,7 @@ const AddSupplyChainData = () => {
                 product={product} 
                 onAddToCart={handleAddToCart} 
                 onRemoveFromCart={handleRemoveFromCart}
+                cart={cart}
                 />
               ))}
         </div>
