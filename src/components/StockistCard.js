@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import calculateDistance from "../functions/calculateDistance";
 
-const StockistCard = ({ item, sitePostcode }) => {
+const StockistCard = ({ item, sitePostcode, updatedCart }) => {
   const [distances, setDistances] = useState([]);
+
 
   useEffect(() => {
     async function fetchDistances() {
@@ -20,7 +21,7 @@ const StockistCard = ({ item, sitePostcode }) => {
     }
 
     fetchDistances();
-  }, [item.stockists, sitePostcode]);
+  }, [item.stockists, sitePostcode, updatedCart]);
 
   return (
     <div className="product-card">

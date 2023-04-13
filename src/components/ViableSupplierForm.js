@@ -21,25 +21,27 @@ const ViableSupplierForm = ({ cart, suppliers }) => {
   }, [cartArray])
 
   function findViableSupplier(cartArray) {
-
     for (let i = 0; i < cartArray.length; i++) {
       const product = cartArray[i]._id;
+      let stockists = [];
       for (let j = 0; j < suppliers.length; j++) {
         const supplier = suppliers[j];
         const productIds = supplier.products.map((p) => p._id);
         if (productIds.includes(product)) {
-          // console.log('it does include the product!')
-          if (!cartArray[i].stockists) {
-            cartArray[i].stockists = [];
+          if (!stockists) {
+            stockists = [];
           }
-          cartArray[i].stockists.push(supplier);
-
+          stockists.push(supplier);
         }
       }
+      cartArray[i].stockists = stockists;
+      if (!stockists) {
+        cartArray[i].stockists = [];
+      }
     }
-    setUpdatedCart(cartArray)
-    console.log('updatedCart')
-    console.log(updatedCart)
+    setUpdatedCart(cartArray);
+    console.log('updatedCart');
+    console.log(updatedCart);
     return cartArray;
   }
 
@@ -64,6 +66,7 @@ const ViableSupplierForm = ({ cart, suppliers }) => {
     setEmptyFields([])
     findViableSupplier(cartArray, sitePostcode, cart)
     setFormSubmitted(true);
+    // setCartArray([]);
   }
 
   return (
@@ -88,11 +91,17 @@ const ViableSupplierForm = ({ cart, suppliers }) => {
       </div>
       <button>Find Suppliers</button>
       {error && <div className="error">{error}</div>}
+      <br/>
       <div className="product-container">
         <h3>Stockists:</h3>
         {formSubmitted && updatedCart && 
             updatedCart.map((item) => (
-            <StockistCard key={item._id} item={item} sitePostcode={sitePostcode}/>
+            <StockistCard 
+            key={item._id} 
+            item={item} 
+            sitePostcode={sitePostcode} 
+            updatedCart={updatedCart}
+            />
             ))}
       </div>
     </form>
