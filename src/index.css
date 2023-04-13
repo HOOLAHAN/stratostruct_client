@@ -99,6 +99,7 @@ form button {
   font-family: "Poppins";
   border-radius: 4px;
   cursor: pointer;
+  margin-bottom: 20px;
 }
 div.error {
   padding: 10px;
@@ -150,21 +151,44 @@ form.signup, form.login {
 .product-container {
   background: #fff;
   border-radius: 4px;
-  margin: 20px auto;
-  /* padding: 20px; */
+  padding: 20px;
   position: relative;
   box-shadow: 2px 2px 5px rgba(0,0,0,0.05);
-  display: flex;
-  flex-direction: column;
+  position: relative;
+  display: inline-block;
+  width: 100%;
+  max-width: 400px;
+  flex-basis: calc(33.33% - 20px);
+}
+.product-container button {
+  background: #fff;
+  color: var(--primary);
+  border: 2px solid var(--primary);
+  padding: 6px 10px;
+  border-radius: 4px;
+  font-family: "Poppins";
+  cursor: pointer;
+  font-size: 1em;
+  margin-left: 10px;
+}
+.product-container h4 {
+  margin: 0 0 0px 0;
+  font-size: 1.2em;
+  color: var(--primary);
+}
+.product-container p {
+  margin: 0;
+  font-size: 0.9em;
+  color: #555;
 }
 
 /* product-card */
 .product-card {
   background: #fff;
   border-radius: 4px;
-  padding: 20px;
+  padding-top: 20px;
   position: relative;
-  box-shadow: 2px 2px 5px rgba(0,0,0,0.05);
+  /* box-shadow: 2px 2px 5px rgba(0,0,0,0.05); */
   position: relative;
   display: inline-block;
   width: 100%;
@@ -175,6 +199,11 @@ form.signup, form.login {
 .product-card h4 {
   margin: 0 0 0px 0;
   font-size: 1.2em;
+  color: var(--primary);
+}
+.product-card h3 {
+  margin: 0 0 0px 0;
+  font-size: 1em;
   color: var(--primary);
 }
 .product-card p {
@@ -204,9 +233,9 @@ form.signup, form.login {
   margin-left: 10px;
 }
 
-.product-card:last-child {
+/* .product-card:last-child {
   margin-right: 0;
-}
+} */
 
 /* cart */
 .cart {

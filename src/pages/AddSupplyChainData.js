@@ -59,12 +59,14 @@ const AddSupplyChainData = () => {
   return (
     <div className="home">
       <ProductForm />
-      <div className="supplier-form">
+      <div 
+      // className="supplier-form"
+      >
         <SupplierForm cart={cart} />
       </div>
       <br />
       {Object.entries(isMaximized).map(([type, value]) => (
-        <div className="product-card" key={type}>
+        <div className="product-container" key={type}>
           <h4 style={{ display: "inline-block" }}>{type}</h4>
           <button onClick={() => toggleMaximized(type)} style={{ float: "right" }}>
             {value ? "^" : "v"}

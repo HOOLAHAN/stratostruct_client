@@ -88,8 +88,7 @@ const ViableSupplierForm = ({ cart, suppliers }) => {
       </div>
       <button>Find Suppliers</button>
       {error && <div className="error">{error}</div>}
-      
-      <div className="products">
+      <div className="product-container">
         <h3>Stockists:</h3>
         {formSubmitted && updatedCart && 
             updatedCart.map((item) => (
