@@ -49,6 +49,10 @@ const AddSupplyChainData = () => {
     }
   };
 
+  const handleRemoveFromCart = (product) => {
+    setCart((prevCart) => prevCart.filter((item) => item._id !== product._id));
+  };
+
   const toggleMaximized = (type) => {
     setIsMaximized((prevIsMaximized) => ({
       ...prevIsMaximized,
@@ -76,7 +80,12 @@ const AddSupplyChainData = () => {
             products
               .filter((product) => product.component_type === type)
               .map((product) => (
-                <ProductCard key={product._id} product={product} onAddToCart={handleAddToCart} />
+                <ProductCard 
+                key={product._id} 
+                product={product} 
+                onAddToCart={handleAddToCart} 
+                onRemoveFromCart={handleRemoveFromCart}
+                />
               ))}
         </div>
       ))}
