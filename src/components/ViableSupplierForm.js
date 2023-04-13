@@ -20,7 +20,7 @@ const ViableSupplierForm = ({ cart, suppliers }) => {
     setUpdatedCart(cartArray)
   }, [cartArray])
 
-  function findViableSupplier(cartArray, sitePostcode) {
+  function findViableSupplier(cartArray) {
 
     for (let i = 0; i < cartArray.length; i++) {
       const product = cartArray[i]._id;
@@ -62,9 +62,7 @@ const ViableSupplierForm = ({ cart, suppliers }) => {
     }
 
     setEmptyFields([])
-    
     findViableSupplier(cartArray, sitePostcode, cart)
-    // console.log('viable suppliers button hit')
     setFormSubmitted(true);
   }
 
@@ -95,7 +93,7 @@ const ViableSupplierForm = ({ cart, suppliers }) => {
         <h3>Stockists:</h3>
         {formSubmitted && updatedCart && 
             updatedCart.map((item) => (
-            <StockistCard key={item._id} item={item} />
+            <StockistCard key={item._id} item={item} sitePostcode={sitePostcode}/>
             ))}
       </div>
     </form>
