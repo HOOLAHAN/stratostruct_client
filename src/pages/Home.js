@@ -106,16 +106,3 @@ const Home = () => {
 }
 
 export default Home;
-
-/*
-<div className="products">
-  {suppliers && suppliers.map((supplier) => (
-    <SupplierDetails key={supplier._id} supplier={supplier}/>
-    ))}
-</div>
-<div className="products">
-  {products && products.map((product) => (
-    <ProductDetails key={product._id} product={product}/>
-    ))}
-</div>
-*/
