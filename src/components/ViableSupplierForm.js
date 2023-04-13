@@ -11,6 +11,7 @@ const ViableSupplierForm = ({ cart, suppliers }) => {
   const [emptyFields, setEmptyFields] = useState([]);
   const [updatedCart, setUpdatedCart] = useState([])
   const [formSubmitted, setFormSubmitted] = useState(false);
+  const [searching, setSearching] = useState(false);
   
   useEffect(() => {
     setCartArray(cart);
@@ -48,16 +49,23 @@ const ViableSupplierForm = ({ cart, suppliers }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    if (searching) {
+      // Handle "New Search" button click
+      setCartArray([]);
+      setSitePostcode('')
+      setSearching(false);
+      setFormSubmitted(false);
+      setError(null)
+      return;
+    }
     if (!user) {
       setError('You must be logged in');
       return;
     }
-
     if (cart.length === 0) {
       setError('Please select at least one product.');
       return;
     }
-
     if (sitePostcode === '') {
       setError('Please input a postcode.');
       return;
@@ -66,7 +74,7 @@ const ViableSupplierForm = ({ cart, suppliers }) => {
     setEmptyFields([])
     findViableSupplier(cartArray, sitePostcode, cart)
     setFormSubmitted(true);
-    // setCartArray([]);
+    setSearching(true);
   }
 
   return (
@@ -89,21 +97,24 @@ const ViableSupplierForm = ({ cart, suppliers }) => {
           ))}
         </ul>
       </div>
-      <button>Find Suppliers</button>
+      <button onClick={handleSubmit}>
+        {searching ? 'New Search' : 'Find Suppliers'}
+        </button>
       {error && <div className="error">{error}</div>}
       <br/>
+      {formSubmitted &&
       <div className="product-container">
-        <h3>Stockists:</h3>
-        {formSubmitted && updatedCart && 
-            updatedCart.map((item) => (
-            <StockistCard 
-            key={item._id} 
-            item={item} 
-            sitePostcode={sitePostcode} 
-            updatedCart={updatedCart}
-            />
-            ))}
-      </div>
+         <h3>Stockists:</h3>
+        {updatedCart && 
+          updatedCart.map((item) => (
+          <StockistCard 
+          key={item._id} 
+          item={item} 
+          sitePostcode={sitePostcode} 
+          updatedCart={updatedCart}
+          />
+          ))}
+      </div>}
     </form>
   );
 };
