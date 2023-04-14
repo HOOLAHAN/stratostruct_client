@@ -14,16 +14,16 @@ const Home = () => {
 
   const [cart, setCart] = useState([]);
   const [isMaximized, setIsMaximized] = useState({
-    Flooring: false,
-    Column: false,
-    Beam: false,
-    Wall: false,
-    Stair: false,
-    Casettes: false,
-    Modules: false,
-    Cages: false,
-    Other: false,
-    InnovativeMaterials: false,
+    'Flooring': false,
+    'Column': false,
+    'Beam': false,
+    'Wall': false,
+    'Stair': false,
+    'Casettes': false,
+    'Modules': false,
+    'Cages': false,
+    'Other': false,
+    'Innovative Materials': false,
   });
 
   useEffect(() => {
@@ -33,9 +33,7 @@ const Home = () => {
           'Authorization': `Bearer ${user.token}`
         }
       }) //update endpoint for production
-
       const json = await response.json()
-
       if (response.ok) {
         dispatchProducts({type: 'SET_PRODUCTS', payload: json})
       }
@@ -52,9 +50,7 @@ const Home = () => {
           'Authorization': `Bearer ${user.token}`
         }
       }) //update endpoint for production
-
       const json = await response.json()
-  
       if (response.ok) {
         dispatchSuppliers({type: 'SET_SUPPLIERS', payload: json})
       }
@@ -62,24 +58,24 @@ const Home = () => {
     if (user) {
       fetchSuppliers()
     }
-    }, [dispatchSuppliers, user])
+  }, [dispatchSuppliers, user])
 
-    const handleAddToCart = (product) => {
-      if (!cart.find((item) => item._id === product._id)) {
-        setCart((prevCart) => [...prevCart, product]);
-      }
-    };
+  const handleAddToCart = (product) => {
+    if (!cart.find((item) => item._id === product._id)) {
+      setCart((prevCart) => [...prevCart, product]);
+    }
+  };
 
-    const handleRemoveFromCart = (product) => {
-      setCart((prevCart) => prevCart.filter((item) => item._id !== product._id));
-    };
+  const handleRemoveFromCart = (product) => {
+    setCart((prevCart) => prevCart.filter((item) => item._id !== product._id));
+  };
 
-    const toggleMaximized = (type) => {
-      setIsMaximized((prevIsMaximized) => ({
-        ...prevIsMaximized,
-        [type]: !prevIsMaximized[type],
-      }));
-    };
+  const toggleMaximized = (type) => {
+    setIsMaximized((prevIsMaximized) => ({
+      ...prevIsMaximized,
+      [type]: !prevIsMaximized[type],
+    }));
+  };
 
   return (
     <div className="home">
@@ -99,14 +95,14 @@ const Home = () => {
           {value &&
             products &&
             products
-              .filter((product) => product.component_type === type)
-              .map((product) => (
-                <ProductCard 
-                key={product._id} 
-                product={product} 
-                onAddToCart={handleAddToCart} 
-                onRemoveFromCart={handleRemoveFromCart}
-                cart={cart}/>
+            .filter((product) => product.component_type === type)
+            .map((product) => (
+              <ProductCard 
+              key={product._id} 
+              product={product} 
+              onAddToCart={handleAddToCart} 
+              onRemoveFromCart={handleRemoveFromCart}
+              cart={cart}/>
               ))}
         </div>
       ))}

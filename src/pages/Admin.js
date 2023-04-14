@@ -12,16 +12,16 @@ const AddSupplyChainData = () => {
   const { user } = useAuthContext();
   const [cart, setCart] = useState([]);
   const [isMaximized, setIsMaximized] = useState({
-    Flooring: false,
-    Column: false,
-    Beam: false,
-    Wall: false,
-    Stair: false,
-    Casettes: false,
-    Modules: false,
-    Cages: false,
-    Other: false,
-    InnovativeMaterials: false,
+    'Flooring': false,
+    'Column': false,
+    'Beam': false,
+    'Wall': false,
+    'Stair': false,
+    'Casettes': false,
+    'Modules': false,
+    'Cages': false,
+    'Other': false,
+    'Innovative Materials': false,
   });
 
   useEffect(() => {
