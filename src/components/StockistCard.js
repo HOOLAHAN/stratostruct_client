@@ -31,7 +31,7 @@ const StockistCard = ({ item, sitePostcode, updatedCart }) => {
       <h4 style={{ display: 'inline-block' }}>Component Type:  </h4>
       <p style={{ display: 'inline-block', marginLeft: '5px' }}><strong>{item.component_type}</strong></p>
       <br/>
-      <h4 style={{ display: 'inline-block' }}>Stockists:  </h4>
+      <h4 style={{ display: 'inline-block' }}>Suppliers:  </h4>
       {distances.map(({ stockist, distance, error }) => (
         <p key={stockist._id}><strong>
           {stockist.name} - postcode: {stockist.postcode} - distance: {error ? 'Error' : `${distance}`}

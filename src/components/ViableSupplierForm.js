@@ -104,7 +104,7 @@ const ViableSupplierForm = ({ cart, suppliers }) => {
       <br/>
       {formSubmitted &&
       <div className="product-container">
-         <h3>Stockists:</h3>
+         <h3>Suppliers:</h3>
         {updatedCart && 
           updatedCart.map((item) => (
           <StockistCard 

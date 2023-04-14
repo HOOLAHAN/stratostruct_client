@@ -13,9 +13,15 @@ const ProductCard = ({ product, cart, onAddToCart, onRemoveFromCart }) => {
         <strong>{product.component_type}</strong>
       </p>
       {isInCart ? (
-        <button onClick={() => onRemoveFromCart(product)}>Remove Product</button>
+        <button 
+        onClick={() => onRemoveFromCart(product)} 
+        style={{ 
+        color: 'red',
+        border: '2px solid #e7195a',
+        }}
+        >Remove</button>
       ) : (
-        <button onClick={() => onAddToCart(product)}>Add Product</button>
+        <button onClick={() => onAddToCart(product)}>Add</button>
       )}
     </div>
   );
