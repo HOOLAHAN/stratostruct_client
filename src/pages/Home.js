@@ -13,6 +13,9 @@ const Home = () => {
   const { user } = useAuthContext()
 
   const [cart, setCart] = useState([]);
+  // eslint-disable-next-line
+  const [isNewSearch, setIsNewSearch] = useState(false);
+
   const [isMaximized, setIsMaximized] = useState({
     'Flooring': false,
     'Column': false,
@@ -77,12 +80,20 @@ const Home = () => {
     }));
   };
 
+  const handleNewSearch = () => {
+    setIsNewSearch(true);
+    setCart([]);
+  }
+
   return (
     <div className="home">
-      <div 
-      // className='supplier-form'
-      >
-      <ViableSupplierForm cart={cart} products={products} suppliers={suppliers}/>
+      <div>
+      <ViableSupplierForm 
+        cart={cart} 
+        products={products} 
+        suppliers={suppliers} 
+        onNewSearch={handleNewSearch}
+      />
       </div>
       <br/>
       <h3>Add products required from the below list:</h3>

@@ -3,7 +3,7 @@ import { useAuthContext } from "../hooks/useAuthContext.js"
 import StockistCard from './StockistCard'
 
 
-const ViableSupplierForm = ({ cart, suppliers }) => {
+const ViableSupplierForm = ({ cart, suppliers, onNewSearch }) => {
   const { user } = useAuthContext();
   const [sitePostcode, setSitePostcode] = useState('');
   const [cartArray, setCartArray] = useState([]);
@@ -56,6 +56,7 @@ const ViableSupplierForm = ({ cart, suppliers }) => {
       setSearching(false);
       setFormSubmitted(false);
       setError(null)
+      onNewSearch();
       return;
     }
     if (!user) {
