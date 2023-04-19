@@ -60,17 +60,19 @@ const AddSupplyChainData = () => {
     }));
   };
 
+  const clearCart = () => {
+    setCart([]);
+  };
+
   // console.log(cart)
 
   return (
     <div className="home">
       <ProductForm />
-      <div 
-      // className="supplier-form"
-      >
-        <SupplierForm cart={cart} />
-      </div>
-      <br />
+    <div>
+      <SupplierForm cart={cart} clearCart={clearCart}/>
+    </div>
+    <br />
       {Object.entries(isMaximized).map(([type, value]) => (
         <div className="product-container" key={type}>
           <h4 style={{ display: "inline-block" }}>{type}</h4>
