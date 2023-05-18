@@ -6,7 +6,7 @@ import Home from './pages/Home';
 import Navbar from "./components/Navbar";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
-import AddSupplyChainData from "./pages/AddSupplyChainData";
+import Admin from "./pages/Admin";
 
 function App() {
   const { user } = useAuthContext();
@@ -22,13 +22,9 @@ function App() {
             element={user ? <Home /> : <Navigate to="/login" />}
             />
             <Route
-            path="/update-supply-chain"
-            element={<AddSupplyChainData />}
+            path="/admin"
+            element={user && user.role === "admin" ? <Admin /> : <Navigate to="/" />}
             />
-            {/* <Route
-            path="/update-supply-chain"
-            element={user ? <AddSupplyChainData /> : <Navigate to="/login" />}
-            />             */}
             <Route
             path="/login"
             element={!user ? <Login /> : <Navigate to="/" />}

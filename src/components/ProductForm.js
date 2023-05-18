@@ -31,10 +31,29 @@ const ProductForm = () => {
     })
     const json = await response.json()
 
+    // if (!response.ok) {
+    //   setError(json.error)
+    //   setEmptyFields(json.emptyFields)
+    // }
     if (!response.ok) {
-      setError(json.error)
-      setEmptyFields(json.emptyFields)
+      let errorMessage;
+      if (response.status === 403) {
+        errorMessage = 'You do not have permission to perform this action';
+      } else if (response.status === 400 && json.error === 'Empty fields') {
+        errorMessage = 'Please fill in all required fields';
+      } else {
+        errorMessage = 'An error occurred while adding the product';
+      }
+      const emptyFields = {};
+      if (json.emptyFields) {
+        json.emptyFields.forEach((field) => {
+          emptyFields[field] = true;
+        });
+      }
+      setError(errorMessage);
+      setEmptyFields(emptyFields);
     }
+
     if (response.ok) {
       setError(null)
       setComponentType('')
@@ -52,7 +71,8 @@ const ProductForm = () => {
       <select
         onChange={(e) => setComponentType(e.target.value)}
         value={component_type}
-        className={emptyFields.includes('component_type') ? 'error' : ''}
+        // className={emptyFields.includes('component_type') ? 'error' : ''}
+        className={emptyFields["component_name"] ? "error" : ""}
         style={{
           padding: '10px',
           marginTop: '10px',
@@ -80,7 +100,8 @@ const ProductForm = () => {
         type="text"
         onChange={(e) => setComponentName(e.target.value)}
         value={component_name}
-        className={emptyFields.includes('component_name') ? 'error' : ''}
+        // className={emptyFields.includes('component_name') ? 'error' : ''}
+        className={emptyFields["component_name"] ? "error" : ""}
       />
       <button>Add Product</button>
       {error && <div className="error">{error}</div>}

@@ -49,11 +49,6 @@ const Signup = () => {
         onChange={(e) => setPassword(e.target.value)}
         value={password}
       />
-      <label>Role:</label>
-      <select onChange={(e) => setRole(e.target.value)} value={role}>
-        <option value="user">User</option>
-        <option value="admin">Admin</option>
-      </select>            
       <button disabled={isLoading}>Sign up</button>
       {error && <div className="error">{error}</div>}
     </form>
