@@ -8,12 +8,18 @@ const Signup = () => {
   const [full_name, setFullName] = useState('')
   const [password, setPassword] = useState('')
   const {signup, error, isLoading} = useSignup()
-
+  const [role, setRole] = useState("user");
 
   const handleSubmit = async (e) => {
     e.preventDefault()
 
-    await signup(email, company, full_name, password)
+    await signup(email, company, full_name, password, role)
+    // Reset the form and set the role back to the default value
+    setEmail("");
+    setCompany("");
+    setFullName("");
+    setPassword("");
+    setRole("user");
   }
 
   return (
@@ -42,7 +48,12 @@ const Signup = () => {
         type='password'
         onChange={(e) => setPassword(e.target.value)}
         value={password}
-      />            
+      />
+      <label>Role:</label>
+      <select onChange={(e) => setRole(e.target.value)} value={role}>
+        <option value="user">User</option>
+        <option value="admin">Admin</option>
+      </select>            
       <button disabled={isLoading}>Sign up</button>
       {error && <div className="error">{error}</div>}
     </form>
