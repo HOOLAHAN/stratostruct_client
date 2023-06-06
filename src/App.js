@@ -21,9 +21,13 @@ function App() {
             path="/"
             element={user ? <Home /> : <Navigate to="/login" />}
             />
+            {/* <Route
+            path="/admin"
+            element={user.role === "admin" ? <Admin /> : <Navigate to="/" />}
+            /> */}
             <Route
             path="/admin"
-            element={user && user.role === "admin" ? <Admin /> : <Navigate to="/" />}
+            element={<Admin />}
             />
             <Route
             path="/login"
