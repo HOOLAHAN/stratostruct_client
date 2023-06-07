@@ -1,6 +1,6 @@
 # StratoStruct Frontend
 
-Welcome to the StratoStruct frontend repository! StratoStruct is a full-stack web application built using the MERN (MongoDB, Express.js, React, Node.js) stack, designed to provide a platform for managing and analyzing structural data. This README provides an overview of the frontend component.
+Welcome to the StratoStruct frontend repository! StratoStruct is a full-stack web application built using the MERN (MongoDB, Express.js, React, Node.js) stack, designed to help users find and compare suppliers of prefab/precast products for the construction industry. This README provides an overview of the frontend component.
 
 ## Features
 
@@ -36,16 +36,12 @@ To get the frontend up and running, follow these steps:
    npm install
    ```
 
-4. Configure backend server URL:
-   - Open the `src/utils/api.js` file.
-   - Set the `baseURL` variable to the URL of your backend server.
-
-5. Start the frontend:
+4. Start the frontend:
    ```
    npm start
    ```
 
-6. The frontend application should now be running at `http://localhost:3000`.
+5. The frontend application should now be running at `http://localhost:3000`.
 
 ## Project Structure
 
