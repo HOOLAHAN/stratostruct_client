@@ -13,17 +13,20 @@ const Home = () => {
   const { user } = useAuthContext()
 
   const [cart, setCart] = useState([]);
+  // eslint-disable-next-line
+  const [isNewSearch, setIsNewSearch] = useState(false);
+
   const [isMaximized, setIsMaximized] = useState({
-    Flooring: false,
-    Column: false,
-    Beam: false,
-    Wall: false,
-    Stair: false,
-    Casettes: false,
-    Modules: false,
-    Cages: false,
-    Other: false,
-    InnovativeMaterials: false,
+    'Flooring': false,
+    'Column': false,
+    'Beam': false,
+    'Wall': false,
+    'Stair': false,
+    'Casettes': false,
+    'Modules': false,
+    'Cages': false,
+    'Other': false,
+    'Innovative Materials': false,
   });
 
   useEffect(() => {
@@ -33,9 +36,7 @@ const Home = () => {
           'Authorization': `Bearer ${user.token}`
         }
       }) //update endpoint for production
-
       const json = await response.json()
-
       if (response.ok) {
         dispatchProducts({type: 'SET_PRODUCTS', payload: json})
       }
@@ -52,9 +53,7 @@ const Home = () => {
           'Authorization': `Bearer ${user.token}`
         }
       }) //update endpoint for production
-
       const json = await response.json()
-  
       if (response.ok) {
         dispatchSuppliers({type: 'SET_SUPPLIERS', payload: json})
       }
@@ -62,30 +61,44 @@ const Home = () => {
     if (user) {
       fetchSuppliers()
     }
-    }, [dispatchSuppliers, user])
+  }, [dispatchSuppliers, user])
 
-    const handleAddToCart = (product) => {
-      if (!cart.find((item) => item._id === product._id)) {
-        setCart((prevCart) => [...prevCart, product]);
-      }
-    };
+  const handleAddToCart = (product) => {
+    if (!cart.find((item) => item._id === product._id)) {
+      setCart((prevCart) => [...prevCart, product]);
+    }
+  };
 
-    const toggleMaximized = (type) => {
-      setIsMaximized((prevIsMaximized) => ({
-        ...prevIsMaximized,
-        [type]: !prevIsMaximized[type],
-      }));
-    };
+  const handleRemoveFromCart = (product) => {
+    setCart((prevCart) => prevCart.filter((item) => item._id !== product._id));
+  };
+
+  const toggleMaximized = (type) => {
+    setIsMaximized((prevIsMaximized) => ({
+      ...prevIsMaximized,
+      [type]: !prevIsMaximized[type],
+    }));
+  };
+
+  const handleNewSearch = () => {
+    setIsNewSearch(true);
+    setCart([]);
+  }
 
   return (
     <div className="home">
-      <div className='supplier-form'>
-      <ViableSupplierForm cart={cart} products={products} suppliers={suppliers}/>
+      <div>
+      <ViableSupplierForm 
+        cart={cart} 
+        products={products} 
+        suppliers={suppliers} 
+        onNewSearch={handleNewSearch}
+      />
       </div>
       <br/>
       <h3>Add products required from the below list:</h3>
       {Object.entries(isMaximized).map(([type, value]) => (
-        <div className="product-card" key={type}>
+        <div className="product-container" key={type}>
           <h4 style={{ display: "inline-block" }}>{type}</h4>
           <button onClick={() => toggleMaximized(type)} style={{ float: "right" }}>
             {value ? "^" : "v"}
@@ -93,9 +106,14 @@ const Home = () => {
           {value &&
             products &&
             products
-              .filter((product) => product.component_type === type)
-              .map((product) => (
-                <ProductCard key={product._id} product={product} onAddToCart={handleAddToCart} />
+            .filter((product) => product.component_type === type)
+            .map((product) => (
+              <ProductCard 
+              key={product._id} 
+              product={product} 
+              onAddToCart={handleAddToCart} 
+              onRemoveFromCart={handleRemoveFromCart}
+              cart={cart}/>
               ))}
         </div>
       ))}
@@ -104,16 +122,3 @@ const Home = () => {
 }
 
 export default Home;
-
-/*
-<div className="products">
-  {suppliers && suppliers.map((supplier) => (
-    <SupplierDetails key={supplier._id} supplier={supplier}/>
-    ))}
-</div>
-<div className="products">
-  {products && products.map((product) => (
-    <ProductDetails key={product._id} product={product}/>
-    ))}
-</div>
-*/

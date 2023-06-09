@@ -2,6 +2,20 @@ import { useState } from "react"
 import { useProductsContext } from "../hooks/useProductsContext.js"
 import { useAuthContext } from "../hooks/useAuthContext.js"
 
+const productTypes = [
+  "Select Component Type",
+  "Flooring",
+  "Column",
+  "Beam",
+  "Wall",
+  "Stair",
+  "Casettes",
+  "Modules",
+  "Cages",
+  "Other",
+  "Innovative Materials",
+];
+
 const ProductForm = () => {
   const { dispatchProducts } = useProductsContext()
   const { user } = useAuthContext()
@@ -83,17 +97,11 @@ const ProductForm = () => {
           boxSizing: 'border-box',
         }}
       >
-        <option value="">Select Component Type</option>
-        <option value="Flooring">Flooring</option>
-        <option value="Column">Column</option>
-        <option value="Beam">Beam</option>
-        <option value="Wall">Wall</option>
-        <option value="Stair">Stair</option>
-        <option value="Casettes">Casettes</option>
-        <option value="Modules">Modules</option>
-        <option value="Cages">Cages</option>
-        <option value="Other">Other</option>
-        <option value="Innovative Materials">Innovative Materials</option>
+        {productTypes.map((type, index) => (
+          <option key={index} value={type}>
+            {type}
+          </option>
+        ))}
       </select>
       <label>Component Name:</label>
       <input

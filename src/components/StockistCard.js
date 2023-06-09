@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import calculateDistance from "../functions/calculateDistance";
+import ViableSupplier from './ViableSupplier';
 
-const StockistCard = ({ item, sitePostcode }) => {
+const StockistCard = ({ item, sitePostcode, updatedCart }) => {
   const [distances, setDistances] = useState([]);
+
 
   useEffect(() => {
     async function fetchDistances() {
@@ -20,7 +22,7 @@ const StockistCard = ({ item, sitePostcode }) => {
     }
 
     fetchDistances();
-  }, [item.stockists, sitePostcode]);
+  }, [item.stockists, sitePostcode, updatedCart]);
 
   return (
     <div className="product-card">
@@ -30,13 +32,21 @@ const StockistCard = ({ item, sitePostcode }) => {
       <h4 style={{ display: 'inline-block' }}>Component Type:  </h4>
       <p style={{ display: 'inline-block', marginLeft: '5px' }}><strong>{item.component_type}</strong></p>
       <br/>
-      <h4 style={{ display: 'inline-block' }}>Stockists:  </h4>
-      {distances.map(({ stockist, distance, error }) => (
-        <p key={stockist._id}><strong>
-          {stockist.name} - postcode: {stockist.postcode} - distance: {error ? 'Error' : `${distance}`}
-          </strong></p>
-      ))}
-      <br/>
+      <h4 style={{ display: 'inline-block' }}>Suppliers:  </h4>
+      <table style={{ width: '100%' }}>
+        <thead>
+          <tr>
+            <th style={{textAlign: 'left'}}>Name:</th>
+            <th style={{textAlign: 'left'}}>Postcode:</th>
+            <th style={{textAlign: 'left'}}>Distance:</th>
+          </tr>
+        </thead>
+        <tbody>
+          {distances.map(({ stockist, distance, error }, index) => (
+            <ViableSupplier key={stockist._id} index={index} stockist={stockist} distance={distance} error={error} />
+          ))}
+        </tbody>
+      </table>
     </div>
   )
 }

@@ -3,7 +3,7 @@ import { useSuppliersContext } from "../hooks/useSuppliersContext.js";
 import { useAuthContext } from "../hooks/useAuthContext.js"
 
 
-const SupplierForm = ({ cart }) => {
+const SupplierForm = ({ cart, clearCart }) => {
   const { dispatchSuppliers } = useSuppliersContext();
   const { user } = useAuthContext();
 
@@ -12,7 +12,6 @@ const SupplierForm = ({ cart }) => {
   const [products, setProducts] = useState([]);
   const [error, setError] = useState(null);
   const [emptyFields, setEmptyFields] = useState([]);
-  // const [formSubmitted, setFormSubmitted] = useState(false);
 
   useEffect(() => {
     setProducts(cart);
@@ -20,7 +19,6 @@ const SupplierForm = ({ cart }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // setFormSubmitted(true);
 
     if (!user) {
       setError('You must be logged in');
@@ -57,6 +55,7 @@ const SupplierForm = ({ cart }) => {
       cart = [];
       console.log('New Supplier Added', json);
       dispatchSuppliers({ type: 'CREATE_SUPPLIER', payload: json });
+      clearCart();
     }
   };
 
