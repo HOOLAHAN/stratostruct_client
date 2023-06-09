@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useLogout } from '../hooks/useLogout';
@@ -17,6 +16,25 @@ const Navbar = () => {
     }
   };
 
+  const renderAdminButton = () => {
+    if (user && user.role === 'admin') {
+      if (location.pathname === '/') {
+        return (
+          <Link to="/admin">
+            <button>Admin</button>
+          </Link>
+        );
+      } else if (location.pathname === '/admin') {
+        return (
+          <Link to="/">
+            <button>Home</button>
+          </Link>
+        );
+      }
+    }
+    return null;
+  };
+
   return (
     <header>
       <div className="container">
@@ -28,6 +46,7 @@ const Navbar = () => {
             <div>
               <span>{user.full_name}</span>
               <button onClick={handleLogout}>Log out</button>
+              {renderAdminButton()}
             </div>
           )}
           {!user && (
