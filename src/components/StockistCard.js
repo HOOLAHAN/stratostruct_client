@@ -5,7 +5,6 @@ import ViableSupplier from './ViableSupplier';
 const StockistCard = ({ item, sitePostcode, updatedCart }) => {
   const [distances, setDistances] = useState([]);
 
-
   useEffect(() => {
     async function fetchDistances() {
       const newDistances = [];
@@ -23,6 +22,9 @@ const StockistCard = ({ item, sitePostcode, updatedCart }) => {
 
     fetchDistances();
   }, [item.stockists, sitePostcode, updatedCart]);
+
+  // Sort the distances array based on the distance property
+  distances.sort((a, b) => parseFloat(a.distance) - parseFloat(b.distance));
 
   return (
     <div className="product-card">
