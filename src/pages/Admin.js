@@ -26,7 +26,7 @@ const Admin = () => {
 
   useEffect(() => {
     const fetchProducts = async () => {
-      const response = await fetch("/api/products", {
+      const response = await fetch(process.env.REACT_APP_BACKEND_API_URL + "/api/products", {
         headers: {
           Authorization: `Bearer ${user.token}`,
         },

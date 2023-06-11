@@ -31,7 +31,7 @@ const Home = () => {
 
   useEffect(() => {
     const fetchProducts = async () => {
-      const response = await fetch('/api/products', {
+      const response = await fetch(process.env.REACT_APP_BACKEND_API_URL + '/api/products', {
         headers: {
           'Authorization': `Bearer ${user.token}`
         }
@@ -48,7 +48,7 @@ const Home = () => {
 
   useEffect(() => {
     const fetchSuppliers = async () => {
-      const response = await fetch('/api/suppliers', {
+      const response = await fetch(process.env.REACT_APP_BACKEND_API_URL + '/api/suppliers', {
         headers: {
           'Authorization': `Bearer ${user.token}`
         }
