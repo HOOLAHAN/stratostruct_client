@@ -108,14 +108,13 @@ const Home = () => {
       <h3>Select products required from the below list:</h3>
       {Object.entries(isMaximized).map(([type, value]) => (
         <div className="product-container" key={type}>
-          <center>
           <button
             className={`product-category ${value ? 'maximized' : ''}`}
             onClick={() => toggleMaximized(type)}
             >
             <h3>{type} {value ? "^" : "v"}</h3>
-          </button>
-          </center>
+            </button>
+          <br />
           {value &&
             products &&
             products

@@ -151,7 +151,7 @@ form.signup, form.login {
 .product-container {
   background: #fff;
   border-radius: 4px;
-  /* padding: 20px; */
+  padding: 10px;
   position: relative;
   box-shadow: 2px 2px 5px rgba(0,0,0,0.05);
   position: relative;
@@ -165,7 +165,7 @@ form.signup, form.login {
   color: var(--primary);
   /* border: 2px solid var(--primary); */
   box-shadow: 2px 2px 5px rgba(0,0,0,0.05);
-  padding: 6px 10px;
+  padding: 10px;
   border-radius: 4px;
   font-family: "Poppins";
   cursor: pointer;
@@ -233,6 +233,12 @@ form.signup, form.login {
   align-items: center;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
+
+.product-card.selected {
+  background-color: rgb(222, 255, 242);
+  border: none; /* Remove border */
+}
+
 
 
 /* product-container */
