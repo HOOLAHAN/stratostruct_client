@@ -4,7 +4,7 @@ import { useProductsContext } from "../hooks/useProductsContext";
 import { useAuthContext } from '../hooks/useAuthContext';
 
 // components
-import ProductCard from '../components/ProductCard';
+// import ProductCard from '../components/ProductCard';
 import ViableSupplierForm from "../components/ViableSupplierForm"
 
 const Home = () => {
@@ -85,40 +85,59 @@ const Home = () => {
     setCart([]);
   }
 
+  const handleProductClick = (product) => {
+    if (cart.find((item) => item._id === product._id)) {
+      handleRemoveFromCart(product);
+    } else {
+      handleAddToCart(product);
+    }
+  };
+
+
   return (
     <div className="home">
       <div>
-      <ViableSupplierForm 
-        cart={cart} 
-        products={products} 
-        suppliers={suppliers} 
-        onNewSearch={handleNewSearch}
-      />
+        <ViableSupplierForm 
+          cart={cart} 
+          products={products} 
+          suppliers={suppliers} 
+          onNewSearch={handleNewSearch}
+        />
       </div>
       <br/>
-      <h3>Add products required from the below list:</h3>
+      <h3>Select products required from the below list:</h3>
       {Object.entries(isMaximized).map(([type, value]) => (
         <div className="product-container" key={type}>
-          <h4 style={{ display: "inline-block" }}>{type}</h4>
-          <button onClick={() => toggleMaximized(type)} style={{ float: "right" }}>
-            {value ? "^" : "v"}
+          <center>
+          <button
+            className={`product-category ${value ? 'maximized' : ''}`}
+            onClick={() => toggleMaximized(type)}
+            >
+            <h3>{type} {value ? "^" : "v"}</h3>
           </button>
+          </center>
           {value &&
             products &&
             products
             .filter((product) => product.component_type === type)
             .map((product) => (
-              <ProductCard 
-              key={product._id} 
-              product={product} 
-              onAddToCart={handleAddToCart} 
-              onRemoveFromCart={handleRemoveFromCart}
-              cart={cart}/>
-              ))}
+              <button
+                className={`product-card ${cart.find((item) => item._id === product._id) ? 'selected' : ''}`}
+                onClick={() => handleProductClick(product)}
+                key={product._id}
+                style={{ backgroundColor: cart.find((item) => item._id === product._id) ? '#DEFFF2' : 'transparent' }}
+              >
+                <center><p style={{ display: 'inline-block', marginLeft: '5px' }}>
+                  <strong>{product.component_name}</strong>
+                </p></center>
+                <br />
+              </button>
+            ))}
         </div>
       ))}
     </div>
-  )
+  );
+  
 }
 
 export default Home;

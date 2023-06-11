@@ -136,7 +136,7 @@ nav button {
   font-family: "Poppins";
   cursor: pointer;
   font-size: 1em;
-  margin-left: 10px;
+  margin: 5px;
 }
 
 /* auth forms */
@@ -151,7 +151,7 @@ form.signup, form.login {
 .product-container {
   background: #fff;
   border-radius: 4px;
-  padding: 20px;
+  /* padding: 20px; */
   position: relative;
   box-shadow: 2px 2px 5px rgba(0,0,0,0.05);
   position: relative;
@@ -163,13 +163,15 @@ form.signup, form.login {
 .product-container button {
   background: #fff;
   color: var(--primary);
-  border: 2px solid var(--primary);
+  /* border: 2px solid var(--primary); */
+  box-shadow: 2px 2px 5px rgba(0,0,0,0.05);
   padding: 6px 10px;
   border-radius: 4px;
   font-family: "Poppins";
   cursor: pointer;
   font-size: 1em;
   margin-left: 10px;
+  margin-bottom: 10px;
 }
 .product-container h4 {
   margin: 0 0 0px 0;
@@ -179,63 +181,68 @@ form.signup, form.login {
 .product-container p {
   margin: 0;
   font-size: 0.9em;
-  color: #555;
+  /* color: #555; */
 }
 
 /* product-card */
 .product-card {
   background: #fff;
   border-radius: 4px;
-  padding-top: 20px;
+  padding: 10px;
   position: relative;
-  /* box-shadow: 2px 2px 5px rgba(0,0,0,0.05); */
-  position: relative;
-  display: inline-block;
-  width: 100%;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.05);
+  display: inline-flex;
+  flex-direction: row;
+  align-items: center;
   max-width: 400px;
-  flex-basis: calc(33.33% - 20px);
+  margin-bottom: 20px;
 }
 
 .product-card h4 {
-  margin: 0 0 0px 0;
+  margin: 0 0 5px 0;
   font-size: 1.2em;
   color: var(--primary);
 }
+
 .product-card h3 {
-  margin: 0 0 0px 0;
+  margin: 0 0 5px 0;
   font-size: 1em;
   color: var(--primary);
 }
+
 .product-card p {
   margin: 0;
   font-size: 0.9em;
   color: #555;
 }
-.product-card span {
-  position: absolute;
-  top: 20px;
-  right: 20px;
-  cursor: pointer;
-  background: #f1f1f1;
-  padding: 6px;
-  border-radius: 50%;
-  color: #333;
-}
+
 .product-card button {
   background: #fff;
   color: var(--primary);
-  border: 2px solid var(--primary);
-  padding: 6px 10px;
+  border: none;
   border-radius: 4px;
   font-family: "Poppins";
   cursor: pointer;
-  font-size: 1em;
-  margin-left: 10px;
+  font-size: 0.9em;
+  margin-right: 10px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+  display: inline-flex;
+  align-items: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-/* .product-card:last-child {
-  margin-right: 0;
-} */
+
+/* product-container */
+.product-container {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: flex-start;
+}
+
 
 /* cart */
 .cart {
