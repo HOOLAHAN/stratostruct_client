@@ -11,7 +11,7 @@ import Admin from "./pages/Admin";
 
 function ProtectedRoute({ role, allowedRoles, element: Element }) {
   if (!role) {
-    return null;
+    return <Navigate to="/login" />;
   }
 
   if (allowedRoles.includes(role)) {
@@ -53,6 +53,7 @@ function App() {
                 />
               }
             />
+            <Route path="/*" element={<Navigate to="/" />} />
           </Routes>
         </div>
       </BrowserRouter>
