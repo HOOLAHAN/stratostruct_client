@@ -2,10 +2,10 @@ import { useEffect, useState } from "react";
 import { useSuppliersContext } from "../hooks/useSuppliersContext";
 import { useProductsContext } from "../hooks/useProductsContext";
 import { useAuthContext } from '../hooks/useAuthContext';
+import ViableSupplierForm from "../components/ViableSupplierForm"
 
 // components
 // import ProductCard from '../components/ProductCard';
-import ViableSupplierForm from "../components/ViableSupplierForm"
 
 const Home = () => {
   const { suppliers, dispatchSuppliers } = useSuppliersContext()
@@ -15,19 +15,6 @@ const Home = () => {
   const [cart, setCart] = useState([]);
   // eslint-disable-next-line
   const [isNewSearch, setIsNewSearch] = useState(false);
-
-  const [isMaximized, setIsMaximized] = useState({
-    'Flooring': false,
-    'Column': false,
-    'Beam': false,
-    'Wall': false,
-    'Stair': false,
-    'Casettes': false,
-    'Modules': false,
-    'Cages': false,
-    'Other': false,
-    'Innovative Materials': false,
-  });
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -73,13 +60,6 @@ const Home = () => {
     setCart((prevCart) => prevCart.filter((item) => item._id !== product._id));
   };
 
-  const toggleMaximized = (type) => {
-    setIsMaximized((prevIsMaximized) => ({
-      ...prevIsMaximized,
-      [type]: !prevIsMaximized[type],
-    }));
-  };
-
   const handleNewSearch = () => {
     setIsNewSearch(true);
     setCart([]);
@@ -93,6 +73,9 @@ const Home = () => {
     }
   };
 
+  const productTypes = products
+    ? Array.from(new Set(products.map((product) => product.component_type)))
+    : [];
 
   return (
     <div className="home">
@@ -106,17 +89,11 @@ const Home = () => {
       </div>
       <br/>
       <h3>Select products required from the below list:</h3>
-      {Object.entries(isMaximized).map(([type, value]) => (
+      {productTypes.map((type) => (
         <div className="product-container" key={type}>
-          <button
-            className={`product-category ${value ? 'maximized' : ''}`}
-            onClick={() => toggleMaximized(type)}
-            >
-            <h3>{type} {value ? "^" : "v"}</h3>
-            </button>
+          <h3>{type}</h3>
           <br />
-          {value &&
-            products &&
+          {products &&
             products
             .filter((product) => product.component_type === type)
             .map((product) => (
@@ -126,9 +103,11 @@ const Home = () => {
                 key={product._id}
                 style={{ backgroundColor: cart.find((item) => item._id === product._id) ? '#DEFFF2' : 'transparent' }}
               >
-                <center><p style={{ display: 'inline-block', marginLeft: '5px' }}>
-                  <strong>{product.component_name}</strong>
-                </p></center>
+                <center>
+                  <p style={{ display: 'inline-block', marginLeft: '5px' }}>
+                    <strong>{product.component_name}</strong>
+                  </p>
+                </center>
                 <br />
               </button>
             ))}
@@ -136,6 +115,8 @@ const Home = () => {
       ))}
     </div>
   );
+  
+  
   
 }
 

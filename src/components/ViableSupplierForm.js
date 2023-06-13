@@ -98,14 +98,14 @@ const ViableSupplierForm = ({ cart, suppliers, onNewSearch }) => {
           ))}
         </ul>
       </div>
-      <button onClick={handleSubmit}>
+      <center><button onClick={handleSubmit}>
         {searching ? 'New Search' : 'Find Suppliers'}
-        </button>
+        </button></center>
       {error && <div className="error">{error}</div>}
       <br/>
       {formSubmitted &&
-      <div className="product-container">
-         <h3>Suppliers:</h3>
+      <div className="search-results-container">
+        <h3>Suppliers:</h3>
         {updatedCart && 
           updatedCart.map((item) => (
           <StockistCard 

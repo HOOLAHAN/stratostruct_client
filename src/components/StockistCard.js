@@ -27,7 +27,7 @@ const StockistCard = ({ item, sitePostcode, updatedCart }) => {
   distances.sort((a, b) => parseFloat(a.distance) - parseFloat(b.distance));
 
   return (
-    <div className="product-card">
+    <div>
       <h4 style={{ display: 'inline-block' }}>Component Name: </h4>
       <p style={{ display: 'inline-block', marginLeft: '5px' }}><strong>{item.component_name}</strong></p>
       <br/>
