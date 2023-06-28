@@ -1,0 +1,65 @@
+.container {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+.logo-container {
+  display: flex;
+  align-items: flex-start;
+}
+
+.logo {
+  width: 150px;
+  height: auto;
+}
+
+nav {
+  display: flex;
+  align-items: center;
+}
+
+.user-section,
+.guest-section {
+  display: flex;
+  align-items: center;
+}
+
+.user-section button,
+.guest-section a {
+  margin-left: 10px;
+}
+
+.navbar-button {
+  background: #fff;
+  color: var(--primary);
+  border: 2px solid var(--primary);
+  padding: 6px 10px;
+  border-radius: 4px;
+  font-family: "Poppins";
+  cursor: pointer;
+  font-size: 1em;
+  margin: 2px;
+}
+
+.navbar-button.small {
+  font-size: 0.8em;
+  padding: 4px 8px;
+}
+
+.button-container {
+  display: flex;
+  align-items: flex-start;
+}
+
+.user-container {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+}
+
+.user-name {
+  margin-right: 10px;
+  margin-top: 10px;
+  line-height: 1;
+}
