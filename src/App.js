@@ -8,6 +8,7 @@ import Navbar from "./components/Navbar";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import Admin from "./pages/Admin";
+import ViewerPage from "./pages/ViewerPage"
 
 function ProtectedRoute({ role, allowedRoles, element: Element }) {
   if (!role) {
@@ -53,6 +54,7 @@ function App() {
                 />
               }
             />
+            <Route path="/viewer" element={<ViewerPage />} />
             <Route path="/*" element={<Navigate to="/" />} />
           </Routes>
         </div>
