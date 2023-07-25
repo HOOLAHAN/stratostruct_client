@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
-const IFCFileUpload = ({ accessToken }) => {
+const IFCFileUpload = ({ accessToken, setUrn }) => {
   const [file, setFile] = useState(null);
   const [uploadStatus, setUploadStatus] = useState(null);
+  const [objectId, setObjectId] = useState(null);
 
   const handleFileChange = (event) => {
     setFile(event.target.files[0]);
@@ -25,13 +26,25 @@ const IFCFileUpload = ({ accessToken }) => {
         },
       });
 
-      const { urn } = response.data;
-      setUploadStatus(`IFC model uploaded successfully. URN: ${urn}`);
+      const { objectId } = response.data;
+      setObjectId(objectId);
+      setUploadStatus(`IFC model uploaded successfully. Object ID: ${objectId}`);
     } catch (error) {
       console.error('Error uploading IFC model:', error.message);
       setUploadStatus('Failed to upload IFC model.');
     }
   };
+
+  useEffect(() => {
+    if (objectId) {
+      // Use Buffer for base64 encoding
+      const urn = Buffer.from(objectId).toString('base64')
+        .replace('+', '-')
+        .replace('/', '_')
+        .replace(/=+$/, '');
+      setUrn(urn);
+    }
+  }, [objectId, setUrn]);
 
   return (
     <div>
