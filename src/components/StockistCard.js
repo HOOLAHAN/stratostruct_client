@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import calculateDistance from "../functions/calculateDistance";
 import ViableSupplier from './ViableSupplier';
 
-const StockistCard = ({ item, sitePostcode, updatedCart }) => {
+const StockistCard = ({ item, sitePostcode, updatedCart, token}) => {
   const [distances, setDistances] = useState([]);
 
   useEffect(() => {
@@ -10,7 +10,7 @@ const StockistCard = ({ item, sitePostcode, updatedCart }) => {
       const newDistances = [];
       for (const stockistItem of item.stockists) {
         try {
-          const distance = await calculateDistance(sitePostcode, stockistItem.postcode);
+          const distance = await calculateDistance(sitePostcode, stockistItem.postcode, token);
           newDistances.push({ stockist: stockistItem, distance });
         } catch (error) {
           console.error(error);
@@ -21,7 +21,7 @@ const StockistCard = ({ item, sitePostcode, updatedCart }) => {
     }
 
     fetchDistances();
-  }, [item.stockists, sitePostcode, updatedCart]);
+  }, [item.stockists, sitePostcode, updatedCart, token]);
 
   // Sort the distances array based on the distance property
   distances.sort((a, b) => parseFloat(a.distance) - parseFloat(b.distance));

@@ -109,10 +109,11 @@ const ViableSupplierForm = ({ cart, suppliers, onNewSearch }) => {
         {updatedCart && 
           updatedCart.map((item) => (
           <StockistCard 
-          key={item._id} 
-          item={item} 
-          sitePostcode={sitePostcode} 
-          updatedCart={updatedCart}
+                  key={item._id}
+                  item={item}
+                  sitePostcode={sitePostcode}
+                  updatedCart={updatedCart}
+                  token={user.token}
           />
           ))}
       </div>}
