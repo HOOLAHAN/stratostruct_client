@@ -23,8 +23,10 @@ jobs:
 
       - name: Build React app
         env:
-          REACT_APP_BACKEND_API_URL: ${{ secrets.REACT_APP_BACKEND_API_URL }}     
-        run: npm run build
+            REACT_APP_BACKEND_API_URL: ${{ secrets.REACT_APP_BACKEND_API_URL }}
+        run: |
+            echo $REACT_APP_BACKEND_API_URL
+            npm run build
 
       - name: Deploy to S3
         run: |
