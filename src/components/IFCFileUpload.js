@@ -1,56 +1,79 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
 
-const IFCFileUpload = ({ accessToken, setUrn }) => {
-  const [file, setFile] = useState(null);
-  const [uploadStatus, setUploadStatus] = useState(null);
-  const [objectId, setObjectId] = useState(null);
+const IFCFileUpload = ({ token, bucketKey, setUrn }) => {
+  const [file, setFile] = useState();
+  const [uploadStatus, setUploadStatus] = useState('');
 
-  const handleFileChange = (event) => {
-    setFile(event.target.files[0]);
+  const pollTranslationJob = async (urn) => {
+    try {
+      const response = await axios.get(`/api/autodesk/check-translation-status/${urn}`, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        },
+      });
+      return response.data;
+    } catch (error) {
+      console.error('Error polling translation job:', error);
+    }
   };
 
   const handleUpload = async () => {
-    if (!file) {
-      return;
-    }
-
+    setUploadStatus('Uploading file...');
+    const formData = new FormData();
+    formData.append('file', file);
     try {
-      const formData = new FormData();
-      formData.append('file', file);
-
-      const response = await axios.post('/api/upload-IFC', formData, {
+      const response = await axios.post(`/api/autodesk/uploadIFC/${bucketKey}`, formData, {
         headers: {
-          Authorization: `Bearer ${accessToken}`,
           'Content-Type': 'multipart/form-data',
+          'Authorization': `Bearer ${token}`
         },
       });
+      const urn = response.data.urn;
+      setUploadStatus('File uploaded. Translating file...');
+      
+      try {
+        const translateResponse = await axios.post('/api/autodesk/translate-file', { urn, fileName: response.data.fileName }, {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+        });
 
-      const { objectId } = response.data;
-      setObjectId(objectId);
-      setUploadStatus(`IFC model uploaded successfully. Object ID: ${objectId}`);
+        if (translateResponse.data.result !== 'created') {
+          throw new Error('Failed to start translation job');
+        }
+
+        setUploadStatus('Translation started. Polling job...');
+        let jobStatus = await pollTranslationJob(urn);
+        while (jobStatus.status === 'inprogress') {
+          await new Promise(resolve => setTimeout(resolve, 5000)); // wait for 5 seconds
+          jobStatus = await pollTranslationJob(urn);
+        }
+        if (jobStatus.status === 'failed') {
+          console.error('Translation job failed');
+          setUploadStatus('Failed to translate IFC model.');
+        } else {
+          console.log('Translation job complete:', jobStatus);
+          setUploadStatus('Translation completed.');
+          setUrn(urn); // set urn state in ViewerPage component
+        }
+      } catch (error) {
+        console.error('Error starting translation job:', error);
+        setUploadStatus('Failed to start translation job.');
+      }
+
     } catch (error) {
-      console.error('Error uploading IFC model:', error.message);
-      setUploadStatus('Failed to upload IFC model.');
+      console.error('Error uploading file:', error);
+      setUploadStatus('Failed to upload file.');
     }
   };
 
-  useEffect(() => {
-    if (objectId) {
-      // Use Buffer for base64 encoding
-      const urn = Buffer.from(objectId).toString('base64')
-        .replace('+', '-')
-        .replace('/', '_')
-        .replace(/=+$/, '');
-      setUrn(urn);
-    }
-  }, [objectId, setUrn]);
-
   return (
     <div>
-      <input type="file" onChange={handleFileChange} />
-      <button onClick={handleUpload}>Upload IFC</button>
-      {uploadStatus && <p>{uploadStatus}</p>}
+      <input type="file" onChange={e => setFile(e.target.files[0])} />
+      <button onClick={handleUpload}>Upload</button>
+      <p>{uploadStatus}</p>
     </div>
   );
 };

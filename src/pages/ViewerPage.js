@@ -1,28 +1,45 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Viewer from '../components/Viewer';
-// import { useAuthContext } from "../hooks/useAuthContext";
+import { useAuthContext } from "../hooks/useAuthContext";
 import IFCFileUpload from '../components/IFCFileUpload';
-import { useEffect, useState } from 'react';
 import axios from 'axios';
+import { Buffer } from 'buffer'
 
 const ViewerPage = () => {
-  // const { user } = useAuthContext();
+  const { user } = useAuthContext();
   const [access_token, setAccessToken] = useState(null);
-  const [urn, setUrn] = useState(null); // New state for URN
-  const [loading, setLoading] = useState(true); // Loading state
+  const [loading, setLoading] = useState(true);
+  const [urn, setUrn] = useState(Buffer.from('adsk.objects:os.object:stratostruct/Project1.ifc').toString('base64'));
+  console.log(`urn is: ${urn}`)
+  const bucketKey = 'stratostruct'
 
   useEffect(() => {
-    // Fetch access token from backend
-    axios.get('/api/viewer/autodesk-auth')
-      .then(response => {
-        setAccessToken(response.data.access_token);
-        setLoading(false);
+    if (user && user.token) {
+      console.log('User is authenticated, fetching token...');
+      setLoading(true);
+      axios.get('/api/autodesk/forge-access-token', {
+        headers: {
+          Authorization: `Bearer ${user.token}`,
+        },
       })
-      .catch(error => {
-        console.error(error);
-        setLoading(false);
-      });
-  }, []);
+        .then(response => {
+          console.log('Successfully fetched token:', response.data.data);
+          setAccessToken(response.data.data);
+          setLoading(false);
+        })
+        .catch(error => {
+          console.error('Failed to fetch token:', error);
+          console.error(error);
+          setLoading(false);
+        });
+    } else {
+      console.log('User is not authenticated.');
+    }
+  }, [user]);
+
+  if (!user) {
+    return <p>Please log in to view this page.</p>
+  }
 
   return (
     <div>
@@ -31,8 +48,8 @@ const ViewerPage = () => {
         <p>Loading...</p>
       ) : access_token ? (
         <>
-          <IFCFileUpload accessToken={access_token} setUrn={setUrn} />
-          <Viewer access_token={access_token} urn={urn} />
+          <IFCFileUpload token={user.token} bucketKey={bucketKey} accessToken={access_token} setUrn={setUrn} />
+          <Viewer token={user.token} access_token={access_token} urn={urn} />
         </>
       ) : (
         <p>Failed to load. Please try again later.</p>
@@ -43,4 +60,3 @@ const ViewerPage = () => {
 
 
 export default ViewerPage;
-

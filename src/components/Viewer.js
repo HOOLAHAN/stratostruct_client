@@ -4,41 +4,44 @@ const Viewer = ({ access_token, urn }) => {
   const viewerRef = useRef(null);
 
   useEffect(() => {
-    let viewerInstance = null; // Create a variable to store the viewer instance
+    let viewerInstance = null;
 
     const loadViewer = async () => {
       const Autodesk = window.Autodesk;
-      if (!Autodesk) return; // Check if Autodesk is loaded
+      if (!Autodesk) return;
 
       const options = {
         env: 'AutodeskProduction',
-        getAccessToken: () => access_token, // Function to provide access token
+        getAccessToken: (onSuccess) => {
+          console.log('Providing access token to Autodesk...')
+          onSuccess(access_token, 3600); // 3600 seconds = 1 hour token validity
+        },
       };
 
       Autodesk.Viewing.Initializer(options, () => {
+        console.log('Autodesk Viewer initialized')
         const viewer = new Autodesk.Viewing.GuiViewer3D(viewerRef.current);
         viewer.start();
 
-        // Load the 3D model using the provided URN
         const documentId = 'urn:' + urn;
         Autodesk.Viewing.Document.load(documentId, (doc) => {
           const defaultModel = doc.getRoot().getDefaultGeometry();
           viewer.loadDocumentNode(doc, defaultModel);
+        },
+        (errorCode, errorMessage, statusCode) => {
+          console.error('Error loading document: ', errorCode, errorMessage, statusCode);
         });
 
-        // Store the viewer instance in the variable
         viewerInstance = viewer;
       });
     };
 
     loadViewer();
 
-    // Clean up the viewer when the component unmounts
     return () => {
       const Autodesk = window.Autodesk;
       if (!Autodesk) return;
 
-      // Use the stored viewer instance variable in the cleanup function
       Autodesk.Viewing.shutdown(viewerInstance);
     };
   }, [access_token, urn]);
@@ -47,4 +50,3 @@ const Viewer = ({ access_token, urn }) => {
 };
 
 export default Viewer;
-
