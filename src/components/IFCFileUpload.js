@@ -56,7 +56,18 @@ const IFCFileUpload = ({ token, bucketKey, setUrn }) => {
         } else {
           console.log('Translation job complete:', jobStatus);
           setUploadStatus('Translation completed.');
-          setUrn(urn); // set urn state in ViewerPage component
+          
+          // Retrieve URN from the back-end
+          try {
+            const urnResponse = await axios.get(`/api/autodesk/getURN/${bucketKey}`, {
+              headers: {
+                'Authorization': `Bearer ${token}`
+              },
+            });
+            setUrn(urnResponse.data.urn);
+          } catch (error) {
+            console.error('Failed to retrieve URN:', error);
+          }
         }
       } catch (error) {
         console.error('Error starting translation job:', error);
