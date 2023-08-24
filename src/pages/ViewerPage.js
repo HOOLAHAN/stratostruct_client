@@ -10,8 +10,10 @@ const ViewerPage = () => {
   const [access_token, setAccessToken] = useState(null);
   const [loading, setLoading] = useState(true);
   const [urn, setUrn] = useState(Buffer.from('adsk.objects:os.object:stratostruct/Project1.ifc').toString('base64'));
-  console.log(`urn is: ${urn}`)
-  const bucketKey = 'stratostruct'
+  
+  console.log(`urn is: ${urn}`); // Log urn
+  
+  const bucketKey = 'stratostruct';
 
   useEffect(() => {
     if (user && user.token) {
@@ -29,7 +31,6 @@ const ViewerPage = () => {
         })
         .catch(error => {
           console.error('Failed to fetch token:', error);
-          console.error(error);
           setLoading(false);
         });
     } else {
@@ -38,7 +39,14 @@ const ViewerPage = () => {
   }, [user]);
 
   if (!user) {
-    return <p>Please log in to view this page.</p>
+    return <p>Please log in to view this page.</p>;
+  }
+
+
+
+  if (access_token) {
+    console.log(`access_token: ${access_token}`)
+    console.log('Token available, rendering IFCFileUpload and Viewer components');
   }
 
   return (
@@ -57,6 +65,5 @@ const ViewerPage = () => {
     </div>
   );
 };
-
 
 export default ViewerPage;
