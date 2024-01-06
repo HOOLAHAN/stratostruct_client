@@ -34,3 +34,11 @@ test('calculateDistance throws an error for invalid response', async () => {
 
   await expect(calculateDistance('postcode1', 'postcode2', 'token')).rejects.toThrow('Error message');
 });
+
+// Test handling of network errors
+test('calculateDistance throws an error on network failure', async () => {
+  fetch.mockRejectedValueOnce(new Error('Network error'));
+
+  await expect(calculateDistance('postcode1', 'postcode2', 'token')).rejects.toThrow('Network error');
+});
+
