@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import calculateDistance from "../functions/calculateDistance";
 import ViableSupplier from './ViableSupplier';
 
-const StockistCard = ({ item, sitePostcode, updatedCart, token}) => {
+const StockistCard = ({ item, sitePostcode, updatedCart, token, index}) => {
   const [distances, setDistances] = useState([]);
 
   useEffect(() => {
@@ -28,28 +28,26 @@ const StockistCard = ({ item, sitePostcode, updatedCart, token}) => {
 
   return (
     <div>
-      <h4 style={{ display: 'inline-block' }}>Component Name: </h4>
-      <p style={{ display: 'inline-block', marginLeft: '5px' }}><strong>{item.component_name}</strong></p>
-      <br/>
-      <h4 style={{ display: 'inline-block' }}>Component Type:  </h4>
-      <p style={{ display: 'inline-block', marginLeft: '5px' }}><strong>{item.component_type}</strong></p>
-      <br/>
-      <h4 style={{ display: 'inline-block' }}>Suppliers:  </h4>
+      <p style={{ display: 'inline-block', marginLeft: '5px' }}><strong>{index}. {item.component_name} ({item.component_type}):</strong></p>
+    {distances.length > 0 ? (
       <table style={{ width: '100%' }}>
-        <thead>
-          <tr>
-            <th style={{textAlign: 'left'}}>Name:</th>
-            <th style={{textAlign: 'left'}}>Postcode:</th>
-            <th style={{textAlign: 'left'}}>Distance:</th>
-          </tr>
-        </thead>
+      <thead>
+        <tr>
+          <th style={{ textAlign: 'left', margin: '0', padding: '0', fontWeight: 'normal', fontSize: '16px' }}>Name:</th>
+          <th style={{ textAlign: 'left', margin: '0', padding: '0', fontWeight: 'normal', fontSize: '16px' }}>Postcode:</th>
+          <th style={{ textAlign: 'left', margin: '0', padding: '0', fontWeight: 'normal', fontSize: '16px' }}>Distance:</th>
+        </tr>
+      </thead>
         <tbody>
           {distances.map(({ stockist, distance, error }, index) => (
             <ViableSupplier key={stockist._id} index={index} stockist={stockist} distance={distance} error={error} />
           ))}
         </tbody>
       </table>
-    </div>
+    ) : (
+      <p>No suppliers available</p>
+    )}
+  </div>
   )
 }
 

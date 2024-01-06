@@ -107,10 +107,11 @@ const ViableSupplierForm = ({ cart, suppliers, onNewSearch }) => {
       <div className="search-results-container">
         <h3>Suppliers:</h3>
         {updatedCart && 
-          updatedCart.map((item) => (
+          updatedCart.map((item, index) => (
           <StockistCard 
                   key={item._id}
                   item={item}
+                  index={index +1}
                   sitePostcode={sitePostcode}
                   updatedCart={updatedCart}
                   token={user.token}
