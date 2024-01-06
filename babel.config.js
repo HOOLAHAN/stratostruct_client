@@ -4,9 +4,10 @@ module.exports = {
       '@babel/preset-env',
       {
         targets: {
-          node: 'current', // important for Jest
+          node: 'current',
         },
       },
     ],
+    '@babel/preset-react',
   ],
 };
