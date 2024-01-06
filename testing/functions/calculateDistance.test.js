@@ -1,4 +1,4 @@
-import calculateDistance from '../src/functions/calculateDistance';
+import calculateDistance from '../../src/functions/calculateDistance';
 global.fetch = jest.fn(); // Mocking fetch
 
 // Mocking the environment variable
