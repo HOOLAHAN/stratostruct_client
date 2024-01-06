@@ -14,7 +14,6 @@ async function calculateDistance(postcode1, postcode2, token) {
     }
 
     const distanceInKilometers = data.distance;
-    // const distanceInKilometers = (distanceInMeters / 1000).toFixed(2);
     return `${distanceInKilometers} km`;
 }
 
