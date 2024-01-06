@@ -42,3 +42,13 @@ test('calculateDistance throws an error on network failure', async () => {
   await expect(calculateDistance('postcode1', 'postcode2', 'token')).rejects.toThrow('Network error');
 });
 
+// Test for invalid token or unauthorised access
+test('calculateDistance throws an error for unauthorised access', async () => {
+  fetch.mockResolvedValueOnce({
+      json: () => Promise.resolve({ error: 'Unauthorised' }),
+      status: 401
+  });
+
+  await expect(calculateDistance('postcode1', 'postcode2', 'invalid_token')).rejects.toThrow('Unauthorised');
+});
+
