@@ -3,10 +3,6 @@ import { useSuppliersContext } from "../hooks/useSuppliersContext";
 import { useProductsContext } from "../hooks/useProductsContext";
 import { useAuthContext } from '../hooks/useAuthContext';
 import ViableSupplierForm from "../components/ViableSupplierForm"
-// import { Link } from 'react-router-dom';
-
-// components
-// import ProductCard from '../components/ProductCard';
 
 const Home = () => {
   const { suppliers, dispatchSuppliers } = useSuppliersContext()
@@ -81,11 +77,6 @@ const Home = () => {
   return (
     
     <div className="home">
-      {/* 
-      <Link to="/viewer">
-        <button>View 3D Model</button>
-      </Link> 
-      */}
       <div>
         <ViableSupplierForm 
           cart={cart} 
@@ -122,8 +113,6 @@ const Home = () => {
       ))}
     </div>
   );
-  
-  
   
 }
 
