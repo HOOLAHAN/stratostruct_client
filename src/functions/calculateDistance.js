@@ -13,6 +13,11 @@ async function calculateDistance(postcode1, postcode2, token) {
         throw new Error(data.error);
     }
 
+    // Check if the response contains the 'distance' property
+    if (typeof data.distance === 'undefined') {
+        throw new Error('Invalid response structure');
+    }
+
     const distanceInKilometers = data.distance;
     return `${distanceInKilometers} km`;
 }

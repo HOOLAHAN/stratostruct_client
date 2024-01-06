@@ -52,3 +52,11 @@ test('calculateDistance throws an error for unauthorised access', async () => {
   await expect(calculateDistance('postcode1', 'postcode2', 'invalid_token')).rejects.toThrow('Unauthorised');
 });
 
+// Test for unexpected response structure
+test('calculateDistance handles unexpected response structure', async () => {
+  fetch.mockResolvedValueOnce({
+      json: () => Promise.resolve({ unexpectedKey: 'unexpectedValue' }),
+  });
+
+  await expect(calculateDistance('postcode1', 'postcode2', 'token')).rejects.toThrow();
+});
