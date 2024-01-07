@@ -71,7 +71,7 @@ const Home = () => {
   };
 
   const productTypes = products
-    ? Array.from(new Set(products.map((product) => product.component_type)))
+    ? Array.from(new Set(products.map((product) => product.component_type))).reverse()
     : [];
 
   return (
