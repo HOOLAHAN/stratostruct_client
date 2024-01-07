@@ -2,13 +2,11 @@ import { useState, useEffect } from "react"
 import { useAuthContext } from "../hooks/useAuthContext.js"
 import StockistCard from './StockistCard'
 
-
 const ViableSupplierForm = ({ cart, suppliers, onNewSearch }) => {
   const { user } = useAuthContext();
   const [sitePostcode, setSitePostcode] = useState('');
   const [cartArray, setCartArray] = useState([]);
   const [error, setError] = useState(null);
-  const [emptyFields, setEmptyFields] = useState([]);
   const [updatedCart, setUpdatedCart] = useState([])
   const [formSubmitted, setFormSubmitted] = useState(false);
   const [searching, setSearching] = useState(false);
@@ -71,25 +69,34 @@ const ViableSupplierForm = ({ cart, suppliers, onNewSearch }) => {
       setError('Please input a postcode.');
       return;
     }
-
-    setEmptyFields([])
+    // Check if postcode is valid when submitting
+    if (!isValidPostcode(sitePostcode)) {
+      setError('Invalid postcode');
+      return;
+    } else {
+      setError(null); // Clear error if postcode is valid
+    }
     findViableSupplier(cartArray, sitePostcode, cart)
     setFormSubmitted(true);
     setSearching(true);
   }
 
+  function isValidPostcode(postcode) {
+    const postcodeRegex = /^([Gg][Ii][Rr] 0[Aa]{2})|((([A-Za-z][0-9]{1,2})|(([A-Za-z][A-Ha-hJ-Yj-y][0-9]{1,2})|(([A-Za-z][0-9][A-Za-z])|([A-Za-z][A-Ha-hJ-Yj-y][0-9]?[A-Za-z])))) [0-9][A-Za-z]{2})$/;
+    return postcodeRegex.test(postcode);
+  }
+  
   return (
     <form className="create" onSubmit={handleSubmit} suppliers={suppliers}>
       <h3>Check for suppliers:</h3>
       <div className="input-button-container">
-      <input
-        type="text"
-        id="postcode"
-        onChange={(e) => setSitePostcode(e.target.value)}
-        value={sitePostcode}
-        className={emptyFields.includes('postcode') ? 'error' : ''}
-        placeholder="Enter your postcode"
-      />
+        <input
+          type="text"
+          id="postcode"
+          onChange={(e) => setSitePostcode(e.target.value)}
+          value={sitePostcode}
+          placeholder="Enter your postcode"
+        />
       <center><button onClick={handleSubmit}>
         {searching ? 'New Search' : 'Find Suppliers'}
         </button></center>
