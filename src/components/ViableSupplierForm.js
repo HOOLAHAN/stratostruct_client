@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react"
 import { useAuthContext } from "../hooks/useAuthContext.js"
 import StockistCard from './StockistCard'
+import { isValidPostcode } from '../functions/isValidPostcode';
 
 const ViableSupplierForm = ({ cart, suppliers, onNewSearch }) => {
   const { user } = useAuthContext();
@@ -39,9 +40,6 @@ const ViableSupplierForm = ({ cart, suppliers, onNewSearch }) => {
       }
     }
     setUpdatedCart(cartArray);
-    console.log('updatedCart');
-    console.log(updatedCart);
-    return cartArray;
   }
 
   const handleSubmit = async (e) => {
@@ -81,11 +79,6 @@ const ViableSupplierForm = ({ cart, suppliers, onNewSearch }) => {
     setSearching(true);
   }
 
-  function isValidPostcode(postcode) {
-    const postcodeRegex = /^([Gg][Ii][Rr] 0[Aa]{2})|((([A-Za-z][0-9]{1,2})|(([A-Za-z][A-Ha-hJ-Yj-y][0-9]{1,2})|(([A-Za-z][0-9][A-Za-z])|([A-Za-z][A-Ha-hJ-Yj-y][0-9]?[A-Za-z])))) [0-9][A-Za-z]{2})$/;
-    return postcodeRegex.test(postcode);
-  }
-  
   return (
     <form className="create" onSubmit={handleSubmit} suppliers={suppliers}>
       <h3>Check for suppliers:</h3>
