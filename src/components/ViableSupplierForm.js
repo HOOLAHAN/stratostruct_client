@@ -3,7 +3,7 @@ import { useAuthContext } from "../hooks/useAuthContext.js"
 import StockistCard from './StockistCard'
 import { isValidPostcode } from '../functions/isValidPostcode';
 
-const ViableSupplierForm = ({ cart, suppliers, onNewSearch }) => {
+const ViableSupplierForm = ({ cart, suppliers, onNewSearch, updateIsNewSearch }) => {
   const { user } = useAuthContext();
   const [sitePostcode, setSitePostcode] = useState('');
   const [cartArray, setCartArray] = useState([]);
@@ -53,6 +53,7 @@ const ViableSupplierForm = ({ cart, suppliers, onNewSearch }) => {
       setFormSubmitted(false);
       setError(null)
       onNewSearch();
+      updateIsNewSearch(true);
       return;
     }
     if (!user) {
@@ -72,6 +73,7 @@ const ViableSupplierForm = ({ cart, suppliers, onNewSearch }) => {
       setError('Invalid postcode');
       return;
     } else {
+      updateIsNewSearch(false);
       setError(null); // Clear error if postcode is valid
     }
     findViableSupplier(cartArray, sitePostcode, cart)

@@ -8,10 +8,12 @@ const Home = () => {
   const { suppliers, dispatchSuppliers } = useSuppliersContext()
   const { products, dispatchProducts } = useProductsContext()
   const { user } = useAuthContext()
-
   const [cart, setCart] = useState([]);
-  // eslint-disable-next-line
-  const [isNewSearch, setIsNewSearch] = useState(false);
+  const [isNewSearch, setIsNewSearch] = useState(true);
+
+  const updateIsNewSearch = (status) => {
+    setIsNewSearch(status);
+  };
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -63,10 +65,12 @@ const Home = () => {
   }
 
   const handleProductClick = (product) => {
-    if (cart.find((item) => item._id === product._id)) {
-      handleRemoveFromCart(product);
-    } else {
-      handleAddToCart(product);
+    if (isNewSearch) {
+      if (cart.find((item) => item._id === product._id)) {
+        handleRemoveFromCart(product);
+      } else {
+        handleAddToCart(product);
+      }
     }
   };
 
@@ -83,6 +87,7 @@ const Home = () => {
           products={products} 
           suppliers={suppliers} 
           onNewSearch={handleNewSearch}
+          updateIsNewSearch={updateIsNewSearch}
         />
       </div>
       <br/>
@@ -96,6 +101,7 @@ const Home = () => {
             .filter((product) => product.component_type === type)
             .map((product) => (
               <button
+                disabled={!isNewSearch}
                 className={`product-card ${cart.find((item) => item._id === product._id) ? 'selected' : ''}`}
                 onClick={() => handleProductClick(product)}
                 key={product._id}
