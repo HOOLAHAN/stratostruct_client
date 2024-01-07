@@ -19,9 +19,9 @@ const StockistCard = ({ item, sitePostcode, updatedCart, token, index}) => {
       }
       setDistances(newDistances);
     }
-
+    
     fetchDistances();
-  }, [item.stockists, sitePostcode, updatedCart, token]);
+  }, [item.stockists, sitePostcode, updatedCart, token ]);
 
   // Sort the distances array based on the distance property
   distances.sort((a, b) => parseFloat(a.distance) - parseFloat(b.distance));
@@ -38,15 +38,21 @@ const StockistCard = ({ item, sitePostcode, updatedCart, token, index}) => {
           <th style={{ textAlign: 'left', margin: '0', padding: '0', fontWeight: 'normal', fontSize: '16px' }}>Distance:</th>
         </tr>
       </thead>
-        <tbody>
-          {distances.map(({ stockist, distance, error }, index) => (
-            <ViableSupplier key={stockist._id} index={index} stockist={stockist} distance={distance} error={error} />
-          ))}
-        </tbody>
+      <tbody>
+        {distances.map(({ stockist, distance, error }, index) => (
+          <ViableSupplier 
+            key={stockist._id} 
+            index={index} 
+            stockist={stockist} 
+            distance={distance} 
+            error={error} 
+          />
+        ))}
+      </tbody>
       </table>
     ) : (
       <p>No suppliers available</p>
-    )}
+      )}
   </div>
   )
 }

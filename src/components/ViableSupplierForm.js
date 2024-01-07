@@ -81,40 +81,32 @@ const ViableSupplierForm = ({ cart, suppliers, onNewSearch }) => {
   return (
     <form className="create" onSubmit={handleSubmit} suppliers={suppliers}>
       <h3>Check for suppliers:</h3>
-      <label>Postcode:</label>
+      <div className="input-button-container">
       <input
         type="text"
+        id="postcode"
         onChange={(e) => setSitePostcode(e.target.value)}
         value={sitePostcode}
         className={emptyFields.includes('postcode') ? 'error' : ''}
+        placeholder="Enter your postcode"
       />
-      <label>Products Required:</label>
-      <div className="cart">
-        <ul>
-          {cart && cart.map((product) => (
-            <li key={product._id}>
-              {product.component_name} ({product.component_type})
-            </li>
-          ))}
-        </ul>
-      </div>
       <center><button onClick={handleSubmit}>
         {searching ? 'New Search' : 'Find Suppliers'}
         </button></center>
+        </div>
       {error && <div className="error">{error}</div>}
-      <br/>
       {formSubmitted &&
       <div className="search-results-container">
         <h3>Suppliers:</h3>
         {updatedCart && 
           updatedCart.map((item, index) => (
           <StockistCard 
-                  key={item._id}
-                  item={item}
-                  index={index +1}
-                  sitePostcode={sitePostcode}
-                  updatedCart={updatedCart}
-                  token={user.token}
+            key={item._id}
+            item={item}
+            index={index +1}
+            sitePostcode={sitePostcode}
+            updatedCart={updatedCart}
+            token={user.token}
           />
           ))}
       </div>}

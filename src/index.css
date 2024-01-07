@@ -95,11 +95,12 @@ form button {
   background: var(--primary);
   border: 0;
   color: #fff;
-  padding: 10px;
+  padding: 8.5px;
   font-family: "Poppins";
   border-radius: 4px;
   cursor: pointer;
-  /* margin-bottom: 20px; */
+  margin-top: 10px;
+  margin-bottom: 20px;
 }
 div.error {
   padding: 10px;
@@ -302,4 +303,17 @@ form.signup, form.login {
   margin: 0;
   font-size: 0.9em;
   color: #555;
+}
+
+.input-button-container {
+  display: flex;
+  align-items: center;
+}
+
+.input-button-container input {
+  flex: 1;
+}
+
+.input-button-container button {
+  margin-left: 10px;
 }
