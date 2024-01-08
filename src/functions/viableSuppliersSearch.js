@@ -1,8 +1,6 @@
 export const viableSuppliersSearch = async (cartArray, setError, token) => {
   const url = process.env.REACT_APP_BACKEND_API_URL + `/api/suppliers/suppliers-by-products`;
 
-  console.log("Sending Request with product IDs:", cartArray);
-
   try {
     const response = await fetch(url, {
       method: 'POST',
@@ -19,11 +17,13 @@ export const viableSuppliersSearch = async (cartArray, setError, token) => {
 
     const suppliersData = await response.json();
 
-    // Assuming the response data needs to be mapped back to the products
+    // Response data mapped back to the products
     const updatedCartArray = cartArray.map(productId => {
       const supplierInfo = suppliersData.find(s => s._id === productId);
       return {
         _id: productId,
+        component_name: supplierInfo.component_name,
+        component_type: supplierInfo.component_type,
         stockists: supplierInfo ? supplierInfo.suppliers : []
       };
     });
