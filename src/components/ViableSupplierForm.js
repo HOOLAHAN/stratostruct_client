@@ -4,10 +4,8 @@ import StockistCard from './StockistCard';
 import { isValidPostcode } from '../functions/isValidPostcode';
 import { viableSuppliersSearch } from '../functions/viableSuppliersSearch';
 
-const ViableSupplierForm = ({ cart, onNewSearch, updateIsNewSearch, updateHasValidPostcode }) => {
+const ViableSupplierForm = ({ cart, sitePostcode, onNewSearch, updateIsNewSearch, updateHasValidPostcode, setSitePostcode, setError }) => {
   const { user } = useAuthContext();
-  const [sitePostcode, setSitePostcode] = useState('');
-  const [error, setError] = useState(null);
   const [updatedCart, setUpdatedCart] = useState([]);
   const [formSubmitted, setFormSubmitted] = useState(false);
   const [searching, setSearching] = useState(false);
@@ -21,14 +19,7 @@ const ViableSupplierForm = ({ cart, onNewSearch, updateIsNewSearch, updateHasVal
   const handlePostcodeChange = (e) => {
     const newPostcode = e.target.value;
     setSitePostcode(newPostcode);
-
-    if (isValidPostcode(newPostcode)) {
-      updateHasValidPostcode(true);
-      setError(null);
-    } else {
-      updateHasValidPostcode(false);
-      setError('Invalid postcode');
-    }
+    updateHasValidPostcode(isValidPostcode(newPostcode));
   }
 
   const handleSubmit = async (e) => {
@@ -65,7 +56,7 @@ const ViableSupplierForm = ({ cart, onNewSearch, updateIsNewSearch, updateHasVal
       updateHasValidPostcode(false);
       return;
     }
-  
+    setError('');
     updateHasValidPostcode(true);
 
     setError(null);
@@ -93,7 +84,6 @@ const ViableSupplierForm = ({ cart, onNewSearch, updateIsNewSearch, updateHasVal
           </button>
         </center>
       </div>
-      {error && <div className="error">{error}</div>}
       {formSubmitted && updatedCart.length > 0 &&
         <div className="search-results-container">
           <h3>Suppliers:</h3>

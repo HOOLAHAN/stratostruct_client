@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useProductsContext } from "../hooks/useProductsContext";
 import { useAuthContext } from '../hooks/useAuthContext';
 import ViableSupplierForm from "../components/ViableSupplierForm"
+import { isValidPostcode } from "../functions/isValidPostcode";
 
 const Home = () => {
   const { products, dispatchProducts } = useProductsContext()
@@ -9,6 +10,8 @@ const Home = () => {
   const [cart, setCart] = useState([]);
   const [isNewSearch, setIsNewSearch] = useState(true);
   const [hasValidPostcode, setHasValidPostcode] = useState(false);
+  const [sitePostcode, setSitePostcode] = useState('');
+  const [error, setError] = useState('');
 
   const updateIsNewSearch = (status) => {
     setIsNewSearch(status);
@@ -51,6 +54,11 @@ const Home = () => {
   }
 
   const handleProductClick = (product) => {
+    if (!isValidPostcode(sitePostcode)) {
+      setError('Please input a valid postcode');
+      return;
+    }
+    setError(''); // Clear any previous error
     if (isNewSearch && hasValidPostcode) {
       if (cart.find((item) => item._id === product._id)) {
         handleRemoveFromCart(product);
@@ -69,13 +77,18 @@ const Home = () => {
     <div className="home">
       <div>
         <ViableSupplierForm 
-          cart={cart} 
+          cart={cart}
+          sitePostcode={sitePostcode}
+          setSitePostcode={setSitePostcode}
           products={products} 
           onNewSearch={handleNewSearch}
           updateIsNewSearch={updateIsNewSearch}
           updateHasValidPostcode={updateHasValidPostcode}
+          error={error}
+          setError={setError}
         />
       </div>
+      {error && <div className="error">{error}</div>}
       <br/>
       <h3>Select products required from the below list:</h3>
       {productTypes.map((type) => (
