@@ -4,7 +4,7 @@ import StockistCard from './StockistCard';
 import { isValidPostcode } from '../functions/isValidPostcode';
 import { viableSuppliersSearch } from '../functions/viableSuppliersSearch';
 
-const ViableSupplierForm = ({ cart, onNewSearch, updateIsNewSearch }) => {
+const ViableSupplierForm = ({ cart, onNewSearch, updateIsNewSearch, updateHasValidPostcode }) => {
   const { user } = useAuthContext();
   const [sitePostcode, setSitePostcode] = useState('');
   const [error, setError] = useState(null);
@@ -16,6 +16,19 @@ const ViableSupplierForm = ({ cart, onNewSearch, updateIsNewSearch }) => {
     const productIds = cart.map(product => product._id);
     const updatedCartArray = await viableSuppliersSearch(productIds, setError, user.token);
     setUpdatedCart(updatedCartArray);
+  }
+
+  const handlePostcodeChange = (e) => {
+    const newPostcode = e.target.value;
+    setSitePostcode(newPostcode);
+
+    if (isValidPostcode(newPostcode)) {
+      updateHasValidPostcode(true);
+      setError(null);
+    } else {
+      updateHasValidPostcode(false);
+      setError('Invalid postcode');
+    }
   }
 
   const handleSubmit = async (e) => {
@@ -49,10 +62,13 @@ const ViableSupplierForm = ({ cart, onNewSearch, updateIsNewSearch }) => {
 
     if (!isValidPostcode(sitePostcode)) {
       setError('Invalid postcode');
+      updateHasValidPostcode(false);
       return;
     }
+  
+    updateHasValidPostcode(true);
 
-    setError(null); // Clear error if postcode is valid
+    setError(null);
     updateIsNewSearch(false);
 
     await findSuppliersForCart();
@@ -67,7 +83,7 @@ const ViableSupplierForm = ({ cart, onNewSearch, updateIsNewSearch }) => {
         <input
           type="text"
           id="postcode"
-          onChange={(e) => setSitePostcode(e.target.value)}
+          onChange={handlePostcodeChange}
           value={sitePostcode}
           placeholder="Enter your postcode"
         />

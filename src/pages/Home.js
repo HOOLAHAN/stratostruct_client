@@ -1,19 +1,22 @@
 import { useEffect, useState } from "react";
-import { useSuppliersContext } from "../hooks/useSuppliersContext";
 import { useProductsContext } from "../hooks/useProductsContext";
 import { useAuthContext } from '../hooks/useAuthContext';
 import ViableSupplierForm from "../components/ViableSupplierForm"
 
 const Home = () => {
-  const { suppliers, dispatchSuppliers } = useSuppliersContext()
   const { products, dispatchProducts } = useProductsContext()
   const { user } = useAuthContext()
   const [cart, setCart] = useState([]);
   const [isNewSearch, setIsNewSearch] = useState(true);
+  const [hasValidPostcode, setHasValidPostcode] = useState(false);
 
   const updateIsNewSearch = (status) => {
     setIsNewSearch(status);
   };
+
+  const updateHasValidPostcode = (status) => {
+    setHasValidPostcode(status);
+  }
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -21,7 +24,7 @@ const Home = () => {
         headers: {
           'Authorization': `Bearer ${user.token}`
         }
-      }) //update endpoint for production
+      }) 
       const json = await response.json()
       if (response.ok) {
         dispatchProducts({type: 'SET_PRODUCTS', payload: json})
@@ -31,23 +34,6 @@ const Home = () => {
       fetchProducts()
     }
   }, [dispatchProducts, user])
-
-  useEffect(() => {
-    const fetchSuppliers = async () => {
-      const response = await fetch(process.env.REACT_APP_BACKEND_API_URL + '/api/suppliers', {
-        headers: {
-          'Authorization': `Bearer ${user.token}`
-        }
-      }) //update endpoint for production
-      const json = await response.json()
-      if (response.ok) {
-        dispatchSuppliers({type: 'SET_SUPPLIERS', payload: json})
-      }
-    }
-    if (user) {
-      fetchSuppliers()
-    }
-  }, [dispatchSuppliers, user])
 
   const handleAddToCart = (product) => {
     if (!cart.find((item) => item._id === product._id)) {
@@ -65,7 +51,7 @@ const Home = () => {
   }
 
   const handleProductClick = (product) => {
-    if (isNewSearch) {
+    if (isNewSearch && hasValidPostcode) {
       if (cart.find((item) => item._id === product._id)) {
         handleRemoveFromCart(product);
       } else {
@@ -85,9 +71,9 @@ const Home = () => {
         <ViableSupplierForm 
           cart={cart} 
           products={products} 
-          suppliers={suppliers} 
           onNewSearch={handleNewSearch}
           updateIsNewSearch={updateIsNewSearch}
+          updateHasValidPostcode={updateHasValidPostcode}
         />
       </div>
       <br/>
