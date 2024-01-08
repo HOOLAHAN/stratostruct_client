@@ -1,45 +1,21 @@
-import { useState, useEffect } from "react"
-import { useAuthContext } from "../hooks/useAuthContext.js"
-import StockistCard from './StockistCard'
+import { useState } from "react";
+import { useAuthContext } from "../hooks/useAuthContext";
+import StockistCard from './StockistCard';
 import { isValidPostcode } from '../functions/isValidPostcode';
+import { viableSuppliersSearch } from '../functions/viableSuppliersSearch';
 
-const ViableSupplierForm = ({ cart, suppliers, onNewSearch, updateIsNewSearch }) => {
+const ViableSupplierForm = ({ cart, onNewSearch, updateIsNewSearch }) => {
   const { user } = useAuthContext();
   const [sitePostcode, setSitePostcode] = useState('');
-  const [cartArray, setCartArray] = useState([]);
   const [error, setError] = useState(null);
-  const [updatedCart, setUpdatedCart] = useState([])
+  const [updatedCart, setUpdatedCart] = useState([]);
   const [formSubmitted, setFormSubmitted] = useState(false);
   const [searching, setSearching] = useState(false);
-  
-  useEffect(() => {
-    setCartArray(cart);
-  }, [cart]);
 
-  useEffect(() => {
-    setUpdatedCart(cartArray)
-  }, [cartArray])
-
-  function findViableSupplier(cartArray) {
-    for (let i = 0; i < cartArray.length; i++) {
-      const product = cartArray[i]._id;
-      let stockists = [];
-      for (let j = 0; j < suppliers.length; j++) {
-        const supplier = suppliers[j];
-        const productIds = supplier.products.map((p) => p._id);
-        if (productIds.includes(product)) {
-          if (!stockists) {
-            stockists = [];
-          }
-          stockists.push(supplier);
-        }
-      }
-      cartArray[i].stockists = stockists;
-      if (!stockists) {
-        cartArray[i].stockists = [];
-      }
-    }
-    setUpdatedCart(cartArray);
+  const findSuppliersForCart = async () => {
+    const productIds = cart.map(product => product._id);
+    const updatedCartArray = await viableSuppliersSearch(productIds, setError, user.token);
+    setUpdatedCart(updatedCartArray);
   }
 
   const handleSubmit = async (e) => {
@@ -47,42 +23,45 @@ const ViableSupplierForm = ({ cart, suppliers, onNewSearch, updateIsNewSearch })
 
     if (searching) {
       // Handle "New Search" button click
-      setCartArray([]);
-      setSitePostcode('')
-      setSearching(false);
-      setFormSubmitted(false);
-      setError(null)
       onNewSearch();
       updateIsNewSearch(true);
+      setSitePostcode('');
+      setSearching(false);
+      setFormSubmitted(false);
+      setError(null);
       return;
     }
+
     if (!user) {
       setError('You must be logged in');
       return;
     }
+
     if (cart.length === 0) {
       setError('Please select at least one product.');
       return;
     }
+
     if (sitePostcode === '') {
       setError('Please input a postcode.');
       return;
     }
-    // Check if postcode is valid when submitting
+
     if (!isValidPostcode(sitePostcode)) {
       setError('Invalid postcode');
       return;
-    } else {
-      updateIsNewSearch(false);
-      setError(null); // Clear error if postcode is valid
     }
-    findViableSupplier(cartArray, sitePostcode, cart)
+
+    setError(null); // Clear error if postcode is valid
+    updateIsNewSearch(false);
+
+    await findSuppliersForCart();
     setFormSubmitted(true);
     setSearching(true);
   }
 
   return (
-    <form className="create" onSubmit={handleSubmit} suppliers={suppliers}>
+    <form className="create" onSubmit={handleSubmit}>
       <h3>Check for suppliers:</h3>
       <div className="input-button-container">
         <input
@@ -92,26 +71,27 @@ const ViableSupplierForm = ({ cart, suppliers, onNewSearch, updateIsNewSearch })
           value={sitePostcode}
           placeholder="Enter your postcode"
         />
-      <center><button onClick={handleSubmit}>
-        {searching ? 'New Search' : 'Find Suppliers'}
-        </button></center>
-        </div>
+        <center>
+          <button type="submit">
+            {searching ? 'New Search' : 'Find Suppliers'}
+          </button>
+        </center>
+      </div>
       {error && <div className="error">{error}</div>}
-      {formSubmitted &&
-      <div className="search-results-container">
-        <h3>Suppliers:</h3>
-        {updatedCart && 
-          updatedCart.map((item, index) => (
-          <StockistCard 
-            key={item._id}
-            item={item}
-            index={index +1}
-            sitePostcode={sitePostcode}
-            updatedCart={updatedCart}
-            token={user.token}
-          />
+      {formSubmitted && updatedCart.length > 0 &&
+        <div className="search-results-container">
+          <h3>Suppliers:</h3>
+          {updatedCart.map((item, index) => (
+            <StockistCard
+              key={item._id}
+              item={item}
+              index={index + 1}
+              sitePostcode={sitePostcode}
+              token={user.token}
+            />
           ))}
-      </div>}
+        </div>
+      }
     </form>
   );
 };
