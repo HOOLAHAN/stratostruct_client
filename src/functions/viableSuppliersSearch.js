@@ -22,8 +22,8 @@ export const viableSuppliersSearch = async (cartArray, setError, token) => {
       const supplierInfo = suppliersData.find(s => s._id === productId);
       return {
         _id: productId,
-        component_name: supplierInfo.component_name,
-        component_type: supplierInfo.component_type,
+        component_name: supplierInfo ? supplierInfo.component_name : '',
+        component_type: supplierInfo ? supplierInfo.component_type : '',
         stockists: supplierInfo ? supplierInfo.suppliers : []
       };
     });
