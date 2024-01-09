@@ -90,7 +90,7 @@ const Home = () => {
       </div>
       {error && <div className="error">{error}</div>}
       <br/>
-      <h3>Select products required from the below list:</h3>
+      <h2>Step 2 - Select products required:</h2>
       {productTypes.map((type) => (
         <div className="product-container" key={type}>
           <h3>{type}</h3>

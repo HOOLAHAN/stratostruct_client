@@ -69,14 +69,15 @@ const ViableSupplierForm = ({ cart, sitePostcode, onNewSearch, updateIsNewSearch
 
   return (
     <form className="create" onSubmit={handleSubmit}>
-      <h3>Check for suppliers:</h3>
+      <h1>Check for suppliers:</h1>
+      <h2>Step 1 - Enter your postcode:</h2>
       <div className="input-button-container">
         <input
           type="text"
           id="postcode"
           onChange={handlePostcodeChange}
           value={sitePostcode}
-          placeholder="Enter your postcode"
+          placeholder="e.g. SE10 8XJ"
         />
         <center>
           <button type="submit">
