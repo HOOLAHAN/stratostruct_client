@@ -1,4 +1,4 @@
-async function calculateDistance(postcode1, postcode2, token) {
+export async function calculateDistance(postcode1, postcode2, token) {
     const url = process.env.REACT_APP_BACKEND_API_URL + `/api/mapbox/getDistance?postcode1=${postcode1}&postcode2=${postcode2}`;
 
     const response = await fetch(url, {

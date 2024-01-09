@@ -2,19 +2,10 @@ import { useState } from "react";
 import { useAuthContext } from "../hooks/useAuthContext";
 import StockistCard from './StockistCard';
 import { isValidPostcode } from '../functions/isValidPostcode';
-import { viableSuppliersSearch } from '../functions/viableSuppliersSearch';
 
 const ViableSupplierForm = ({ cart, sitePostcode, onNewSearch, updateIsNewSearch, updateHasValidPostcode, setSitePostcode, setError }) => {
   const { user } = useAuthContext();
-  const [updatedCart, setUpdatedCart] = useState([]);
-  const [formSubmitted, setFormSubmitted] = useState(false);
   const [searching, setSearching] = useState(false);
-
-  const findSuppliersForCart = async () => {
-    const productIds = cart.map(product => product._id);
-    const updatedCartArray = await viableSuppliersSearch(productIds, setError, user.token);
-    setUpdatedCart(updatedCartArray);
-  }
 
   const handlePostcodeChange = (e) => {
     const newPostcode = e.target.value;
@@ -31,7 +22,6 @@ const ViableSupplierForm = ({ cart, sitePostcode, onNewSearch, updateIsNewSearch
       updateIsNewSearch(true);
       setSitePostcode('');
       setSearching(false);
-      setFormSubmitted(false);
       setError(null);
       return;
     }
@@ -56,14 +46,9 @@ const ViableSupplierForm = ({ cart, sitePostcode, onNewSearch, updateIsNewSearch
       updateHasValidPostcode(false);
       return;
     }
+
     setError('');
     updateHasValidPostcode(true);
-
-    setError(null);
-    updateIsNewSearch(false);
-
-    await findSuppliersForCart();
-    setFormSubmitted(true);
     setSearching(true);
   }
 
@@ -85,16 +70,15 @@ const ViableSupplierForm = ({ cart, sitePostcode, onNewSearch, updateIsNewSearch
           </button>
         </center>
       </div>
-      {formSubmitted && updatedCart.length > 0 &&
+      {searching && cart.length > 0 &&
         <div className="search-results-container">
           <h3>Suppliers:</h3>
-          {updatedCart.map((item, index) => (
+          {cart.map((product, index) => (
             <StockistCard
-              key={item._id}
-              item={item}
+              key={product._id}
+              product={product}
               index={index + 1}
               sitePostcode={sitePostcode}
-              token={user.token}
             />
           ))}
         </div>
