@@ -2,10 +2,13 @@ import { useState } from "react";
 import { useAuthContext } from "../hooks/useAuthContext";
 import StockistCard from './StockistCard';
 import { isValidPostcode } from '../functions/isValidPostcode';
+import MapComponent from "./MapComponent";
 
 const ViableSupplierForm = ({ cart, sitePostcode, onNewSearch, updateIsNewSearch, updateHasValidPostcode, setSitePostcode, setError }) => {
   const { user } = useAuthContext();
   const [searching, setSearching] = useState(false);
+  const [routeData, setRouteData] = useState(null);
+  const [suppliersFetched, setSuppliersFetched] = useState(false);
 
   const handlePostcodeChange = (e) => {
     const newPostcode = e.target.value;
@@ -50,7 +53,40 @@ const ViableSupplierForm = ({ cart, sitePostcode, onNewSearch, updateIsNewSearch
     setError('');
     updateHasValidPostcode(true);
     setSearching(true);
+    setSuppliersFetched(true);
   }
+
+  const handleShowRoute = async (endPostcode) => {
+    console.log("handleShowRoute called with endPostcode:", endPostcode);
+    console.log("handleShowRoute called with startPostcode:", sitePostcode);
+
+    try {
+      const url = process.env.REACT_APP_BACKEND_API_URL + `/api/mapbox/getRoute`;
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${user.token}`
+        },
+        body: JSON.stringify({ startPostcode: sitePostcode, endPostcode: endPostcode }), // Use the endPostcode parameter
+      });
+      const data = await response.json();
+      if (response.ok) {
+        setRouteData(data.routeData);
+        console.log("Route Data set:", data.routeData);
+      } else {
+        console.error('Failed to fetch route:', data);
+      }
+    } catch (error) {
+      console.error('Error fetching route:', error);
+    }
+  };
+
+  const handleRouteChange = (newRouteData) => {
+    setRouteData(newRouteData);
+  };
+
+  console.log('ViableSupplierForm sitePostcode: ', sitePostcode)
 
   return (
     <form className="create" onSubmit={handleSubmit}>
@@ -70,19 +106,34 @@ const ViableSupplierForm = ({ cart, sitePostcode, onNewSearch, updateIsNewSearch
           </button>
         </center>
       </div>
+      {suppliersFetched && (
+        <MapComponent
+          sitePostcode={sitePostcode}
+          token={user.token}
+          routeData={routeData}
+        />
+      )}
       {searching && cart.length > 0 &&
         <div className="search-results-container">
           <h3>Suppliers:</h3>
-          {cart.map((product, index) => (
-            <StockistCard
-              key={product._id}
-              product={product}
-              index={index + 1}
-              sitePostcode={sitePostcode}
-            />
-          ))}
+          {cart.map((product, index) => {
+            console.log("Passing routeData to StockistCard:", routeData);
+            return (
+              <StockistCard
+                key={product._id + (routeData ? '_routeLoaded' : '')}
+                product={product}
+                index={index + 1}
+                sitePostcode={sitePostcode}
+                handleShowRoute={handleShowRoute}
+                routeData={routeData}
+                token={user.token}
+                handleRouteChange={handleRouteChange}
+              />
+            );
+          })}
         </div>
       }
+
     </form>
   );
 };
