@@ -4,6 +4,7 @@ import { useAuthContext } from '../hooks/useAuthContext';
 import ViableSupplierForm from "../components/ViableSupplierForm";
 import { isValidPostcode } from "../functions/isValidPostcode";
 import { calculateDistance } from "../functions/calculateDistance";
+import { getStockists } from "../functions/getStockists";
 
 const Home = () => {
   const { products, dispatchProducts } = useProductsContext();
@@ -39,28 +40,9 @@ const Home = () => {
     }
   }, [dispatchProducts, user]);
 
-  const fetchStockists = async (product) => {
-    try {
-      const response = await fetch(process.env.REACT_APP_BACKEND_API_URL + `/api/suppliers/product/${product._id}`, {
-        headers: {
-          'Authorization': `Bearer ${user.token}`
-        }
-      });
-      const data = await response.json();
-      if (response.ok) {
-        return data;
-      } else {
-        throw new Error(data.error || 'Failed to fetch stockists');
-      }
-    } catch (error) {
-      console.error("Error fetching stockists:", error.message);
-      return []; // Return an empty array in case of error
-    }
-  };
-
   const handleAddToCart = async (product) => {
     if (!cart.find((item) => item._id === product._id)) {
-      const stockists = await fetchStockists(product);
+      const stockists = await getStockists(product, user);
       const stockistsWithDistances = await Promise.all(stockists.map(async (stockist) => {
         try {
           const distance = await calculateDistance(sitePostcode, stockist.postcode, user.token);
@@ -103,6 +85,8 @@ const Home = () => {
   const productTypes = products
     ? Array.from(new Set(products.map((product) => product.component_type))).reverse()
     : [];
+
+    console.log('Home component sitePostcode:', sitePostcode)
 
   return (
     <div className="home">
