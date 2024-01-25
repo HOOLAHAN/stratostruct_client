@@ -23,7 +23,7 @@ const ViableSupplierForm = ({ cart, sitePostcode, onNewSearch, updateIsNewSearch
       // Handle "New Search" button click
       onNewSearch();
       updateIsNewSearch(true);
-      setSitePostcode('');
+      // setSitePostcode('');
       setSearching(false);
       setError(null);
       return;
@@ -56,7 +56,7 @@ const ViableSupplierForm = ({ cart, sitePostcode, onNewSearch, updateIsNewSearch
     setSuppliersFetched(true);
   }
 
-  const handleShowRoute = async (endPostcode) => {
+  const handleShowRoute = async (endPostcode, sitePostcode) => {
     console.log("handleShowRoute called with endPostcode:", endPostcode);
     console.log("handleShowRoute called with startPostcode:", sitePostcode);
 
@@ -86,7 +86,7 @@ const ViableSupplierForm = ({ cart, sitePostcode, onNewSearch, updateIsNewSearch
     setRouteData(newRouteData);
   };
 
-  console.log('ViableSupplierForm sitePostcode: ', sitePostcode)
+  console.log('routeData in ViableSupplierForm', routeData)
 
   return (
     <form className="create" onSubmit={handleSubmit}>
@@ -106,7 +106,8 @@ const ViableSupplierForm = ({ cart, sitePostcode, onNewSearch, updateIsNewSearch
           </button>
         </center>
       </div>
-      {suppliersFetched && (
+      {
+      suppliersFetched && (
         <MapComponent
           sitePostcode={sitePostcode}
           token={user.token}

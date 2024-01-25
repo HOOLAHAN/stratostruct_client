@@ -1,10 +1,10 @@
 import React from 'react';
 import ViableSupplier from './ViableSupplier';
 
-const StockistCard = ({ product, index, sitePostcode, handleShowRoute, routeData, token, handleRouteChange }) => {
+const StockistCard = ({ product, index, handleShowRoute, routeData, handleRouteChange, sitePostcode}) => {
   console.log("Received routeData in StockistCard:", routeData)
   const onShowRoute = (endPostcode) => {
-    handleShowRoute(endPostcode).then(newRouteData => {
+    handleShowRoute(endPostcode, sitePostcode).then(newRouteData => {
       handleRouteChange(newRouteData);
     });
   };

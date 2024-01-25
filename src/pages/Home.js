@@ -86,8 +86,6 @@ const Home = () => {
     ? Array.from(new Set(products.map((product) => product.component_type))).reverse()
     : [];
 
-    console.log('Home component sitePostcode:', sitePostcode)
-
   return (
     <div className="home">
       <div>

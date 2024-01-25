@@ -4,12 +4,11 @@ import { getCoordinatesFromPostcode } from '../functions/getCoordinatesFromPostc
 import 'mapbox-gl/dist/mapbox-gl.css';
 
 const MapComponent = ({ routeData, sitePostcode, token }) => {
+  console.log('MapComponent routeData:', routeData)
   const mapContainer = useRef(null);
   mapboxgl.accessToken = process.env.REACT_APP_MAPBOX_API_KEY;
 
   useEffect(() => {
-    console.log("Mapbox API Key:", process.env.REACT_APP_MAPBOX_API_KEY);
-
     const initializeMap = async () => {
       let centerCoordinates;
       let bounds;

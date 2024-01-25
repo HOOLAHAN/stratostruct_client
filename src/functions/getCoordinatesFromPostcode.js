@@ -1,7 +1,5 @@
 export async function getCoordinatesFromPostcode(sitePostcode, token) {
-  console.log('site postcode:', sitePostcode)
   const url = process.env.REACT_APP_BACKEND_API_URL + `/api/mapbox/getCoordinates?postcode=${encodeURIComponent(sitePostcode)}`;
-  console.log('token in getcoordinates', token)
   const response = await fetch(url, {
     method: 'GET',
     headers: {
