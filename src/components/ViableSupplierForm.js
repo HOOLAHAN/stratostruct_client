@@ -3,6 +3,7 @@ import { useAuthContext } from "../hooks/useAuthContext";
 import StockistCard from './StockistCard';
 import { isValidPostcode } from '../functions/isValidPostcode';
 import MapComponent from "./MapComponent";
+import { fetchRouteData } from "../functions/fetchRouteData";
 
 const ViableSupplierForm = ({ cart, sitePostcode, onNewSearch, updateIsNewSearch, updateHasValidPostcode, setSitePostcode, setError }) => {
   const { user } = useAuthContext();
@@ -56,29 +57,11 @@ const ViableSupplierForm = ({ cart, sitePostcode, onNewSearch, updateIsNewSearch
     setSuppliersFetched(true);
   }
 
-  const handleShowRoute = async (endPostcode, sitePostcode) => {
-    console.log("handleShowRoute called with endPostcode:", endPostcode);
-    console.log("handleShowRoute called with startPostcode:", sitePostcode);
-
-    try {
-      const url = process.env.REACT_APP_BACKEND_API_URL + `/api/mapbox/getRoute`;
-      const response = await fetch(url, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${user.token}`
-        },
-        body: JSON.stringify({ startPostcode: sitePostcode, endPostcode: endPostcode }), // Use the endPostcode parameter
-      });
-      const data = await response.json();
-      if (response.ok) {
-        setRouteData(data.routeData);
-        console.log("Route Data set:", data.routeData);
-      } else {
-        console.error('Failed to fetch route:', data);
-      }
-    } catch (error) {
-      console.error('Error fetching route:', error);
+  const handleShowRoute = async (endPostcode) => {
+    const token = user.token
+    const routeData = await fetchRouteData(sitePostcode, endPostcode, token);
+    if (routeData) {
+      setRouteData(routeData);
     }
   };
 
