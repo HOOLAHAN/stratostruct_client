@@ -4,84 +4,64 @@ import { getCoordinatesFromPostcode } from '../functions/getCoordinatesFromPostc
 import 'mapbox-gl/dist/mapbox-gl.css';
 
 const MapComponent = ({ routeData, sitePostcode, token }) => {
-  console.log('MapComponent routeData:', routeData)
+  console.log('routeData in MapComponent', routeData)
   const mapContainer = useRef(null);
+  const map = useRef(null); // Reference to the map instance
+
   mapboxgl.accessToken = process.env.REACT_APP_MAPBOX_API_KEY;
 
+  // Initialize map only once
   useEffect(() => {
-    const initializeMap = async () => {
-      let centerCoordinates;
-      let bounds;
+    map.current = new mapboxgl.Map({
+      container: mapContainer.current,
+      style: 'mapbox://styles/mapbox/streets-v11',
+      center: [-0.1276, 51.5072], // Default center
+      zoom: 10
+    });
+  }, []);
 
+  // Update map when routeData changes
+  useEffect(() => {
+    console.log('routeData inside MapComponent useEffect:', routeData)
+    const updateMap = async () => {
       if (!routeData || !routeData.coordinates) {
-        // Ensure sitePostcode is not empty before calling getCoordinatesFromPostcode
         if (sitePostcode) {
-          centerCoordinates = await getCoordinatesFromPostcode(sitePostcode, token);
-        } else {
-          // Handle the scenario where sitePostcode is not available
-          console.error('Site postcode is missing.');
-          return; // Exit the function if no postcode is provided
+          const centerCoordinates = await getCoordinatesFromPostcode(sitePostcode, token);
+          map.current.setCenter(centerCoordinates);
         }
-      } else {
-        bounds = new mapboxgl.LngLatBounds();
-        routeData.coordinates.forEach(coord => bounds.extend(coord));
+        return;
       }
 
-      const map = new mapboxgl.Map({
-        container: mapContainer.current,
-        style: 'mapbox://styles/mapbox/streets-v11',
-        center: centerCoordinates || [-0.1276, 51.5072], // Default center if no coordinates available
-        zoom: 10
-      });
+      const bounds = new mapboxgl.LngLatBounds();
+      routeData.coordinates.forEach(coord => bounds.extend(coord));
+      map.current.fitBounds(bounds, { padding: 20 });
 
-      map.on('load', () => {
-        if (bounds) {
-          map.fitBounds(bounds, { padding: 20 });
+      const source = map.current.getSource('route');
+      const geojsonData = {
+        type: 'Feature',
+        properties: {},
+        geometry: {
+          type: 'LineString',
+          coordinates: routeData.coordinates
         }
+      };
 
-        if (routeData && routeData.coordinates) {
-          const geojsonData = {
-            type: 'Feature',
-            properties: {},
-            geometry: {
-              type: 'LineString',
-              coordinates: routeData.coordinates
-            }
-          };
-
-          if (map.getSource('route')) {
-            map.getSource('route').setData(geojsonData);
-          } else {
-            map.addSource('route', {
-              type: 'geojson',
-              data: geojsonData
-            });
-
-            map.addLayer({
-              id: 'route',
-              type: 'line',
-              source: 'route',
-              layout: {
-                'line-join': 'round',
-                'line-cap': 'round'
-              },
-              paint: {
-                'line-color': '#888',
-                'line-width': 6
-              }
-            });
-          }
-        }
-      });
-
-      return () => map.remove();
+      if (source) {
+        source.setData(geojsonData);
+      } else {
+        map.current.addSource('route', { type: 'geojson', data: geojsonData });
+        map.current.addLayer({
+          id: 'route',
+          type: 'line',
+          source: 'route',
+          layout: { 'line-join': 'round', 'line-cap': 'round' },
+          paint: { 'line-color': '#888', 'line-width': 6 }
+        });
+      }
     };
 
-    initializeMap();
-  }, [sitePostcode, routeData, token]);
-
-
-
+    updateMap();
+  }, [routeData, sitePostcode, token]);
 
   return <div ref={mapContainer} style={{ height: '400px', width: '100%' }} />;
 };
