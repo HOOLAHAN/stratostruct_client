@@ -5,6 +5,7 @@ import ViableSupplierForm from "../components/ViableSupplierForm";
 import { isValidPostcode } from "../functions/isValidPostcode";
 import { calculateDistance } from "../functions/calculateDistance";
 import { getStockists } from "../functions/getStockists";
+import { fetchProducts } from "../functions/fetchProducts";
 
 const Home = () => {
   const { products, dispatchProducts } = useProductsContext();
@@ -24,20 +25,13 @@ const Home = () => {
   };
 
   useEffect(() => {
-    const fetchProducts = async () => {
-      const response = await fetch(process.env.REACT_APP_BACKEND_API_URL + '/api/products', {
-        headers: {
-          'Authorization': `Bearer ${user.token}`
-        }
-      });
-      const json = await response.json();
-      if (response.ok) {
-        dispatchProducts({ type: 'SET_PRODUCTS', payload: json });
+    const initializeProducts = async () => {
+      if (user) {
+        const fetchedProducts = await fetchProducts(user.token);
+        dispatchProducts({ type: 'SET_PRODUCTS', payload: fetchedProducts });
       }
     };
-    if (user) {
-      fetchProducts();
-    }
+    initializeProducts();
   }, [dispatchProducts, user]);
 
   const handleAddToCart = async (product) => {
