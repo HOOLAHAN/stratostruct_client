@@ -3,9 +3,8 @@ import { useProductsContext } from "../hooks/useProductsContext";
 import { useAuthContext } from '../hooks/useAuthContext';
 import ViableSupplierForm from "../components/ViableSupplierForm";
 import { isValidPostcode } from "../functions/isValidPostcode";
-import { calculateDistance } from "../functions/calculateDistance";
-import { getStockists } from "../functions/getStockists";
 import { fetchProducts } from "../functions/fetchProducts";
+import { handleAddToCart } from "../functions/handleAddToCart"
 
 const Home = () => {
   const { products, dispatchProducts } = useProductsContext();
@@ -34,22 +33,8 @@ const Home = () => {
     initializeProducts();
   }, [dispatchProducts, user]);
 
-  const handleAddToCart = async (product) => {
-    if (!cart.find((item) => item._id === product._id)) {
-      const stockists = await getStockists(product, user);
-      const stockistsWithDistances = await Promise.all(stockists.map(async (stockist) => {
-        try {
-          const distance = await calculateDistance(sitePostcode, stockist.postcode, user.token);
-          return { ...stockist, distance };
-        } catch (error) {
-          console.error("Error fetching distance:", error.message);
-          return { ...stockist, distance: "N/A" };
-        }
-      }));
-
-      const updatedProduct = { ...product, stockists: stockistsWithDistances };
-      setCart((prevCart) => [...prevCart, updatedProduct]);
-    }
+  const onAddToCart = async (product) => {
+    await handleAddToCart(product, cart, user, sitePostcode, setCart);
   };
 
   const handleRemoveFromCart = (product) => {
@@ -71,7 +56,7 @@ const Home = () => {
       if (cart.find((item) => item._id === product._id)) {
         handleRemoveFromCart(product);
       } else {
-        handleAddToCart(product);
+        onAddToCart(product);
       }
     }
   };
