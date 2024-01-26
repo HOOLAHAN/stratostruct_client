@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAuthContext } from "../hooks/useAuthContext";
 import StockistCard from './StockistCard';
 import { isValidPostcode } from '../functions/isValidPostcode';
 import MapComponent from "./MapComponent";
 import { fetchRouteData } from "../functions/fetchRouteData";
+import { validateSupplierForm } from '../functions/validateSupplierForm';
 
 const ViableSupplierForm = ({ cart, sitePostcode, onNewSearch, updateIsNewSearch, updateHasValidPostcode, setSitePostcode, setError }) => {
   const { user } = useAuthContext();
@@ -21,33 +22,13 @@ const ViableSupplierForm = ({ cart, sitePostcode, onNewSearch, updateIsNewSearch
     e.preventDefault();
 
     if (searching) {
-      // Handle "New Search" button click
-      onNewSearch();
-      updateIsNewSearch(true);
-      // setSitePostcode('');
-      setSearching(false);
-      setError(null);
+      handleNewSearch();
       return;
     }
 
-    if (!user) {
-      setError('You must be logged in');
-      return;
-    }
-
-    if (cart.length === 0) {
-      setError('Please select at least one product.');
-      return;
-    }
-
-    if (sitePostcode === '') {
-      setError('Please input a postcode.');
-      return;
-    }
-
-    if (!isValidPostcode(sitePostcode)) {
-      setError('Invalid postcode');
-      updateHasValidPostcode(false);
+    const errorMessage = validateSupplierForm(user, cart, sitePostcode, updateHasValidPostcode);
+    if (errorMessage) {
+      setError(errorMessage);
       return;
     }
 
@@ -57,11 +38,19 @@ const ViableSupplierForm = ({ cart, sitePostcode, onNewSearch, updateIsNewSearch
     setSuppliersFetched(true);
   }
 
+  const handleNewSearch = () => {
+    onNewSearch();
+    updateIsNewSearch(true);
+    setSearching(false);
+    setError(null);
+  }
+
   const handleShowRoute = async (endPostcode) => {
-    const token = user.token
-    const routeData = await fetchRouteData(sitePostcode, endPostcode, token);
-    if (routeData) {
-      setRouteData(routeData);
+    const token = user.token;
+    const fetchedRouteData = await fetchRouteData(sitePostcode, endPostcode, token);
+    if (fetchedRouteData) {
+      setRouteData(fetchedRouteData);
+      console.log('routeData in handleShowRoute', fetchedRouteData);
     }
   };
 
@@ -69,8 +58,12 @@ const ViableSupplierForm = ({ cart, sitePostcode, onNewSearch, updateIsNewSearch
     setRouteData(newRouteData);
   };
 
-  console.log('routeData in ViableSupplierForm', routeData)
+  console.log('routeData in ViableSupplierForm', routeData);
 
+  useEffect(() => {
+    console.log('routeData updated in ViableSupplierForm', routeData);
+  }, [routeData]);
+  
   return (
     <form className="create" onSubmit={handleSubmit}>
       <h1>Check for suppliers:</h1>
@@ -117,7 +110,6 @@ const ViableSupplierForm = ({ cart, sitePostcode, onNewSearch, updateIsNewSearch
           })}
         </div>
       }
-
     </form>
   );
 };
