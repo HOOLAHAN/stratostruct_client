@@ -4,7 +4,6 @@ import { getCoordinatesFromPostcode } from '../functions/getCoordinatesFromPostc
 import 'mapbox-gl/dist/mapbox-gl.css';
 
 const MapComponent = ({ routeData, sitePostcode, token }) => {
-  console.log('routeData in MapComponent', routeData)
   const mapContainer = useRef(null);
   const map = useRef(null); // Reference to the map instance
 
@@ -22,7 +21,6 @@ const MapComponent = ({ routeData, sitePostcode, token }) => {
 
   // Update map when routeData changes
   useEffect(() => {
-    console.log('routeData inside MapComponent useEffect:', routeData)
     const updateMap = async () => {
       if (!routeData || !routeData.coordinates) {
         if (sitePostcode) {

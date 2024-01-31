@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useAuthContext } from "../hooks/useAuthContext";
 import StockistCard from './StockistCard';
 import { isValidPostcode } from '../functions/isValidPostcode';
@@ -47,22 +47,23 @@ const ViableSupplierForm = ({ cart, sitePostcode, onNewSearch, updateIsNewSearch
 
   const handleShowRoute = async (endPostcode) => {
     const token = user.token;
+    // Fetch the route data
     const fetchedRouteData = await fetchRouteData(sitePostcode, endPostcode, token);
     if (fetchedRouteData) {
       setRouteData(fetchedRouteData);
-      console.log('routeData in handleShowRoute', fetchedRouteData);
+      return fetchedRouteData;
     }
+    return null;
   };
 
   const handleRouteChange = (newRouteData) => {
-    setRouteData(newRouteData);
+    if (newRouteData) {
+      setRouteData(newRouteData);
+      console.log('Route data updated with handleRouteChange');
+    } else {
+      // TODO: handle the case where newRouteData is null or undefined
+    }
   };
-
-  console.log('routeData in ViableSupplierForm', routeData);
-
-  useEffect(() => {
-    console.log('routeData updated in ViableSupplierForm', routeData);
-  }, [routeData]);
   
   return (
     <form className="create" onSubmit={handleSubmit}>

@@ -2,10 +2,17 @@ import React from 'react';
 import ViableSupplier from './ViableSupplier';
 
 const StockistCard = ({ product, index, handleShowRoute, routeData, handleRouteChange, sitePostcode}) => {
-  console.log("Received routeData in StockistCard:", routeData)
   const onShowRoute = (endPostcode) => {
     handleShowRoute(endPostcode, sitePostcode).then(newRouteData => {
-      handleRouteChange(newRouteData);
+      if (newRouteData) {
+        handleRouteChange(newRouteData);
+      } else {
+        // TODO: Handle the case where no new route data is returned
+        console.log('No route data returned from handleShowRoute');
+      }
+    }).catch(error => {
+      // TODO: Handle any errors that might occur during the fetch
+      console.error('Error fetching route data:', error);
     });
   };
   return (
