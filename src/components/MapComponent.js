@@ -2,6 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import mapboxgl from 'mapbox-gl';
 import { getCoordinatesFromPostcode } from '../functions/getCoordinatesFromPostcode';
 import 'mapbox-gl/dist/mapbox-gl.css';
+import { Box } from '@chakra-ui/react';
 
 const MapComponent = ({ routeData, sitePostcode, token }) => {
   const mapContainer = useRef(null);
@@ -61,7 +62,8 @@ const MapComponent = ({ routeData, sitePostcode, token }) => {
     updateMap();
   }, [routeData, sitePostcode, token]);
 
-  return <div ref={mapContainer} className="mapContainer" />;
+  return <Box ref={mapContainer} className="mapContainer" w="100vw" h="100vh" position="fixed" top="0" left="0" zIndex="-1" />;
+
 };
 
 export default MapComponent;
