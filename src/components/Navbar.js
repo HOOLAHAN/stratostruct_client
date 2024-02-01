@@ -1,10 +1,9 @@
 import React from 'react';
-import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { Link as RouterLink, useNavigate, useLocation } from 'react-router-dom';
 import { useLogout } from '../hooks/useLogout';
 import { useAuthContext } from '../hooks/useAuthContext';
+import { Flex, Box, Button, Image, Text, Link } from '@chakra-ui/react';
 import SS_logo from "../images/SS_logo.svg";
-import '../navbar.css'
-
 
 const Navbar = () => {
   const { logout } = useLogout();
@@ -19,54 +18,34 @@ const Navbar = () => {
     }
   };
 
-  const renderAdminButton = () => {
-    if (user && user.role === 'admin') {
-      if (location.pathname === '/') {
-        return (
-          <Link to="/admin">
-            <button className="navbar-button small">Admin</button>
-          </Link>
-        );
-      } else if (location.pathname === '/admin') {
-        return (
-          <Link to="/">
-            <button className="navbar-button small">Home</button>
-          </Link>
-        );
-      }
-    }
-    return null;
-  };
-
   return (
-    <header>
-      <div className="container">
-        <div className="logo-container">
-          <Link to="/">
-            <img src={SS_logo} alt="logo" className="logo" />
-          </Link>
-        </div>
-        <nav>
-          {user && (
-            <div className="button-container">
-              <div className="user-container">
-              <span className="user-name">{user.full_name}</span>
-              </div>
-              <button className="navbar-button small" onClick={handleLogout}>Logout</button>
-              {renderAdminButton()}
-            </div>
-          )}
-          {!user && (
-            <div className="button-container">
-              <div>
-                <Link to="/login">Login</Link>
-                <Link to="/signup">Signup</Link>
-              </div>
-            </div>
-          )}
-        </nav>
-      </div>
-    </header>
+    <Flex as="header" align="center" justify="space-between" padding="0.5rem" bg="blue.500" color="white">
+      <Box>
+        <RouterLink to="/">
+        <Image src={SS_logo} alt="logo" height="auto" width={{ base: "125px", md: "150px" }}/>
+        </RouterLink>
+      </Box>
+      <Flex align="center">
+        {user ? (
+          <>
+            <Text mr={4}>{user.full_name}</Text>
+            <Button onClick={handleLogout} size="sm">Logout</Button>
+            {user.role === 'admin' && (
+              <RouterLink to={location.pathname.startsWith('/admin') ? "/" : "/admin"}>
+                <Button size="sm" ml={4}>
+                  {location.pathname.startsWith('/admin') ? "Home" : "Admin"}
+                </Button>
+              </RouterLink>
+            )}
+          </>
+        ) : (
+          <Box>
+            <Link as={RouterLink} to="/login" mr={2}>Login</Link>
+            <Link as={RouterLink} to="/signup">Signup</Link>
+          </Box>
+        )}
+      </Flex>
+    </Flex>
   );
 };
 
