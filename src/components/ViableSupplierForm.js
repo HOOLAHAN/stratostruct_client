@@ -2,15 +2,33 @@ import { useState } from "react";
 import { useAuthContext } from "../hooks/useAuthContext";
 import StockistCard from './StockistCard';
 import { isValidPostcode } from '../functions/isValidPostcode';
-// import MapComponent from "./MapComponent";
 import { fetchRouteData } from "../functions/fetchRouteData";
 import { validateSupplierForm } from '../functions/validateSupplierForm';
+import { handleAddToCart } from "../functions/handleAddToCart"
+import {
+  Drawer,
+  DrawerBody,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerOverlay,
+  DrawerContent,
+  DrawerCloseButton,
+  Input,
+  Button,
+  useDisclosure,
+  VStack,
+  Text,
+  Box
+} from '@chakra-ui/react';
 
-const ViableSupplierForm = ({ cart, sitePostcode, onNewSearch, updateIsNewSearch, updateHasValidPostcode, setSitePostcode, setError, setRouteData, routeData }) => {
+const ViableSupplierForm = ({ sitePostcode, onNewSearch, setSitePostcode, setRouteData, routeData, products }) => {
+  const { isOpen, onOpen, onClose } = useDisclosure();
   const { user } = useAuthContext();
   const [searching, setSearching] = useState(false);
-  // const [routeData, setRouteData] = useState(null);
-  // const [suppliersFetched, setSuppliersFetched] = useState(false);
+  const [isNewSearch, setIsNewSearch] = useState(true);
+  const [hasValidPostcode, setHasValidPostcode] = useState(false);
+  const [cart, setCart] = useState([]);
+  const [error, setError] = useState('');
 
   const handlePostcodeChange = (e) => {
     const newPostcode = e.target.value;
@@ -35,7 +53,6 @@ const ViableSupplierForm = ({ cart, sitePostcode, onNewSearch, updateIsNewSearch
     setError('');
     updateHasValidPostcode(true);
     setSearching(true);
-    // setSuppliersFetched(true);
   }
 
   const handleNewSearch = () => {
@@ -44,6 +61,14 @@ const ViableSupplierForm = ({ cart, sitePostcode, onNewSearch, updateIsNewSearch
     setSearching(false);
     setError(null);
   }
+
+  const updateIsNewSearch = (status) => {
+    setIsNewSearch(status);
+  };
+
+  const updateHasValidPostcode = (status) => {
+    setHasValidPostcode(status);
+  };
 
   const handleShowRoute = async (endPostcode) => {
     const token = user.token;
@@ -64,47 +89,105 @@ const ViableSupplierForm = ({ cart, sitePostcode, onNewSearch, updateIsNewSearch
       // TODO: handle the case where newRouteData is null or undefined
     }
   };
+
+  const handleProductClick = (product) => {
+    if (!isValidPostcode(sitePostcode)) {
+      setError('Please input a valid postcode');
+      return;
+    }
+    setError('');
+    if (isNewSearch && hasValidPostcode) {
+      if (cart.find((item) => item._id === product._id)) {
+        handleRemoveFromCart(product);
+      } else {
+        onAddToCart(product);
+      }
+    }
+  };
+
+  const productTypes = products
+    ? Array.from(new Set(products.map((product) => product.component_type))).reverse()
+    : [];
+
+    const onAddToCart = async (product) => {
+      await handleAddToCart(product, cart, user, sitePostcode, setCart);
+    };
+  
+    const handleRemoveFromCart = (product) => {
+      setCart((prevCart) => prevCart.filter((item) => item._id !== product._id));
+    };
   
   return (
-    <form className="create" onSubmit={handleSubmit} z-index={1} >
-      <h1>Check for suppliers:</h1>
-      <h2>Step 1 - Enter your postcode:</h2>
-      <div className="input-button-container">
-        <input
-          type="text"
-          id="postcode"
-          onChange={handlePostcodeChange}
-          value={sitePostcode}
-          placeholder="e.g. SE10 8XJ"
-        />
-        <center>
-          <button type="submit">
-            {searching ? 'New Search' : 'Find Suppliers'}
-          </button>
-        </center>
-      </div>
-      {searching && cart.length > 0 &&
-        <div className="search-results-container">
-          <h3>Suppliers:</h3>
-          {cart.map((product, index) => {
-            console.log("Passing routeData to StockistCard:", routeData);
-            return (
-              <StockistCard
-                key={product._id + (routeData ? '_routeLoaded' : '')}
-                product={product}
-                index={index + 1}
-                sitePostcode={sitePostcode}
-                handleShowRoute={handleShowRoute}
-                routeData={routeData}
-                token={user.token}
-                handleRouteChange={handleRouteChange}
+    <>
+      <Button onClick={onOpen}>Check for suppliers</Button>
+      <Drawer isOpen={isOpen} placement="right" onClose={onClose}>
+        <DrawerOverlay />
+        <DrawerContent>
+          <DrawerCloseButton />
+          <DrawerHeader>Check for suppliers:</DrawerHeader>
+          <DrawerBody>
+            <VStack spacing={4}>
+              {/* Step 1 - Postcode input */}
+              <Text>Step 1 - Enter your postcode:</Text>
+              <Input
+                value={sitePostcode}
+                onChange={handlePostcodeChange}
+                placeholder="e.g. SE10 8XJ"
               />
-            );
-          })}
-        </div>
-      }
-    </form>
+              {error && (
+                <Text color="red.500">{error}</Text>
+              )}
+              {searching && cart.length > 0 && (
+                <Box>
+                  <Text>Suppliers:</Text>
+                  {cart.map((product, index) => (
+                    <StockistCard
+                      key={product._id + (routeData ? '_routeLoaded' : '')}
+                      product={product}
+                      index={index + 1}
+                      sitePostcode={sitePostcode}
+                      handleShowRoute={handleShowRoute}
+                      routeData={routeData}
+                      token={user.token}
+                      handleRouteChange={handleRouteChange}
+                    />
+                  ))}
+                </Box>
+              )}
+              {/* Step 2 - Product Selection */}
+              <Text fontSize="2xl" fontWeight="bold">Step 2 - Select products required:</Text>
+              {productTypes.map((type) => (
+                <Box key={type}>
+                  <Text fontSize="xl" mb={2}>{type}</Text>
+                  <VStack>
+                    {products.filter(product => product.component_type === type).map(product => (
+                      <Button
+                        key={product._id}
+                        onClick={() => handleProductClick(product)}
+                        colorScheme={cart.find(item => item._id === product._id) ? 'teal' : 'gray'}
+                        isDisabled={!isNewSearch}
+                      >
+                        {product.component_name}
+                      </Button>
+                    ))}
+                  </VStack>
+                </Box>
+              ))}
+            </VStack>
+          </DrawerBody>
+          <DrawerFooter>
+            <Button variant="outline" mr={3} onClick={onClose}>
+              Close
+            </Button>
+            <Button colorScheme="blue" onClick={handleSubmit}>
+              {searching ? 'New Search' : 'Find Suppliers'}
+            </Button>
+          </DrawerFooter>
+        </DrawerContent>
+      </Drawer>
+    </>
   );
 };
+
 
 export default ViableSupplierForm;
