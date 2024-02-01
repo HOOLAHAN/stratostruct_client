@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAuthContext } from "../hooks/useAuthContext";
 import StockistCard from './StockistCard';
 import { isValidPostcode } from '../functions/isValidPostcode';
@@ -32,6 +32,10 @@ const ViableSupplierForm = ({ sitePostcode, setSitePostcode, setRouteData, route
   const [hasValidPostcode, setHasValidPostcode] = useState(false);
   const [cart, setCart] = useState([]);
   const [error, setError] = useState('');
+
+  useEffect(() => {
+    onOpen();
+  }, [onOpen]);
 
   const handlePostcodeChange = (e) => {
     const newPostcode = e.target.value;
@@ -122,7 +126,13 @@ const ViableSupplierForm = ({ sitePostcode, setSitePostcode, setRouteData, route
   
   return (
     <>
-      <Button onClick={onOpen}>Check for suppliers</Button>
+      {!isOpen && (
+        <Center mb="4">
+          <Button bg="blue.500" color="white" onClick={onOpen}>
+            Check for suppliers
+          </Button>
+        </Center>
+      )}
       <Drawer isOpen={isOpen} placement="right" onClose={onClose} size="lg">
         <DrawerOverlay />
         <DrawerContent>
