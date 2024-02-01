@@ -2,15 +2,15 @@ import { useState } from "react";
 import { useAuthContext } from "../hooks/useAuthContext";
 import StockistCard from './StockistCard';
 import { isValidPostcode } from '../functions/isValidPostcode';
-import MapComponent from "./MapComponent";
+// import MapComponent from "./MapComponent";
 import { fetchRouteData } from "../functions/fetchRouteData";
 import { validateSupplierForm } from '../functions/validateSupplierForm';
 
-const ViableSupplierForm = ({ cart, sitePostcode, onNewSearch, updateIsNewSearch, updateHasValidPostcode, setSitePostcode, setError }) => {
+const ViableSupplierForm = ({ cart, sitePostcode, onNewSearch, updateIsNewSearch, updateHasValidPostcode, setSitePostcode, setError, setRouteData, routeData }) => {
   const { user } = useAuthContext();
   const [searching, setSearching] = useState(false);
-  const [routeData, setRouteData] = useState(null);
-  const [suppliersFetched, setSuppliersFetched] = useState(false);
+  // const [routeData, setRouteData] = useState(null);
+  // const [suppliersFetched, setSuppliersFetched] = useState(false);
 
   const handlePostcodeChange = (e) => {
     const newPostcode = e.target.value;
@@ -35,7 +35,7 @@ const ViableSupplierForm = ({ cart, sitePostcode, onNewSearch, updateIsNewSearch
     setError('');
     updateHasValidPostcode(true);
     setSearching(true);
-    setSuppliersFetched(true);
+    // setSuppliersFetched(true);
   }
 
   const handleNewSearch = () => {
@@ -66,7 +66,7 @@ const ViableSupplierForm = ({ cart, sitePostcode, onNewSearch, updateIsNewSearch
   };
   
   return (
-    <form className="create" onSubmit={handleSubmit}>
+    <form className="create" onSubmit={handleSubmit} z-index={1} >
       <h1>Check for suppliers:</h1>
       <h2>Step 1 - Enter your postcode:</h2>
       <div className="input-button-container">
@@ -83,14 +83,6 @@ const ViableSupplierForm = ({ cart, sitePostcode, onNewSearch, updateIsNewSearch
           </button>
         </center>
       </div>
-      {
-      suppliersFetched && (
-        <MapComponent
-          sitePostcode={sitePostcode}
-          token={user.token}
-          routeData={routeData}
-        />
-      )}
       {searching && cart.length > 0 &&
         <div className="search-results-container">
           <h3>Suppliers:</h3>

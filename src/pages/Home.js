@@ -5,6 +5,7 @@ import ViableSupplierForm from "../components/ViableSupplierForm";
 import { isValidPostcode } from "../functions/isValidPostcode";
 import { fetchProducts } from "../functions/fetchProducts";
 import { handleAddToCart } from "../functions/handleAddToCart"
+import MapComponent from "../components/MapComponent";
 
 const Home = () => {
   const { products, dispatchProducts } = useProductsContext();
@@ -14,6 +15,7 @@ const Home = () => {
   const [hasValidPostcode, setHasValidPostcode] = useState(false);
   const [sitePostcode, setSitePostcode] = useState('');
   const [error, setError] = useState('');
+  const [routeData, setRouteData] = useState(null);
 
   const updateIsNewSearch = (status) => {
     setIsNewSearch(status);
@@ -67,6 +69,11 @@ const Home = () => {
 
   return (
     <div className="home">
+      <MapComponent
+        sitePostcode={sitePostcode}
+        token={user ? user.token : ''}
+        routeData={routeData}
+      />
       <div>
         <ViableSupplierForm
           cart={cart}
@@ -78,6 +85,8 @@ const Home = () => {
           updateHasValidPostcode={updateHasValidPostcode}
           error={error}
           setError={setError}
+          setRouteData={setRouteData}
+          routeData={routeData}
         />
       </div>
       {error && <div className="error">{error}</div>}
