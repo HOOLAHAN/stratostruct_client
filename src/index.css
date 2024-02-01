@@ -326,3 +326,10 @@ form.signup, form.login {
   height: 100vh;
   z-index: -1; 
 }
+
+.marker {
+  display: block;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+}
