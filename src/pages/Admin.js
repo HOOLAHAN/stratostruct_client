@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useProductsContext } from "../hooks/useProductsContext";
 import { useAuthContext } from "../hooks/useAuthContext";
+import { Box, VStack, Heading, SimpleGrid } from '@chakra-ui/react';
 
 // components
 import ProductCard from "../components/ProductCard";
@@ -49,19 +50,15 @@ const Admin = () => {
   };
 
   return (
-    <div className="home">
+    <Box p={5}>
       <ProductForm />
-      <div>
-        <SupplierForm cart={cart} clearCart={clearCart} />
-      </div>
-      <br />
-      {productTypes.reverse().map((type) => (
-        <div className="product-container" key={type}>
-          <h4 style={{ display: "inline-block" }}>{type}</h4>
-          {products &&
-            products
-              .filter((product) => product.component_type === type)
-              .map((product) => (
+      <SupplierForm cart={cart} clearCart={clearCart} />
+      <VStack spacing={8} align="stretch">
+        {productTypes.map((type) => (
+          <Box key={type}>
+            <Heading size="md" my={4}>{type}</Heading>
+            <SimpleGrid columns={{ sm: 2, md: 3, lg: 4 }} spacing={5}>
+              {products.filter(product => product.component_type === type).map(product => (
                 <ProductCard
                   key={product._id}
                   product={product}
@@ -70,9 +67,11 @@ const Admin = () => {
                   cart={cart}
                 />
               ))}
-        </div>
-      ))}
-    </div>
+            </SimpleGrid>
+          </Box>
+        ))}
+      </VStack>
+    </Box>
   );
 };
 
