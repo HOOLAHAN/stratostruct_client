@@ -17,9 +17,11 @@ import {
   Button,
   useDisclosure,
   VStack,
-  HStack,
   Text,
-  Box
+  Box,
+  Wrap,
+  WrapItem,
+  Center
 } from '@chakra-ui/react';
 
 const ViableSupplierForm = ({ sitePostcode, setSitePostcode, setRouteData, routeData, products }) => {
@@ -129,7 +131,7 @@ const ViableSupplierForm = ({ sitePostcode, setSitePostcode, setRouteData, route
           <DrawerBody>
             <VStack spacing={4}>
               {/* Step 1 - Postcode input */}
-              <Text>Step 1 - Enter your postcode:</Text>
+              <Text fontSize="2xl" fontWeight="bold">Step 1 - Enter your postcode:</Text>
               <Input
                 value={sitePostcode}
                 onChange={handlePostcodeChange}
@@ -158,19 +160,21 @@ const ViableSupplierForm = ({ sitePostcode, setSitePostcode, setRouteData, route
               <Text fontSize="2xl" fontWeight="bold">Step 2 - Select products required:</Text>
               {productTypes.map((type) => (
                 <Box key={type}>
-                  <Text fontSize="xl" mb={2}>{type}</Text>
-                  <HStack>
+                  <Center><Text fontSize="xl" mb={2}>{type}:</Text></Center>
+                  <Wrap spacing="10px" justify="center">
                     {products.filter(product => product.component_type === type).map(product => (
-                      <Button
-                        key={product._id}
-                        onClick={() => handleProductClick(product)}
-                        colorScheme={cart.find(item => item._id === product._id) ? 'teal' : 'gray'}
-                        isDisabled={!isNewSearch}
-                      >
-                        {product.component_name}
-                      </Button>
+                      <WrapItem key={product._id}>
+                        <Button
+                          onClick={() => handleProductClick(product)}
+                          colorScheme={cart.find(item => item._id === product._id) ? 'teal' : 'gray'}
+                          isDisabled={!isNewSearch}
+                          size="sm"
+                        >
+                          {product.component_name}
+                        </Button>
+                      </WrapItem>
                     ))}
-                  </HStack>
+                  </Wrap>
                 </Box>
               ))}
             </VStack>
