@@ -1,7 +1,8 @@
 import React from 'react';
 import ViableSupplier from './ViableSupplier';
+import { Box, Text, Table, Thead, Tbody, Tr, Th, Button } from '@chakra-ui/react';
 
-const StockistCard = ({ product, index, handleShowRoute, routeData, handleRouteChange, sitePostcode}) => {
+const StockistCard = ({ product, index, handleShowRoute, routeData, handleRouteChange, sitePostcode }) => {
   const onShowRoute = (endPostcode) => {
     handleShowRoute(endPostcode, sitePostcode).then(newRouteData => {
       if (newRouteData) {
@@ -15,33 +16,38 @@ const StockistCard = ({ product, index, handleShowRoute, routeData, handleRouteC
       console.error('Error fetching route data:', error);
     });
   };
+
   return (
-    <div>
-      <p><strong>{index}. {product.component_name} ({product.component_type}):</strong></p>
+    <Box my={4}>
+      <Text fontWeight="bold">{index}. {product.component_name} ({product.component_type})</Text>
       {product.stockists && product.stockists.length > 0 ? (
-        <table>
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Postcode</th>
-              <th>Distance</th>
-              <th>Show Route</th>
-            </tr>
-          </thead>
-          <tbody>
+        <Table variant="simple" size="sm">
+          <Thead>
+            <Tr>
+              <Th>Name</Th>
+              <Th>Postcode</Th>
+              <Th>Distance</Th>
+              <Th>Show Route</Th>
+            </Tr>
+          </Thead>
+          <Tbody>
             {product.stockists.map((stockist, idx) => (
               <ViableSupplier
                 key={stockist._id}
                 index={idx + 1}
                 stockist={stockist}
                 distance={stockist.distance}
-                showRouteButton={<button onClick={() => onShowRoute(stockist.postcode)}>Show Route</button>}
+                showRouteButton={
+                  <Button size="sm" colorScheme="blue" onClick={() => onShowRoute(stockist.postcode)}>
+                    Show Route
+                  </Button>
+                }
               />
             ))}
-          </tbody>
-        </table>
-      ) : <p>No suppliers available</p>}
-    </div>
+          </Tbody>
+        </Table>
+      ) : <Text>No suppliers available</Text>}
+    </Box>
   );
 };
 
