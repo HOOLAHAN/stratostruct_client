@@ -6,6 +6,7 @@ import { isValidPostcode } from "../functions/isValidPostcode";
 import { fetchProducts } from "../functions/fetchProducts";
 import { handleAddToCart } from "../functions/handleAddToCart"
 import MapComponent from "../components/MapComponent";
+import { Box, VStack, Text, Button } from '@chakra-ui/react';
 
 const Home = () => {
   const { products, dispatchProducts } = useProductsContext();
@@ -68,13 +69,13 @@ const Home = () => {
     : [];
 
   return (
-    <div className="home">
+    <Box className="home" position="relative">
       <MapComponent
         sitePostcode={sitePostcode}
         token={user ? user.token : ''}
         routeData={routeData}
       />
-      <div>
+      <VStack spacing={4} p={5}>
         <ViableSupplierForm
           cart={cart}
           sitePostcode={sitePostcode}
@@ -88,36 +89,29 @@ const Home = () => {
           setRouteData={setRouteData}
           routeData={routeData}
         />
-      </div>
-      {error && <div className="error">{error}</div>}
-      <br />
-      <h2>Step 2 - Select products required:</h2>
-      {productTypes.map((type) => (
-        <div className="product-container" key={type}>
-          <h3>{type}</h3>
-          <br />
-          {products &&
-            products
-              .filter((product) => product.component_type === type)
-              .map((product) => (
-                <button
-                  disabled={!isNewSearch}
-                  className={`product-card ${cart.find((item) => item._id === product._id) ? 'selected' : ''}`}
-                  onClick={() => handleProductClick(product)}
+        {error && (
+          <Text color="red.500">{error}</Text>
+        )}
+        <Text fontSize="2xl" fontWeight="bold">Step 2 - Select products required:</Text>
+        {productTypes.map((type) => (
+          <Box key={type}>
+            <Text fontSize="xl" mb={2}>{type}</Text>
+            <VStack>
+              {products.filter(product => product.component_type === type).map(product => (
+                <Button
                   key={product._id}
-                  style={{ backgroundColor: cart.find((item) => item._id === product._id) ? '#DEFFF2' : 'transparent' }}
+                  onClick={() => handleProductClick(product)}
+                  colorScheme={cart.find(item => item._id === product._id) ? 'teal' : 'gray'}
+                  isDisabled={!isNewSearch}
                 >
-                  <center>
-                    <p style={{ display: 'inline-block', marginLeft: '5px' }}>
-                      <strong>{product.component_name}</strong>
-                    </p>
-                  </center>
-                  <br />
-                </button>
+                  {product.component_name}
+                </Button>
               ))}
-        </div>
-      ))}
-    </div>
+            </VStack>
+          </Box>
+        ))}
+      </VStack>
+    </Box>
   );
 }
 
