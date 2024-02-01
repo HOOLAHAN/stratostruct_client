@@ -12,6 +12,7 @@ const MapComponent = ({ routeData, sitePostcode, token }) => {
 
   // Initialize map only once
   useEffect(() => {
+    if (map.current) return;
     map.current = new mapboxgl.Map({
       container: mapContainer.current,
       style: 'mapbox://styles/mapbox/streets-v11',
