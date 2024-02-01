@@ -2,7 +2,7 @@ import React from 'react';
 import ViableSupplier from './ViableSupplier';
 import { Box, Text, Table, Thead, Tbody, Tr, Th, Button } from '@chakra-ui/react';
 
-const StockistCard = ({ product, index, handleShowRoute, routeData, handleRouteChange, sitePostcode }) => {
+const StockistCard = ({ product, index, handleShowRoute, handleRouteChange, sitePostcode }) => {
   const onShowRoute = (endPostcode) => {
     handleShowRoute(endPostcode, sitePostcode).then(newRouteData => {
       if (newRouteData) {

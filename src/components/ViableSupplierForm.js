@@ -148,7 +148,6 @@ const ViableSupplierForm = ({ sitePostcode, setSitePostcode, setRouteData, route
                       index={index + 1}
                       sitePostcode={sitePostcode}
                       handleShowRoute={handleShowRoute}
-                      routeData={routeData}
                       token={user.token}
                       handleRouteChange={handleRouteChange}
                     />
