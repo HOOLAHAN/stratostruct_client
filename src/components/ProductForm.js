@@ -1,6 +1,17 @@
 import { useState } from "react"
 import { useProductsContext } from "../hooks/useProductsContext.js"
 import { useAuthContext } from "../hooks/useAuthContext.js"
+import {
+  FormControl,
+  FormLabel,
+  Input,
+  Button,
+  VStack,
+  Text,
+  Select,
+  FormErrorMessage,
+  Box
+} from '@chakra-ui/react';
 
 const productTypes = [
   "Select Component Type",
@@ -78,45 +89,43 @@ const ProductForm = () => {
     }
   }
 
-  return (
-    <form className="create" onSubmit={handleSubmit}>
-      <h3>Add a Product</h3>
-      <label>Component Type:</label>
-      <select
-        onChange={(e) => setComponentType(e.target.value)}
-        value={component_type}
-        // className={emptyFields.includes('component_type') ? 'error' : ''}
-        className={emptyFields["component_name"] ? "error" : ""}
-        style={{
-          padding: '10px',
-          marginTop: '10px',
-          marginBottom: '20px',
-          width: '100%',
-          border: '1px solid #ddd',
-          borderRadius: '4px',
-          boxSizing: 'border-box',
-        }}
-      >
-        {productTypes.map((type, index) => (
-          <option key={index} value={type}>
-            {type}
-          </option>
-        ))}
-      </select>
-      <label>Component Name:</label>
-      <input
-        type="text"
-        onChange={(e) => setComponentName(e.target.value)}
-        value={component_name}
-        // className={emptyFields.includes('component_name') ? 'error' : ''}
-        className={emptyFields["component_name"] ? "error" : ""}
-      />
-      <button>Add Product</button>
-      {error && <div className="error">{error}</div>}
-    </form>
-  )
+  const isError = field => !!emptyFields[field];
 
-}
+  return (
+    <Box maxW="500px" mx="auto" p={5}>
+      <VStack as="form" onSubmit={handleSubmit} spacing={4}>
+        <Text fontSize="2xl">Add a Product</Text>
+        <FormControl isInvalid={isError('component_type')}>
+          <FormLabel>Component Type:</FormLabel>
+          <Select
+            placeholder="Select Component Type"
+            onChange={(e) => setComponentType(e.target.value)}
+            value={component_type}
+          >
+            {productTypes.map((type, index) => (
+              <option key={index} value={type === "Select Component Type" ? "" : type}>
+                {type}
+              </option>
+            ))}
+          </Select>
+          {isError('component_type') && <FormErrorMessage>Component type is required.</FormErrorMessage>}
+        </FormControl>
+        <FormControl isInvalid={isError('component_name')}>
+          <FormLabel>Component Name:</FormLabel>
+          <Input
+            type="text"
+            onChange={(e) => setComponentName(e.target.value)}
+            value={component_name}
+          />
+          {isError('component_name') && <FormErrorMessage>Component name is required.</FormErrorMessage>}
+        </FormControl>
+        <Button type="submit" colorScheme="blue" isLoading={false} loadingText="Submitting">
+          Add Product
+        </Button>
+        {error && <Text color="red.500">{error}</Text>}
+      </VStack>
+    </Box>
+  );
+};
 
 export default ProductForm;
-
