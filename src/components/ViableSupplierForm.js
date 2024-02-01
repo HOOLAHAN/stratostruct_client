@@ -21,7 +21,7 @@ import {
   Box
 } from '@chakra-ui/react';
 
-const ViableSupplierForm = ({ sitePostcode, onNewSearch, setSitePostcode, setRouteData, routeData, products }) => {
+const ViableSupplierForm = ({ sitePostcode, setSitePostcode, setRouteData, routeData, products }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { user } = useAuthContext();
   const [searching, setSearching] = useState(false);
@@ -56,10 +56,10 @@ const ViableSupplierForm = ({ sitePostcode, onNewSearch, setSitePostcode, setRou
   }
 
   const handleNewSearch = () => {
-    onNewSearch();
     updateIsNewSearch(true);
     setSearching(false);
     setError(null);
+    setCart([]);
   }
 
   const updateIsNewSearch = (status) => {
