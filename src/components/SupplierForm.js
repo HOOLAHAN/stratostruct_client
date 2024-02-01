@@ -1,21 +1,26 @@
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import { useSuppliersContext } from "../hooks/useSuppliersContext.js";
 import { useAuthContext } from "../hooks/useAuthContext.js"
-
+import {
+  FormControl,
+  FormLabel,
+  Input,
+  Button,
+  VStack,
+  Text,
+  List,
+  ListItem,
+  Box,
+  FormErrorMessage
+} from '@chakra-ui/react';
 
 const SupplierForm = ({ cart, clearCart }) => {
   const { dispatchSuppliers } = useSuppliersContext();
   const { user } = useAuthContext();
-
   const [name, setName] = useState('');
   const [postcode, setPostcode] = useState('');
-  const [products, setProducts] = useState([]);
   const [error, setError] = useState(null);
   const [emptyFields, setEmptyFields] = useState([]);
-
-  useEffect(() => {
-    setProducts(cart);
-  }, [cart]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -50,7 +55,6 @@ const SupplierForm = ({ cart, clearCart }) => {
       setError(null);
       setName('');
       setPostcode('');
-      setProducts([]);
       setEmptyFields([]);
       cart = [];
       console.log('New Supplier Added', json);
@@ -59,38 +63,44 @@ const SupplierForm = ({ cart, clearCart }) => {
     }
   };
 
+  const isFieldEmpty = (fieldName) => emptyFields.includes(fieldName);
+
   return (
-    <form className="create" onSubmit={handleSubmit}>
-      <h3>Add a supplier</h3>
-      <label>Name:</label>
-      <input
-        type="text"
-        onChange={(e) => setName(e.target.value)}
-        value={name}
-        className={emptyFields.includes('name') ? 'error' : ''}
-      />
-      <label>Postcode:</label>
-      <input
-        type="text"
-        onChange={(e) => setPostcode(e.target.value)}
-        value={postcode}
-        className={emptyFields.includes('postcode') ? 'error' : ''}
-      />
-      <label>Products:</label>
-      <div className="cart">
-        <ul>
-          {cart && cart.map((product) => (
-            <li key={product._id}>
+    <Box as="form" onSubmit={handleSubmit} p={4} borderWidth="1px" borderRadius="lg" boxShadow="sm">
+      <VStack spacing={4} align="stretch">
+        <Text fontSize="xl">Add a Supplier</Text>
+        <FormControl isInvalid={isFieldEmpty('name')}>
+          <FormLabel>Name:</FormLabel>
+          <Input
+            type="text"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+          />
+          {isFieldEmpty('name') && <FormErrorMessage>Name is required.</FormErrorMessage>}
+        </FormControl>
+        <FormControl isInvalid={isFieldEmpty('postcode')}>
+          <FormLabel>Postcode:</FormLabel>
+          <Input
+            type="text"
+            value={postcode}
+            onChange={(e) => setPostcode(e.target.value)}
+          />
+          {isFieldEmpty('postcode') && <FormErrorMessage>Postcode is required.</FormErrorMessage>}
+        </FormControl>
+        <Text>Products:</Text>
+        <List spacing={2}>
+          {cart.map((product) => (
+            <ListItem key={product._id}>
               {product.component_name} ({product.component_type})
-            </li>
+            </ListItem>
           ))}
-        </ul>
-      </div>
-      <input type="hidden" value={JSON.stringify(products)} />
-      <button>Add Supplier</button>
-      {error && <div className="error">{error}</div>}
-      <h3>Add products from the below list:</h3>
-    </form>
+        </List>
+        <Button colorScheme="blue" type="submit" isLoading={false}>
+          Add Supplier
+        </Button>
+        {error && <Text color="red.500">{error}</Text>}
+      </VStack>
+    </Box>
   );
 };
 
