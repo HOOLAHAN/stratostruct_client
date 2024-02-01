@@ -17,6 +17,7 @@ import {
   Button,
   useDisclosure,
   VStack,
+  HStack,
   Text,
   Box
 } from '@chakra-ui/react';
@@ -120,7 +121,7 @@ const ViableSupplierForm = ({ sitePostcode, setSitePostcode, setRouteData, route
   return (
     <>
       <Button onClick={onOpen}>Check for suppliers</Button>
-      <Drawer isOpen={isOpen} placement="right" onClose={onClose}>
+      <Drawer isOpen={isOpen} placement="right" onClose={onClose} size="lg">
         <DrawerOverlay />
         <DrawerContent>
           <DrawerCloseButton />
@@ -159,7 +160,7 @@ const ViableSupplierForm = ({ sitePostcode, setSitePostcode, setRouteData, route
               {productTypes.map((type) => (
                 <Box key={type}>
                   <Text fontSize="xl" mb={2}>{type}</Text>
-                  <VStack>
+                  <HStack>
                     {products.filter(product => product.component_type === type).map(product => (
                       <Button
                         key={product._id}
@@ -170,7 +171,7 @@ const ViableSupplierForm = ({ sitePostcode, setSitePostcode, setRouteData, route
                         {product.component_name}
                       </Button>
                     ))}
-                  </VStack>
+                  </HStack>
                 </Box>
               ))}
             </VStack>
