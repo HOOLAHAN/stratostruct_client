@@ -24,6 +24,7 @@ jobs:
       - name: Build React app
         env:
             REACT_APP_BACKEND_API_URL: ${{ secrets.REACT_APP_BACKEND_API_URL }}
+            REACT_APP_MAPBOX_API_KEY: ${{ secrets.REACT_APP_MAPBOX_API_KEY }}
         run: |
             echo $REACT_APP_BACKEND_API_URL
             npm run build
