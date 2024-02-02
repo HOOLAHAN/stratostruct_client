@@ -137,7 +137,7 @@ const ViableSupplierForm = ({ sitePostcode, setSitePostcode, setRouteData, route
         <DrawerOverlay />
         <DrawerContent>
           <DrawerCloseButton />
-          <DrawerHeader>Check for suppliers:</DrawerHeader>
+          <DrawerHeader bg="blue.500" color="white" minH={48.77}>Check for suppliers:</DrawerHeader>
           <DrawerBody>
             <VStack spacing={4}>
               {/* Step 1 - Postcode input */}
@@ -202,6 +202,5 @@ const ViableSupplierForm = ({ sitePostcode, setSitePostcode, setRouteData, route
     </>
   );
 };
-
 
 export default ViableSupplierForm;
