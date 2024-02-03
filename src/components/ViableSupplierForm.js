@@ -2,28 +2,16 @@ import {
   useState
 } from "react";
 import { useAuthContext } from "../hooks/useAuthContext";
-// import StockistCard from './StockistCard';
+import ProductSelectionDrawer from './ProductSelectionDrawer';
 import { isValidPostcode } from '../functions/isValidPostcode';
 import { fetchRouteData } from "../functions/fetchRouteData";
 import { validateSupplierForm } from '../functions/validateSupplierForm';
 import { handleAddToCart } from "../functions/handleAddToCart"
 import SearchResultsModal from "./SearchResultsModal";
 import {
-  Drawer,
-  DrawerBody,
-  DrawerFooter,
-  DrawerHeader,
-  DrawerOverlay,
-  DrawerContent,
-  DrawerCloseButton,
   Input,
   Button,
   useDisclosure,
-  VStack,
-  Text,
-  Box,
-  Wrap,
-  WrapItem,
   Center,
   FormControl,
   FormErrorMessage,
@@ -134,17 +122,13 @@ const ViableSupplierForm = ({ sitePostcode, setSitePostcode, setRouteData, route
     }
   };
 
-  const productTypes = products
-    ? Array.from(new Set(products.map((product) => product.component_type))).reverse()
-    : [];
+  const onAddToCart = async (product) => {
+    await handleAddToCart(product, cart, user, sitePostcode, setCart);
+  };
 
-    const onAddToCart = async (product) => {
-      await handleAddToCart(product, cart, user, sitePostcode, setCart);
-    };
-  
-    const handleRemoveFromCart = (product) => {
-      setCart((prevCart) => prevCart.filter((item) => item._id !== product._id));
-    };
+  const handleRemoveFromCart = (product) => {
+    setCart((prevCart) => prevCart.filter((item) => item._id !== product._id));
+  };
   
   return (
     <>
@@ -176,44 +160,16 @@ const ViableSupplierForm = ({ sitePostcode, setSitePostcode, setRouteData, route
         </FormControl>
       </Center>
       {/* Step 2 - Product Selection */}
-      <Drawer isOpen={isOpen} placement="right" onClose={onClose} size="lg">
-        <DrawerOverlay />
-        <DrawerContent>
-          <DrawerCloseButton />
-          <DrawerHeader bg="blue.500" color="white" minH={48.77}>Select Components:</DrawerHeader>
-          <DrawerBody>
-            <VStack spacing={4}>
-              {productTypes.map((type) => (
-                <Box key={type}>
-                  <Center><Text fontSize="xl" mb={2}>{type}:</Text></Center>
-                  <Wrap spacing="10px" justify="center">
-                    {products.filter(product => product.component_type === type).map(product => (
-                      <WrapItem key={product._id}>
-                        <Button
-                          onClick={() => handleProductClick(product)}
-                          colorScheme={cart.find(item => item._id === product._id) ? 'teal' : 'gray'}
-                          isDisabled={!isNewSearch}
-                          size="sm"
-                        >
-                          {product.component_name}
-                        </Button>
-                      </WrapItem>
-                    ))}
-                  </Wrap>
-                </Box>
-              ))}
-            </VStack>
-          </DrawerBody>
-          <DrawerFooter>
-            <Button variant="outline" mr={3} onClick={onClose}>
-              Close
-            </Button>
-            <Button colorScheme="blue" onClick={handleSubmit}>
-              {searching ? 'New Search' : 'Find Suppliers'}
-            </Button>
-          </DrawerFooter>
-        </DrawerContent>
-      </Drawer>
+      {/* Use the ProductSelectionDrawer component */}
+      <ProductSelectionDrawer
+        isOpen={isOpen}
+        onClose={onClose}
+        products={products}
+        cart={cart}
+        handleProductClick={handleProductClick}
+        handleSubmit={handleSubmit}
+        searching={searching}
+      />
       {/* Use the SearchResultsModal component */}
       <SearchResultsModal
         isOpen={isModalOpen}
