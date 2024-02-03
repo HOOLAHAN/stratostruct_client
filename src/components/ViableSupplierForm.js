@@ -2,11 +2,12 @@ import {
   useState
 } from "react";
 import { useAuthContext } from "../hooks/useAuthContext";
-import StockistCard from './StockistCard';
+// import StockistCard from './StockistCard';
 import { isValidPostcode } from '../functions/isValidPostcode';
 import { fetchRouteData } from "../functions/fetchRouteData";
 import { validateSupplierForm } from '../functions/validateSupplierForm';
 import { handleAddToCart } from "../functions/handleAddToCart"
+import SearchResultsModal from "./SearchResultsModal";
 import {
   Drawer,
   DrawerBody,
@@ -39,6 +40,7 @@ const ViableSupplierForm = ({ sitePostcode, setSitePostcode, setRouteData, route
   const [cart, setCart] = useState([]);
   const [error, setError] = useState('');
 
+  const { isOpen: isModalOpen, onOpen: onModalOpen, onClose: onModalClose } = useDisclosure();
 
   const handlePostcodeChange = (e) => {
     const newPostcode = e.target.value;
@@ -79,6 +81,7 @@ const ViableSupplierForm = ({ sitePostcode, setSitePostcode, setRouteData, route
     updateHasValidPostcode(true);
     setSearching(true);
     onOpen();
+    onModalOpen();
   };
 
   const handleNewSearch = () => {
@@ -199,22 +202,6 @@ const ViableSupplierForm = ({ sitePostcode, setSitePostcode, setRouteData, route
                   </Wrap>
                 </Box>
               ))}
-              {searching && cart.length > 0 && (
-                <Box>
-                  <Text>Suppliers:</Text>
-                  {cart.map((product, index) => (
-                    <StockistCard
-                      key={product._id + (routeData ? '_routeLoaded' : '')}
-                      product={product}
-                      index={index + 1}
-                      sitePostcode={sitePostcode}
-                      handleShowRoute={handleShowRoute}
-                      token={user.token}
-                      handleRouteChange={handleRouteChange}
-                    />
-                  ))}
-                </Box>
-              )}
             </VStack>
           </DrawerBody>
           <DrawerFooter>
@@ -227,6 +214,16 @@ const ViableSupplierForm = ({ sitePostcode, setSitePostcode, setRouteData, route
           </DrawerFooter>
         </DrawerContent>
       </Drawer>
+      {/* Use the SearchResultsModal component */}
+      <SearchResultsModal
+        isOpen={isModalOpen}
+        onClose={onModalClose}
+        cart={cart}
+        sitePostcode={sitePostcode}
+        handleShowRoute={handleShowRoute}
+        token={user.token}
+        handleRouteChange={handleRouteChange}
+      />
     </>
   );
 };
