@@ -23,6 +23,13 @@ const MapComponent = ({ routeData, sitePostcode, token }) => {
   useEffect(() => {
     const updateMap = async () => {
       if (!routeData || !routeData.coordinates || routeData.coordinates.length < 2) {
+        if (map.current.getSource('route')) {
+          map.current.removeLayer('route');
+          map.current.removeSource('route');
+        }
+        // Remove existing markers
+        document.querySelectorAll('.mapboxgl-marker').forEach(marker => marker.remove());
+  
         // Attempt to set center if only sitePostcode is provided
         if (sitePostcode) {
           const centerCoordinates = await getCoordinatesFromPostcode(sitePostcode, token);
