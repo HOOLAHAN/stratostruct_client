@@ -19,7 +19,7 @@ import {
   InputRightElement
 } from '@chakra-ui/react';
 
-const ViableSupplierForm = ({ sitePostcode, setSitePostcode, setRouteData, routeData, products }) => {
+const ViableSupplierForm = ({ sitePostcode, setSitePostcode, setRouteData, products }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { user } = useAuthContext();
   const [searching, setSearching] = useState(false);
@@ -68,7 +68,7 @@ const ViableSupplierForm = ({ sitePostcode, setSitePostcode, setRouteData, route
     setError('');
     updateHasValidPostcode(true);
     setSearching(true);
-    onOpen();
+    onClose();
     onModalOpen();
   };
 
@@ -156,7 +156,7 @@ const ViableSupplierForm = ({ sitePostcode, setSitePostcode, setRouteData, route
               </Button>
             </InputRightElement>
           </InputGroup>
-          <FormErrorMessage bg="white">{error}</FormErrorMessage>
+          <FormErrorMessage p={2} bg="white" borderRadius="md">{error}</FormErrorMessage>
         </FormControl>
       </Center>
       {/* Step 2 - Product Selection */}
