@@ -77,6 +77,7 @@ const ViableSupplierForm = ({ sitePostcode, setSitePostcode, setRouteData, produ
     setSearching(false);
     setError(null);
     setCart([]);
+    setRouteData(null);
   }
 
   const updateIsNewSearch = (status) => {
