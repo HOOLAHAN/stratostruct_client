@@ -27,6 +27,7 @@ const SearchResultsModal = ({ isOpen, onClose, cart, sitePostcode, handleShowRou
               handleShowRoute={handleShowRoute}
               token={token}
               handleRouteChange={handleRouteChange}
+              onClose={onClose}
             />
           ))}
         </ModalBody>

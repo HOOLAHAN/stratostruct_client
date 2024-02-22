@@ -2,11 +2,12 @@ import React from 'react';
 import ViableSupplier from './ViableSupplier';
 import { Box, Text, Table, Thead, Tbody, Tr, Th, Button } from '@chakra-ui/react';
 
-const StockistCard = ({ product, index, handleShowRoute, handleRouteChange, sitePostcode }) => {
+const StockistCard = ({ product, index, handleShowRoute, handleRouteChange, sitePostcode, onClose }) => {
   const onShowRoute = (endPostcode) => {
     handleShowRoute(endPostcode, sitePostcode).then(newRouteData => {
       if (newRouteData) {
         handleRouteChange(newRouteData);
+        onClose();
       } else {
         // TODO: Handle the case where no new route data is returned
         console.log('No route data returned from handleShowRoute');
