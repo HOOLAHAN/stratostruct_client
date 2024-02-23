@@ -40,7 +40,7 @@ const MapComponent = ({ routeData, sitePostcode, token }) => {
 
       const bounds = new mapboxgl.LngLatBounds();
       routeData.coordinates.forEach(coord => bounds.extend(coord));
-      map.current.fitBounds(bounds, { padding: 20 });
+      map.current.fitBounds(bounds, { padding: { top: 160, bottom: 50, left: 50, right: 50 } });
 
       // Check and update or set data for 'route'
       const source = map.current.getSource('route');
