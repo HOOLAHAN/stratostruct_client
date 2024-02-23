@@ -12,11 +12,18 @@ import StockistCard from './StockistCard';
 
 const SearchResultsModal = ({ isOpen, onClose, cart, sitePostcode, handleShowRoute, token, handleRouteChange }) => {
   return (
-    <Modal isOpen={isOpen} onClose={onClose} isCentered>
+    <Modal isOpen={isOpen} onClose={onClose} isCentered >
       <ModalOverlay />
       <ModalContent>
         <ModalCloseButton />
-        <ModalHeader>Suppliers:</ModalHeader>
+        <ModalHeader   
+          borderTopLeftRadius="md" 
+          borderTopRightRadius="md" 
+          bg="blue.500" 
+          color="white"
+        >
+          Suppliers:
+        </ModalHeader>
         <ModalBody>
           {cart.map((product, index) => (
             <StockistCard
