@@ -15,6 +15,7 @@ import {
   Center,
   FormControl,
   FormErrorMessage,
+  HStack,
   InputGroup,
   InputRightElement
 } from '@chakra-ui/react';
@@ -27,9 +28,19 @@ const ViableSupplierForm = ({ sitePostcode, setSitePostcode, setRouteData, produ
   const [hasValidPostcode, setHasValidPostcode] = useState(false);
   const [cart, setCart] = useState([]);
   const [error, setError] = useState('');
-
+  const [modalClosed, setModalClosed] = useState(false);
+  const [hasResults, setHasResults] = useState(false);
   const { isOpen: isModalOpen, onOpen: onModalOpen, onClose: onModalClose } = useDisclosure();
 
+  const handleModalClose = () => {
+    onModalClose();
+    setModalClosed(true);
+  };
+  
+  const handleShowSuppliers = () => {
+    onModalOpen()
+  };
+  
   const handlePostcodeChange = (e) => {
     const newPostcode = e.target.value;
     setSitePostcode(newPostcode);
@@ -70,6 +81,7 @@ const ViableSupplierForm = ({ sitePostcode, setSitePostcode, setRouteData, produ
     setSearching(true);
     onClose();
     onModalOpen();
+    setHasResults(true)
   };
 
   const handleNewSearch = () => {
@@ -78,6 +90,8 @@ const ViableSupplierForm = ({ sitePostcode, setSitePostcode, setRouteData, produ
     setError(null);
     setCart([]);
     setRouteData(null);
+    setModalClosed(false);
+    setHasResults(false);
   }
 
   const updateIsNewSearch = (status) => {
@@ -102,7 +116,6 @@ const ViableSupplierForm = ({ sitePostcode, setSitePostcode, setRouteData, produ
   const handleRouteChange = (newRouteData) => {
     if (newRouteData) {
       setRouteData(newRouteData);
-      console.log('Route data updated with handleRouteChange');
     } else {
       // TODO: handle the case where newRouteData is null or undefined
     }
@@ -136,6 +149,7 @@ const ViableSupplierForm = ({ sitePostcode, setSitePostcode, setRouteData, produ
       {/* Step 1 - Postcode input */}
       <Center mb="4">
         <FormControl isInvalid={error}>
+          <HStack>
           <InputGroup>
             <Input
               id="postcode"
@@ -157,11 +171,14 @@ const ViableSupplierForm = ({ sitePostcode, setSitePostcode, setRouteData, produ
               </Button>
             </InputRightElement>
           </InputGroup>
+          {modalClosed && hasResults && (
+            <Button mt={-2.5} px={8} colorScheme="blue" onClick={handleShowSuppliers}>Suppliers List</Button>
+          )}
+          </HStack>
           <FormErrorMessage p={2} bg="white" borderRadius="md">{error}</FormErrorMessage>
         </FormControl>
       </Center>
       {/* Step 2 - Product Selection */}
-      {/* Use the ProductSelectionDrawer component */}
       <ProductSelectionDrawer
         isOpen={isOpen}
         onClose={onClose}
@@ -171,10 +188,9 @@ const ViableSupplierForm = ({ sitePostcode, setSitePostcode, setRouteData, produ
         handleSubmit={handleSubmit}
         searching={searching}
       />
-      {/* Use the SearchResultsModal component */}
       <SearchResultsModal
         isOpen={isModalOpen}
-        onClose={onModalClose}
+        onClose={handleModalClose}
         cart={cart}
         sitePostcode={sitePostcode}
         handleShowRoute={handleShowRoute}
