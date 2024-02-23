@@ -1,17 +1,29 @@
 import { isTokenExpired } from '../../src/functions/isTokenExpired';
 
+// Helper function to create a base64 encoded string compatible with both Node.js and browser
+function base64Encode(obj) {
+  const encodedJson = JSON.stringify(obj);
+  if (typeof window !== 'undefined' && 'btoa' in window) {
+    return btoa(encodedJson).replace(/=+$/, ''); // Browser environment
+  } else {
+    return Buffer.from(encodedJson).toString('base64').replace(/=+$/, ''); // Node.js environment
+  }
+}
+
 describe('isTokenExpired', () => {
   it('returns true for an expired token', () => {
-    // Mock an expired token
-    const payload = { exp: Math.floor(Date.now() / 1000) - 3600 }; // Past expiration
-    const expiredToken = `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.${Buffer.from(JSON.stringify(payload)).toString('base64')}.signature`;
+    const header = base64Encode({ alg: "HS256", typ: "JWT" });
+    const payload = base64Encode({ exp: Math.floor(Date.now() / 1000) - 3600 }); // Expired one hour ago
+    const expiredToken = `${header}.${payload}.signature`;
+
     expect(isTokenExpired(expiredToken)).toBeTruthy();
   });
 
   it('returns false for a non-expired token', () => {
-    // Mock a valid, non-expired token
-    const payload = { exp: Math.floor(Date.now() / 1000) + 3600 }; // Future expiration
-    const nonExpiredToken = `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.${Buffer.from(JSON.stringify(payload)).toString('base64')}.signature`;
+    const header = base64Encode({ alg: "HS256", typ: "JWT" });
+    const payload = base64Encode({ exp: Math.floor(Date.now() / 1000) + 3600 }); // Expires in one hour
+    const nonExpiredToken = `${header}.${payload}.signature`;
+
     expect(isTokenExpired(nonExpiredToken)).toBeFalsy();
   });
 
@@ -19,5 +31,5 @@ describe('isTokenExpired', () => {
     const invalidToken = 'not.a.real.token';
     expect(() => isTokenExpired(invalidToken)).toThrow('Invalid token');
   });
-  
+    
 });
