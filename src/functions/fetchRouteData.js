@@ -1,6 +1,4 @@
 export const fetchRouteData = async (startPostcode, endPostcode, token) => {
-  console.log("handleShowRoute called with endPostcode:", endPostcode);
-  console.log("handleShowRoute called with startPostcode:", endPostcode);
 
   try {
     const url = process.env.REACT_APP_BACKEND_API_URL + `/api/mapbox/getRoute`;
@@ -15,7 +13,6 @@ export const fetchRouteData = async (startPostcode, endPostcode, token) => {
 
     const data = await response.json();
     if (response.ok) {
-      console.log("Route Data set:", data.routeData);
       return data.routeData;
     } else {
       console.error('Failed to fetch route:', data);

@@ -1,30 +1,26 @@
-import { useState, useEffect } from "react";
+import { 
+  useState
+} from "react";
 import { useAuthContext } from "../hooks/useAuthContext";
-import StockistCard from './StockistCard';
+import ProductSelectionDrawer from './ProductSelectionDrawer';
 import { isValidPostcode } from '../functions/isValidPostcode';
 import { fetchRouteData } from "../functions/fetchRouteData";
 import { validateSupplierForm } from '../functions/validateSupplierForm';
 import { handleAddToCart } from "../functions/handleAddToCart"
+import SearchResultsModal from "./SearchResultsModal";
 import {
-  Drawer,
-  DrawerBody,
-  DrawerFooter,
-  DrawerHeader,
-  DrawerOverlay,
-  DrawerContent,
-  DrawerCloseButton,
   Input,
   Button,
   useDisclosure,
-  VStack,
-  Text,
-  Box,
-  Wrap,
-  WrapItem,
-  Center
+  Center,
+  FormControl,
+  FormErrorMessage,
+  HStack,
+  InputGroup,
+  InputRightElement
 } from '@chakra-ui/react';
 
-const ViableSupplierForm = ({ sitePostcode, setSitePostcode, setRouteData, routeData, products }) => {
+const ViableSupplierForm = ({ sitePostcode, setSitePostcode, setRouteData, products }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { user } = useAuthContext();
   const [searching, setSearching] = useState(false);
@@ -32,19 +28,42 @@ const ViableSupplierForm = ({ sitePostcode, setSitePostcode, setRouteData, route
   const [hasValidPostcode, setHasValidPostcode] = useState(false);
   const [cart, setCart] = useState([]);
   const [error, setError] = useState('');
+  const [modalClosed, setModalClosed] = useState(false);
+  const [hasResults, setHasResults] = useState(false);
+  const { isOpen: isModalOpen, onOpen: onModalOpen, onClose: onModalClose } = useDisclosure();
 
-  useEffect(() => {
-    onOpen();
-  }, [onOpen]);
-
+  const handleModalClose = () => {
+    onModalClose();
+    setModalClosed(true);
+  };
+  
+  const handleShowSuppliers = () => {
+    onModalOpen()
+  };
+  
   const handlePostcodeChange = (e) => {
     const newPostcode = e.target.value;
     setSitePostcode(newPostcode);
-    updateHasValidPostcode(isValidPostcode(newPostcode));
-  }
+    setError(''); // Clear error message when user modifies postcode
+    setHasValidPostcode(isValidPostcode(newPostcode));
+  };
+
+  const validateAndOpenDrawer = () => {
+    if (isValidPostcode(sitePostcode)) {
+      setError(''); 
+      onOpen();
+    } else {
+      setError('Please enter a valid postcode.');
+    }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (!hasValidPostcode) {
+      setError('Please enter a valid postcode.');
+      return;
+    }
 
     if (searching) {
       handleNewSearch();
@@ -60,13 +79,19 @@ const ViableSupplierForm = ({ sitePostcode, setSitePostcode, setRouteData, route
     setError('');
     updateHasValidPostcode(true);
     setSearching(true);
-  }
+    onClose();
+    onModalOpen();
+    setHasResults(true)
+  };
 
   const handleNewSearch = () => {
     updateIsNewSearch(true);
     setSearching(false);
     setError(null);
     setCart([]);
+    setRouteData(null);
+    setModalClosed(false);
+    setHasResults(false);
   }
 
   const updateIsNewSearch = (status) => {
@@ -91,7 +116,6 @@ const ViableSupplierForm = ({ sitePostcode, setSitePostcode, setRouteData, route
   const handleRouteChange = (newRouteData) => {
     if (newRouteData) {
       setRouteData(newRouteData);
-      console.log('Route data updated with handleRouteChange');
     } else {
       // TODO: handle the case where newRouteData is null or undefined
     }
@@ -112,96 +136,69 @@ const ViableSupplierForm = ({ sitePostcode, setSitePostcode, setRouteData, route
     }
   };
 
-  const productTypes = products
-    ? Array.from(new Set(products.map((product) => product.component_type))).reverse()
-    : [];
+  const onAddToCart = async (product) => {
+    await handleAddToCart(product, cart, user, sitePostcode, setCart);
+  };
 
-    const onAddToCart = async (product) => {
-      await handleAddToCart(product, cart, user, sitePostcode, setCart);
-    };
-  
-    const handleRemoveFromCart = (product) => {
-      setCart((prevCart) => prevCart.filter((item) => item._id !== product._id));
-    };
+  const handleRemoveFromCart = (product) => {
+    setCart((prevCart) => prevCart.filter((item) => item._id !== product._id));
+  };
   
   return (
     <>
-      {!isOpen && (
-        <Center mb="4">
-          <Button bg="blue.500" color="white" onClick={onOpen}>
-            Check for suppliers
-          </Button>
-        </Center>
-      )}
-      <Drawer isOpen={isOpen} placement="right" onClose={onClose} size="lg">
-        <DrawerOverlay />
-        <DrawerContent>
-          <DrawerCloseButton />
-          <DrawerHeader>Check for suppliers:</DrawerHeader>
-          <DrawerBody>
-            <VStack spacing={4}>
-              {/* Step 1 - Postcode input */}
-              <Text fontSize="2xl" fontWeight="bold">Step 1 - Enter your postcode:</Text>
-              <Input
-                value={sitePostcode}
-                onChange={handlePostcodeChange}
-                placeholder="e.g. SE10 8XJ"
-              />
-              {error && (
-                <Text color="red.500">{error}</Text>
-              )}
-              {searching && cart.length > 0 && (
-                <Box>
-                  <Text>Suppliers:</Text>
-                  {cart.map((product, index) => (
-                    <StockistCard
-                      key={product._id + (routeData ? '_routeLoaded' : '')}
-                      product={product}
-                      index={index + 1}
-                      sitePostcode={sitePostcode}
-                      handleShowRoute={handleShowRoute}
-                      token={user.token}
-                      handleRouteChange={handleRouteChange}
-                    />
-                  ))}
-                </Box>
-              )}
-              {/* Step 2 - Product Selection */}
-              <Text fontSize="2xl" fontWeight="bold">Step 2 - Select products required:</Text>
-              {productTypes.map((type) => (
-                <Box key={type}>
-                  <Center><Text fontSize="xl" mb={2}>{type}:</Text></Center>
-                  <Wrap spacing="10px" justify="center">
-                    {products.filter(product => product.component_type === type).map(product => (
-                      <WrapItem key={product._id}>
-                        <Button
-                          onClick={() => handleProductClick(product)}
-                          colorScheme={cart.find(item => item._id === product._id) ? 'teal' : 'gray'}
-                          isDisabled={!isNewSearch}
-                          size="sm"
-                        >
-                          {product.component_name}
-                        </Button>
-                      </WrapItem>
-                    ))}
-                  </Wrap>
-                </Box>
-              ))}
-            </VStack>
-          </DrawerBody>
-          <DrawerFooter>
-            <Button variant="outline" mr={3} onClick={onClose}>
-              Close
-            </Button>
-            <Button colorScheme="blue" onClick={handleSubmit}>
-              {searching ? 'New Search' : 'Find Suppliers'}
-            </Button>
-          </DrawerFooter>
-        </DrawerContent>
-      </Drawer>
+      {/* Step 1 - Postcode input */}
+      <Center mb="4">
+        <FormControl isInvalid={error}>
+          <HStack>
+          <InputGroup>
+            <Input
+              id="postcode"
+              value={sitePostcode}
+              onChange={handlePostcodeChange}
+              placeholder="Enter Postcode"
+              bg="white"
+              borderColor={error ? 'red.500' : 'gray.200'}
+            />
+            <InputRightElement>
+              <Button 
+              h="100%" 
+              size="sm" 
+              onClick={validateAndOpenDrawer} 
+              colorScheme="blue" 
+              mt={5}
+              >
+                Go
+              </Button>
+            </InputRightElement>
+          </InputGroup>
+          {modalClosed && hasResults && (
+            <Button mt={-2.5} px={8} colorScheme="blue" onClick={handleShowSuppliers}>Suppliers List</Button>
+          )}
+          </HStack>
+          <FormErrorMessage p={2} bg="white" borderRadius="md">{error}</FormErrorMessage>
+        </FormControl>
+      </Center>
+      {/* Step 2 - Product Selection */}
+      <ProductSelectionDrawer
+        isOpen={isOpen}
+        onClose={onClose}
+        products={products}
+        cart={cart}
+        handleProductClick={handleProductClick}
+        handleSubmit={handleSubmit}
+        searching={searching}
+      />
+      <SearchResultsModal
+        isOpen={isModalOpen}
+        onClose={handleModalClose}
+        cart={cart}
+        sitePostcode={sitePostcode}
+        handleShowRoute={handleShowRoute}
+        token={user.token}
+        handleRouteChange={handleRouteChange}
+      />
     </>
   );
 };
-
 
 export default ViableSupplierForm;
