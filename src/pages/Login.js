@@ -23,44 +23,42 @@ const Login = () => {
   };
 
   return (
-    <Box display="flex" justifyContent="center" alignItems="center" height="100vh">
-      <Box width="full" maxWidth="400px" p={5} borderWidth="1px" borderRadius="lg" overflow="hidden">
-        <form onSubmit={handleSubmit}>
-          <VStack spacing={4} align="stretch">
-            <Text fontSize="2xl" textAlign="center">Log in</Text>
-            <FormControl id="email">
-              <FormLabel>Email:</FormLabel>
-              <Input
-                type="email"
-                onChange={(e) => setEmail(e.target.value)}
-                value={email}
-              />
-            </FormControl>
-            <FormControl id="password">
-              <FormLabel>Password:</FormLabel>
-              <Input
-                type="password"
-                onChange={(e) => setPassword(e.target.value)}
-                value={password}
-              />
-            </FormControl>
-            <Button
-              colorScheme="blue"
-              isLoading={isLoading}
-              type="submit"
-              width="full"
-            >
-              Login
-            </Button>
-            {error && (
-              <Alert status="error">
-                <AlertIcon />
-                {error}
-              </Alert>
-            )}
-          </VStack>
-        </form>
-      </Box>
+    <Box maxW="400px" mx="auto" mt="5">
+      <form onSubmit={handleSubmit}>
+        <VStack spacing={4} align="stretch">
+          <Text fontSize="2xl" textAlign="center">Log in</Text>
+          <FormControl id="email">
+            <FormLabel>Email:</FormLabel>
+            <Input
+              type="email"
+              onChange={(e) => setEmail(e.target.value)}
+              value={email}
+            />
+          </FormControl>
+          <FormControl id="password">
+            <FormLabel>Password:</FormLabel>
+            <Input
+              type="password"
+              onChange={(e) => setPassword(e.target.value)}
+              value={password}
+            />
+          </FormControl>
+          <Button
+            colorScheme="blue"
+            isLoading={isLoading}
+            type="submit"
+            width="full"
+          >
+            Login
+          </Button>
+          {error && (
+            <Alert status="error">
+              <AlertIcon />
+              {error}
+            </Alert>
+          )}
+        </VStack>
+      </form>
     </Box>
   );
 };

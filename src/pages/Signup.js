@@ -9,10 +9,7 @@ import {
   Text,
   Alert,
   AlertIcon,
-  Box,
-  // RadioGroup,
-  // Radio,
-  // Stack
+  Box
 } from '@chakra-ui/react';
 
 const Signup = () => {
@@ -49,15 +46,6 @@ const Signup = () => {
             <FormLabel>Password</FormLabel>
             <Input type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
           </FormControl>
-          {/* <FormControl as="fieldset">
-            <FormLabel as="legend">Role</FormLabel>
-            <RadioGroup onChange={setRole} value={role}>
-              <Stack direction="row">
-                <Radio value="user">User</Radio>
-                <Radio value="admin">Admin</Radio>
-              </Stack>
-            </RadioGroup>
-          </FormControl> */}
           <Button colorScheme="blue" isLoading={isLoading} type="submit">
             Sign Up
           </Button>
