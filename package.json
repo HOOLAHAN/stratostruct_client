@@ -1,5 +1,5 @@
 {
-  "proxy": "https://d1588wrgpxjlzs.cloudfront.net",
+  "proxy": "https://rdti5tnkql.execute-api.eu-west-2.amazonaws.com/dev/",
   "name": "stratostruct_client",
   "version": "0.1.0",
   "private": true,
