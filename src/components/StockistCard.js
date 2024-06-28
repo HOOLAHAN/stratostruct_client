@@ -1,19 +1,18 @@
 import React from 'react';
-import ViableSupplier from './ViableSupplier';
-import { Box, Text, Table, Thead, Tbody, Tr, Th, Button } from '@chakra-ui/react';
+import { Box, Text, Flex, Button, useMediaQuery } from '@chakra-ui/react';
 
 const StockistCard = ({ product, index, handleShowRoute, handleRouteChange, sitePostcode, onClose }) => {
+  const [isLargerThanPhone] = useMediaQuery("(min-width: 480px)");
+
   const onShowRoute = (endPostcode) => {
     handleShowRoute(endPostcode, sitePostcode).then(newRouteData => {
       if (newRouteData) {
         handleRouteChange(newRouteData);
         onClose();
       } else {
-        // TODO: Handle the case where no new route data is returned
         console.log('No route data returned from handleShowRoute');
       }
     }).catch(error => {
-      // TODO: Handle any errors that might occur during the fetch
       console.error('Error fetching route data:', error);
     });
   };
@@ -22,31 +21,36 @@ const StockistCard = ({ product, index, handleShowRoute, handleRouteChange, site
     <Box my={4}>
       <Text fontWeight="bold">{index}. {product.component_name} ({product.component_type})</Text>
       {product.stockists && product.stockists.length > 0 ? (
-        <Table variant="simple" size="sm">
-          <Thead>
-            <Tr>
-              <Th>Name</Th>
-              <Th>Postcode</Th>
-              <Th>Distance</Th>
-              <Th>Show Route</Th>
-            </Tr>
-          </Thead>
-          <Tbody>
-            {product.stockists.map((stockist, idx) => (
-              <ViableSupplier
-                key={stockist._id}
-                index={idx + 1}
-                stockist={stockist}
-                distance={stockist.distance}
-                showRouteButton={
-                  <Button size="sm" colorScheme="blue" onClick={() => onShowRoute(stockist.postcode)}>
-                    Show Route
-                  </Button>
-                }
-              />
-            ))}
-          </Tbody>
-        </Table>
+        <Box mt={2}>
+          {product.stockists.map((stockist, idx) => (
+            <Flex
+              key={stockist._id}
+              justify="space-between"
+              align="center"
+              wrap="nowrap"
+              my={2}
+              p={2}
+              borderWidth={1}
+              borderRadius="md"
+              minH="80px"
+            >
+              <Box>
+                <Text fontWeight="bold">{idx + 1}. {stockist.name}</Text>
+                <Text>{stockist.postcode}</Text>
+                <Text>{stockist.distance} miles</Text>
+              </Box>
+              <Button
+                size="sm"
+                colorScheme="blue"
+                onClick={() => onShowRoute(stockist.postcode)}
+                mt={isLargerThanPhone ? 0 : 2}
+                whiteSpace="nowrap"
+              >
+                Show Route
+              </Button>
+            </Flex>
+          ))}
+        </Box>
       ) : <Text>No suppliers available</Text>}
     </Box>
   );
