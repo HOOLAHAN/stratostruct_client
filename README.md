@@ -2,7 +2,7 @@
 
 Welcome to the StratoStruct frontend repository! StratoStruct is a full-stack web application built using the MERN (MongoDB, Express.js, React, Node.js) stack, designed to help users find and compare suppliers of prefab/precast products for the construction industry. This README provides an overview of the frontend component.
 
-[View website](d1ie9ubho8a451.cloudfront.net)
+[View website](https://d1ie9ubho8a451.cloudfront.net/login)
 
 ## Features
 
