@@ -5,13 +5,11 @@ import { useAuthContext } from "./hooks/useAuthContext";
 // pages & components
 import Home from './pages/Home';
 import Navbar from "./components/Navbar";
-import Login from "./pages/Login";
-import Signup from "./pages/Signup";
 import Admin from "./pages/Admin";
 
 function ProtectedRoute({ role, allowedRoles, element: Element }) {
   if (!role) {
-    return <Navigate to="/login" />;
+    return <Navigate to="/" />; 
   }
 
   if (allowedRoles.includes(role)) {
@@ -38,8 +36,6 @@ function App() {
         <div className="pages">
           <Routes>
             <Route path="/" element={<Home />} />
-            <Route path="/login" element={!user ? <Login /> : <Navigate to="/" />} />
-            <Route path="/signup" element={!user ? <Signup /> : <Navigate to="/" />} />
             <Route
               path="/admin"
               element={

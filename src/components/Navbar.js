@@ -1,15 +1,20 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link as RouterLink, useNavigate, useLocation } from 'react-router-dom';
 import { useLogout } from '../hooks/useLogout';
 import { useAuthContext } from '../hooks/useAuthContext';
-import { Flex, Box, Button, Image, Text, Link } from '@chakra-ui/react';
+import { Flex, Box, Button, Image, Text } from '@chakra-ui/react';
 import SS_logo from "../images/SS_logo.svg";
+import LoginModal from "./LoginModal";
+import SignupModal from "./SignupModal";
 
 const Navbar = () => {
   const { logout } = useLogout();
   const { user } = useAuthContext();
   const navigate = useNavigate();
   const location = useLocation();
+
+  const [isLoginOpen, setLoginOpen] = useState(false);
+  const [isSignupOpen, setSignupOpen] = useState(false);
 
   const handleLogout = () => {
     logout();
@@ -22,7 +27,7 @@ const Navbar = () => {
     <Flex as="header" align="center" justify="space-between" padding="0.5rem" bg="blue.500" color="white">
       <Box>
         <RouterLink to="/">
-        <Image src={SS_logo} alt="logo" height="auto" width={{ base: "125px", md: "150px" }}/>
+          <Image src={SS_logo} alt="logo" height="auto" width={{ base: "125px", md: "150px" }}/>
         </RouterLink>
       </Box>
       <Flex align="center">
@@ -30,21 +35,18 @@ const Navbar = () => {
           <>
             <Text mr={4}>{user.full_name}</Text>
             <Button onClick={handleLogout} size="sm">Logout</Button>
-            {user.role === 'admin' && (
-              <RouterLink to={location.pathname.startsWith('/admin') ? "/" : "/admin"}>
-                <Button size="sm" ml={4}>
-                  {location.pathname.startsWith('/admin') ? "Home" : "Admin"}
-                </Button>
-              </RouterLink>
-            )}
           </>
         ) : (
-          <Box>
-            <Link as={RouterLink} to="/login" mr={2}>Login</Link>
-            <Link as={RouterLink} to="/signup">Signup</Link>
-          </Box>
+          <>
+            <Button size="sm" mr={2} onClick={() => setLoginOpen(true)}>Log In</Button>
+            <Button size="sm" onClick={() => setSignupOpen(true)}>Sign Up</Button>
+          </>
         )}
       </Flex>
+
+      {/* Modals */}
+      <LoginModal isOpen={isLoginOpen} onClose={() => setLoginOpen(false)} />
+      <SignupModal isOpen={isSignupOpen} onClose={() => setSignupOpen(false)} />
     </Flex>
   );
 };
