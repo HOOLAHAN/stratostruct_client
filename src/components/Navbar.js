@@ -6,6 +6,7 @@ import { Flex, Box, Button, Image, Text } from '@chakra-ui/react';
 import SS_logo from "../images/SS_logo.svg";
 import LoginModal from "./LoginModal";
 import SignupModal from "./SignupModal";
+import DeleteAccountModal from "./DeleteAccountModal";
 
 const Navbar = () => {
   const { logout } = useLogout();
@@ -15,11 +16,12 @@ const Navbar = () => {
 
   const [isLoginOpen, setLoginOpen] = useState(false);
   const [isSignupOpen, setSignupOpen] = useState(false);
+  const [isDeleteOpen, setDeleteOpen] = useState(false);
 
   const handleLogout = () => {
     logout();
     if (location.pathname.startsWith('/admin')) {
-      navigate('/login');
+      navigate('/');
     }
   };
 
@@ -34,7 +36,10 @@ const Navbar = () => {
         {user ? (
           <>
             <Text mr={4}>{user.full_name}</Text>
-            <Button onClick={handleLogout} size="sm">Logout</Button>
+            <Button onClick={handleLogout} size="sm" mr={2}>Log Out</Button>
+            <Button onClick={() => setDeleteOpen(true)} size="sm" mr={2}>
+              Delete Account
+            </Button>
           </>
         ) : (
           <>
@@ -44,9 +49,9 @@ const Navbar = () => {
         )}
       </Flex>
 
-      {/* Modals */}
       <LoginModal isOpen={isLoginOpen} onClose={() => setLoginOpen(false)} />
       <SignupModal isOpen={isSignupOpen} onClose={() => setSignupOpen(false)} />
+      <DeleteAccountModal isOpen={isDeleteOpen} onClose={() => setDeleteOpen(false)} />
     </Flex>
   );
 };
