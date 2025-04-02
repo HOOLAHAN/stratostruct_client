@@ -4,7 +4,7 @@ import { useAuthContext } from '../hooks/useAuthContext';
 import ViableSupplierForm from "../components/ViableSupplierForm";
 import { fetchProducts } from "../functions/fetchProducts";
 import MapComponent from "../components/MapComponent";
-import { Box, VStack } from '@chakra-ui/react';
+import { Box, VStack, Alert, AlertIcon } from '@chakra-ui/react';
 
 const Home = () => {
   const { products, dispatchProducts } = useProductsContext();
@@ -30,13 +30,20 @@ const Home = () => {
         routeData={routeData}
       />
       <VStack spacing={4} p={5}>
-        <ViableSupplierForm
-          sitePostcode={sitePostcode}
-          setSitePostcode={setSitePostcode}
-          products={products}
-          setRouteData={setRouteData}
-          routeData={routeData}
-        />
+        {user ? (
+          <ViableSupplierForm
+            sitePostcode={sitePostcode}
+            setSitePostcode={setSitePostcode}
+            products={products}
+            setRouteData={setRouteData}
+            routeData={routeData}
+          />
+        ) : (
+          <Alert status="warning" variant="left-accent">
+            <AlertIcon />
+            Please log in to search for suppliers.
+          </Alert>
+        )}
       </VStack>
     </Box>
   );

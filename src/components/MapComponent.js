@@ -6,102 +6,80 @@ import { Box } from '@chakra-ui/react';
 
 const MapComponent = ({ routeData, sitePostcode, token }) => {
   const mapContainer = useRef(null);
-  const map = useRef(null); // Reference to the map instance
+  const map = useRef(null);
 
   mapboxgl.accessToken = process.env.REACT_APP_MAPBOX_API_KEY;
 
   useEffect(() => {
-    if (map.current) return; // Ensure map only initializes once
+    if (map.current) return; // Only initialize once
     map.current = new mapboxgl.Map({
       container: mapContainer.current,
       style: 'mapbox://styles/mapbox/streets-v11',
-      center: [-0.1276, 51.5072],
-      zoom: 10
+      center: [-0.1276, 51.5072], // London coordinates
+      zoom: 10,
     });
   }, []);
 
   useEffect(() => {
     const updateMap = async () => {
-      if (!routeData || !routeData.coordinates || routeData.coordinates.length < 2) {
+      // Check if token is available
+      if (!token) {
+        console.warn("No token available. Clearing map route.");
+        // Clear any existing route if the user logs out
         if (map.current.getSource('route')) {
           map.current.removeLayer('route');
           map.current.removeSource('route');
         }
-        // Remove existing markers
-        document.querySelectorAll('.mapboxgl-marker').forEach(marker => marker.remove());
-  
-        // Attempt to set center if only sitePostcode is provided
-        if (sitePostcode) {
-          const centerCoordinates = await getCoordinatesFromPostcode(sitePostcode, token);
-          map.current.setCenter(centerCoordinates);
-        }
         return;
       }
 
-      const bounds = new mapboxgl.LngLatBounds();
-      routeData.coordinates.forEach(coord => bounds.extend(coord));
-      map.current.fitBounds(bounds, { padding: { top: 160, bottom: 50, left: 50, right: 50 } });
+      try {
+        // No valid route data or coordinates
+        if (!routeData || !routeData.coordinates || routeData.coordinates.length < 2) {
+          if (map.current.getSource('route')) {
+            map.current.removeLayer('route');
+            map.current.removeSource('route');
+          }
 
-      // Check and update or set data for 'route'
-      const source = map.current.getSource('route');
-      const geojsonData = {
-        type: 'Feature',
-        properties: {},
-        geometry: {
-          type: 'LineString',
-          coordinates: routeData.coordinates
+          // Set map center if postcode is provided
+          if (sitePostcode) {
+            const centerCoordinates = await getCoordinatesFromPostcode(sitePostcode, token);
+            map.current.setCenter(centerCoordinates);
+          }
+          return;
         }
-      };
 
-      if (source) {
-        source.setData(geojsonData);
-      } else {
-        map.current.addSource('route', { type: 'geojson', data: geojsonData });
-        map.current.addLayer({
-          id: 'route',
-          type: 'line',
-          source: 'route',
-          layout: { 'line-join': 'round', 'line-cap': 'round' },
-          paint: { 'line-color': '#888', 'line-width': 6 }
-        });
+        // Adjust map bounds to fit the route
+        const bounds = new mapboxgl.LngLatBounds();
+        routeData.coordinates.forEach((coord) => bounds.extend(coord));
+        map.current.fitBounds(bounds, { padding: { top: 160, bottom: 50, left: 50, right: 50 } });
+
+        const geojsonData = {
+          type: 'Feature',
+          properties: {},
+          geometry: {
+            type: 'LineString',
+            coordinates: routeData.coordinates,
+          },
+        };
+
+        // Add or update the route on the map
+        if (map.current.getSource('route')) {
+          map.current.getSource('route').setData(geojsonData);
+        } else {
+          map.current.addSource('route', { type: 'geojson', data: geojsonData });
+          map.current.addLayer({
+            id: 'route',
+            type: 'line',
+            source: 'route',
+            layout: { 'line-join': 'round', 'line-cap': 'round' },
+            paint: { 'line-color': '#888', 'line-width': 6 },
+          });
+        }
+      } catch (error) {
+        console.error('Error updating map:', error);
       }
-
-      // Add a green marker for the start of the route
-      const startMarkerEl = document.createElement('div');
-      startMarkerEl.className = 'marker';
-      startMarkerEl.style.backgroundColor = 'green';
-      startMarkerEl.style.width = '20px';
-      startMarkerEl.style.height = '20px';
-      startMarkerEl.style.borderRadius = '50%';
-
-      const startPopup = new mapboxgl.Popup({ offset: 25 }).setText(
-        'Site: ' + (sitePostcode || "Unknown")
-      );
-
-      new mapboxgl.Marker(startMarkerEl)
-        .setLngLat(routeData.coordinates[0])
-        .setPopup(startPopup) // sets a popup on this marker
-        .addTo(map.current);
-
-      // Add a blue marker for the end of the route
-      const endMarkerEl = document.createElement('div');
-      endMarkerEl.className = 'marker';
-      endMarkerEl.style.backgroundColor = 'blue';
-      endMarkerEl.style.width = '20px';
-      endMarkerEl.style.height = '20px';
-      endMarkerEl.style.borderRadius = '50%';
-
-      const endPopup = new mapboxgl.Popup({ offset: 25 }).setText(
-        'Supplier: ' + (routeData.endName || "Unknown")
-      );
-
-      new mapboxgl.Marker(endMarkerEl)
-        .setLngLat(routeData.coordinates[routeData.coordinates.length - 1])
-        .setPopup(endPopup) // sets a popup on this marker
-        .addTo(map.current);
     };
-
-    updateMap();
 
     updateMap();
   }, [routeData, sitePostcode, token]);

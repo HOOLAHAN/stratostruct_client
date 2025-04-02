@@ -17,7 +17,8 @@ import {
   FormErrorMessage,
   HStack,
   InputGroup,
-  InputRightElement
+  InputRightElement,
+  useToast
 } from '@chakra-ui/react';
 
 const ViableSupplierForm = ({ sitePostcode, setSitePostcode, setRouteData, products }) => {
@@ -31,6 +32,7 @@ const ViableSupplierForm = ({ sitePostcode, setSitePostcode, setRouteData, produ
   const [modalClosed, setModalClosed] = useState(false);
   const [hasResults, setHasResults] = useState(false);
   const { isOpen: isModalOpen, onOpen: onModalOpen, onClose: onModalClose } = useDisclosure();
+  const toast = useToast();
 
   const handleModalClose = () => {
     onModalClose();
@@ -59,30 +61,41 @@ const ViableSupplierForm = ({ sitePostcode, setSitePostcode, setRouteData, produ
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+  
+    if (!user) {
+      toast({
+        title: 'Access Denied',
+        description: 'You must be logged in to search for suppliers.',
+        status: 'warning',
+        duration: 3000,
+        isClosable: true,
+      });
+      return;
+    }
+  
     if (!hasValidPostcode) {
       setError('Please enter a valid postcode.');
       return;
     }
-
+  
     if (searching) {
       handleNewSearch();
       return;
     }
-
+  
     const errorMessage = validateSupplierForm(user, cart, sitePostcode, updateHasValidPostcode);
     if (errorMessage) {
       setError(errorMessage);
       return;
     }
-
+  
     setError('');
     updateHasValidPostcode(true);
     setSearching(true);
     onClose();
     onModalOpen();
-    setHasResults(true)
-  };
+    setHasResults(true);
+  }; 
 
   const handleNewSearch = () => {
     updateIsNewSearch(true);
@@ -160,15 +173,21 @@ const ViableSupplierForm = ({ sitePostcode, setSitePostcode, setRouteData, produ
               borderColor={error ? 'red.500' : 'gray.200'}
             />
             <InputRightElement>
-              <Button 
+            <Button 
               h="100%" 
               size="sm" 
               onClick={validateAndOpenDrawer} 
               colorScheme="blue" 
               mt={5}
-              >
-                Go
-              </Button>
+              isDisabled={!user}
+            >
+              Go
+            </Button>
+            {!user && (
+              <FormErrorMessage p={2} bg="white" borderRadius="md">
+                Please log in to search for suppliers.
+              </FormErrorMessage>
+            )}
             </InputRightElement>
           </InputGroup>
           {modalClosed && hasResults && (
