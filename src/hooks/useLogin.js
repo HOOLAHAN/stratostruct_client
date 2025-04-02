@@ -3,7 +3,7 @@ import { useAuthContext } from './useAuthContext';
 
 export const useLogin = () => {
   const [error, setError] = useState(null);
-  const [isLoading, setIsLoading] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
   const { dispatch } = useAuthContext();
 
   const login = async (email, password) => {
@@ -19,20 +19,28 @@ export const useLogin = () => {
 
       const json = await response.json();
 
-      if (response.ok) {
-        // save the user to local storage
-        localStorage.setItem('user', JSON.stringify(json));
-
-        // update the auth context
-        dispatch({ type: 'LOGIN', payload: json });
-
-      } else {
-        setError(json.error);
+      if (!response.ok) {
+        // Set the error message if login fails
+        const errorMessage = json.error || 'Login failed. Please try again.';
+        setError(errorMessage);
+        setIsLoading(false);
+        return { error: errorMessage };
       }
-    } catch (error) {
-      setError('An error occurred during login.');
-    } finally {
+
+      // Save the user to local storage
+      localStorage.setItem('user', JSON.stringify(json));
+
+      // Update the auth context
+      dispatch({ type: 'LOGIN', payload: json });
+
       setIsLoading(false);
+      return { success: true };
+    } catch (error) {
+      // Handle unexpected errors (e.g., network issues)
+      const errorMessage = 'An error occurred during login. Please check your connection.';
+      setError(errorMessage);
+      setIsLoading(false);
+      return { error: errorMessage };
     }
   };
 

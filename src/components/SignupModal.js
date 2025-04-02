@@ -27,8 +27,10 @@ const SignupModal = ({ isOpen, onClose }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    await signup(email, company, full_name, password, role);
-    onClose();
+    const result = await signup(email, company, full_name, password, role);
+    if (!result.error) { // Check if the signup was successful
+      onClose();
+    }
   };
 
   return (

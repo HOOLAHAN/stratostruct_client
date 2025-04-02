@@ -24,8 +24,10 @@ const LoginModal = ({ isOpen, onClose }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    await login(email, password);
-    onClose();
+    const result = await login(email, password);
+    if (!result.error) { // Check if the login was successful
+      onClose();
+    }
   };
 
   return (
