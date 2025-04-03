@@ -29,14 +29,12 @@ const ViableSupplierForm = ({ sitePostcode, setSitePostcode, setRouteData, produ
   const [hasValidPostcode, setHasValidPostcode] = useState(false);
   const [cart, setCart] = useState([]);
   const [error, setError] = useState('');
-  const [modalClosed, setModalClosed] = useState(false);
   const [hasResults, setHasResults] = useState(false);
   const { isOpen: isModalOpen, onOpen: onModalOpen, onClose: onModalClose } = useDisclosure();
   const toast = useToast();
 
   const handleModalClose = () => {
     onModalClose();
-    setModalClosed(true);
   };
   
   const handleShowSuppliers = () => {
@@ -103,9 +101,11 @@ const ViableSupplierForm = ({ sitePostcode, setSitePostcode, setRouteData, produ
     setError(null);
     setCart([]);
     setRouteData(null);
-    setModalClosed(false);
     setHasResults(false);
-  }
+    onClose();
+    onModalClose();
+  };
+  
 
   const updateIsNewSearch = (status) => {
     setIsNewSearch(status);
@@ -162,37 +162,49 @@ const ViableSupplierForm = ({ sitePostcode, setSitePostcode, setRouteData, produ
       {/* Step 1 - Postcode input */}
       <Center mb="4">
         <FormControl isInvalid={error}>
-          <HStack>
-          <InputGroup>
-            <Input
-              id="postcode"
-              value={sitePostcode}
-              onChange={handlePostcodeChange}
-              placeholder="Enter Postcode"
-              bg="white"
-              borderColor={error ? 'red.500' : 'gray.200'}
-            />
-            <InputRightElement>
-            <Button 
-              h="100%" 
-              size="sm" 
-              onClick={validateAndOpenDrawer} 
-              colorScheme="blue" 
-              mt={5}
-              isDisabled={!user}
-            >
-              Go
-            </Button>
-            {!user && (
-              <FormErrorMessage p={2} bg="white" borderRadius="md">
-                Please log in to search for suppliers.
-              </FormErrorMessage>
+          <HStack spacing={2}>
+            <InputGroup>
+              <Input
+                id="postcode"
+                value={sitePostcode}
+                onChange={handlePostcodeChange}
+                placeholder="Enter Postcode"
+                bg="white"
+                borderColor={error ? 'red.500' : 'gray.200'}
+              />
+              <InputRightElement>
+                <Button
+                  h="100%"
+                  size="sm"
+                  onClick={validateAndOpenDrawer}
+                  colorScheme="blue"
+                  mt={5}
+                  isDisabled={!user}
+                >
+                  Go
+                </Button>
+              </InputRightElement>
+            </InputGroup>
+          </HStack>
+          <HStack spacing={2} justify="center">
+            {hasResults && (
+              <>
+                <Button
+                  size="sm"
+                  colorScheme="blue"
+                  onClick={handleShowSuppliers}
+                >
+                  Suppliers List
+                </Button>
+                <Button
+                  size="sm"
+                  colorScheme="red"
+                  onClick={handleNewSearch}
+                >
+                  Clear Results
+                </Button>
+              </>
             )}
-            </InputRightElement>
-          </InputGroup>
-          {modalClosed && hasResults && (
-            <Button mt={-2.5} px={8} colorScheme="blue" onClick={handleShowSuppliers}>Suppliers List</Button>
-          )}
           </HStack>
           <FormErrorMessage p={2} bg="white" borderRadius="md">{error}</FormErrorMessage>
         </FormControl>
