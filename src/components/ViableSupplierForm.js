@@ -215,6 +215,7 @@ const ViableSupplierForm = ({ sitePostcode, setSitePostcode, setRouteData, produ
         handleShowRoute={handleShowRoute}
         token={user.token}
         handleRouteChange={handleRouteChange}
+        handleNewSearch={handleNewSearch}
       />
     </>
   );

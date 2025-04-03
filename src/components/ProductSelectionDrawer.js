@@ -62,8 +62,11 @@ const ProductSelectionDrawer = ({
           <Button variant="outline" mr={3} onClick={onClose}>
             Close
           </Button>
-          <Button colorScheme="blue" onClick={handleSubmit}>
-            {searching ? 'New Search' : 'Find Suppliers'}
+          <Button 
+            colorScheme={searching ? 'red' : 'blue'} 
+            onClick={handleSubmit}
+          >
+            {searching ? 'Clear Results' : 'Find Suppliers'}
           </Button>
         </DrawerFooter>
       </DrawerContent>

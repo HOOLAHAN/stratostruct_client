@@ -8,19 +8,28 @@ import {
   ModalBody,
   ModalCloseButton,
   Box,
+  Button,
+  ModalFooter,
+  Center,
 } from '@chakra-ui/react';
 import StockistCard from './StockistCard';
 
-const SearchResultsModal = ({ isOpen, onClose, cart, sitePostcode, handleShowRoute, token, handleRouteChange }) => {
+const SearchResultsModal = ({ isOpen, onClose, cart, sitePostcode, handleShowRoute, token, handleRouteChange, handleNewSearch }) => {
+  
+  const handleNewSearchAndClose = () => {
+    handleNewSearch();
+    onClose();
+  };
+
   return (
     <Modal isOpen={isOpen} onClose={onClose} isCentered scrollBehavior="inside">
       <ModalOverlay />
       <ModalContent maxH="80vh" overflowY="auto" mx={2} mb={2}>
         <ModalCloseButton />
-        <ModalHeader   
-          borderTopLeftRadius="md" 
-          borderTopRightRadius="md" 
-          bg="blue.500" 
+        <ModalHeader
+          borderTopLeftRadius="md"
+          borderTopRightRadius="md"
+          bg="blue.500"
           color="white"
         >
           Suppliers:
@@ -41,6 +50,17 @@ const SearchResultsModal = ({ isOpen, onClose, cart, sitePostcode, handleShowRou
             ))}
           </Box>
         </ModalBody>
+        <ModalFooter>
+          <Center w="full">
+            <Button 
+              colorScheme="red" 
+              size="sm" 
+              onClick={handleNewSearchAndClose}
+            >
+              Clear Results
+            </Button>
+          </Center>
+        </ModalFooter>
       </ModalContent>
     </Modal>
   );
