@@ -46,7 +46,7 @@ const ProductSelectionDrawer = ({
                       <Button
                         onClick={() => handleProductClick(product)}
                         colorScheme={cart.find(item => item._id === product._id) ? 'teal' : 'gray'}
-                        isDisabled={!isOpen}
+                        isDisabled={!isOpen || searching}  // Disable if searching
                         size="sm"
                       >
                         {product.component_name}
