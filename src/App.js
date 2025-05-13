@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { useAuthContext } from "./hooks/useAuthContext";
 
@@ -7,27 +7,27 @@ import Home from './pages/Home';
 import Navbar from "./components/Navbar";
 import Admin from "./pages/Admin";
 
-function ProtectedRoute({ role, allowedRoles, element: Element }) {
+function ProtectedRoute({ role, allowedRoles, children }) {
   if (!role) {
-    return <Navigate to="/" />; 
+    return <Navigate to="/" />;
   }
 
   if (allowedRoles.includes(role)) {
-    return <Element />;
+    return children;
   } else {
     return <Navigate to="/" />;
   }
 }
 
 function App() {
-  const { user } = useAuthContext();
-  const [role, setRole] = useState(user ? user.role : null);
+  const { user, loading } = useAuthContext();
+  const role = user?.role;
 
-  useEffect(() => {
-    if (user && !role) {
-      setRole(user.role);
-    }
-  }, [user, role]);
+  console.log('User from context:', user);
+
+  if (loading) {
+    return <div>Loading...</div>; 
+  }
 
   return (
     <div className="App">
@@ -39,11 +39,9 @@ function App() {
             <Route
               path="/admin"
               element={
-                <ProtectedRoute
-                  role={role}
-                  allowedRoles={['admin']}
-                  element={Admin}
-                />
+                <ProtectedRoute role={role} allowedRoles={['admin']}>
+                  <Admin />
+                </ProtectedRoute>
               }
             />
             <Route path="/*" element={<Navigate to="/" />} />

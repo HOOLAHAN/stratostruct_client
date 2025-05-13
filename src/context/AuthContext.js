@@ -1,50 +1,50 @@
-import { createContext, useReducer, useEffect } from 'react'
-import { isTokenExpired } from '../functions/isTokenExpired'
+import { createContext, useReducer, useEffect } from 'react';
+import { isTokenExpired } from '../functions/isTokenExpired';
 
-export const AuthContext = createContext()
+export const AuthContext = createContext();
 
 export const authReducer = (state, action) => {
   switch (action.type) {
-    case 'LOGIN': 
-    return {
-      user: {
-        email: action.payload.email,
-        full_name: action.payload.full_name,
-        token: action.payload.token,
-        role: action.payload.role,
-      },
-    }
+    case 'LOGIN':
+      return {
+        ...state,
+        user: {
+          email: action.payload.email,
+          full_name: action.payload.full_name,
+          token: action.payload.token,
+          role: action.payload.role,
+        },
+      };
     case 'LOGOUT':
-      return { user: null }
+      return { ...state, user: null };
+    case 'AUTH_READY':
+      return { ...state, loading: false };
     default:
-      return state
+      return state;
   }
-}
+};
 
-export const AuthContextProvider = ({children}) => {
+export const AuthContextProvider = ({ children }) => {
   const [state, dispatch] = useReducer(authReducer, {
-    user: null
-  })
+    user: null,
+    loading: true,
+  });
 
   useEffect(() => {
-    const user = JSON.parse(localStorage.getItem('user'))
+    const user = JSON.parse(localStorage.getItem('user'));
 
-    if (user) {
-      // Check if the token has expired
-      if (isTokenExpired(user.token)) {
-        console.log('Expired token')
-        dispatch({ type: 'LOGOUT' }); // Token is expired, log the user out
-      } else {
-        dispatch({ type: 'LOGIN', payload: user }); // Token is valid, log the user in
-      }
+    if (user && !isTokenExpired(user.token)) {
+      dispatch({ type: 'LOGIN', payload: user });
+    } else {
+      dispatch({ type: 'LOGOUT' });
     }
-  }, [])
 
-  // console.log('AuthContext state: ', state)
+    dispatch({ type: 'AUTH_READY' });
+  }, []);
 
   return (
-    <AuthContext.Provider value={{...state, dispatch}}>
-      { children }
+    <AuthContext.Provider value={{ ...state, dispatch }}>
+      {children}
     </AuthContext.Provider>
-  )
-}
+  );
+};
