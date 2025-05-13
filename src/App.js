@@ -23,8 +23,6 @@ function App() {
   const { user, loading } = useAuthContext();
   const role = user?.role;
 
-  console.log('User from context:', user);
-
   if (loading) {
     return <div>Loading...</div>; 
   }
