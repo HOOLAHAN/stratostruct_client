@@ -11,6 +11,7 @@ const Home = () => {
   const { user } = useAuthContext();
   const [sitePostcode, setSitePostcode] = useState('');
   const [routeData, setRouteData] = useState(null);
+  const [searchResults, setSearchResults] = useState(null);
 
   useEffect(() => {
     const initializeProducts = async () => {
@@ -28,6 +29,7 @@ const Home = () => {
         sitePostcode={sitePostcode}
         token={user ? user.token : ''}
         routeData={routeData}
+        searchResults={searchResults}
       />
       <VStack spacing={4} p={5}>
         {user ? (
@@ -37,6 +39,8 @@ const Home = () => {
             products={products}
             setRouteData={setRouteData}
             routeData={routeData}
+            searchResults={searchResults}
+            setSearchResults={setSearchResults}
           />
         ) : (
           <Alert status="warning" variant="left-accent">

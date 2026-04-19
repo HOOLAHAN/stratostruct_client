@@ -65,8 +65,10 @@ const ProductSelectionDrawer = ({
           <Button 
             colorScheme={searching ? 'red' : 'blue'} 
             onClick={handleSubmit}
+            isLoading={searching}
+            loadingText="Finding suppliers"
           >
-            {searching ? 'Clear Results' : 'Find Suppliers'}
+            Find Suppliers
           </Button>
         </DrawerFooter>
       </DrawerContent>

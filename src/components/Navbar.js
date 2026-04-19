@@ -36,6 +36,11 @@ const Navbar = () => {
         {user ? (
           <>
             <Text mr={4}>{user.full_name}</Text>
+            {user.role === 'admin' && (
+              <Button as={RouterLink} to="/admin" size="sm" mr={2}>
+                Admin
+              </Button>
+            )}
             <Button onClick={handleLogout} size="sm" mr={2}>Log Out</Button>
             <Button onClick={() => setDeleteOpen(true)} size="sm" mr={2}>
               Delete Account

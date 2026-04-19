@@ -1,8 +1,9 @@
+import { apiFetch } from './apiClient';
+
 export const fetchRouteData = async (startPostcode, endPostcode, token) => {
 
   try {
-    const url = process.env.REACT_APP_BACKEND_API_URL + `/api/mapbox/getRoute`;
-    const response = await fetch(url, {
+    const response = await apiFetch('/api/mapbox/getRoute', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

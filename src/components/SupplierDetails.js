@@ -1,6 +1,7 @@
 import { useSuppliersContext } from "../hooks/useSuppliersContext";
 import formatDistanceToNow from 'date-fns/formatDistanceToNow'
 import { useAuthContext } from "../hooks/useAuthContext.js"
+import { apiFetch } from "../functions/apiClient.js"
 
 const SupplierDetails = ({ supplier }) => {
   const { dispatchSuppliers } = useSuppliersContext()
@@ -10,7 +11,7 @@ const SupplierDetails = ({ supplier }) => {
     if (!user) {
       return
     }
-    const response = await fetch('/api/suppliers/' + supplier._id, {
+    const response = await apiFetch('/api/suppliers/' + supplier._id, {
       method: 'DELETE',
       headers: {
         'Authorization': `Bearer ${user.token}`

@@ -4,9 +4,10 @@ import { getCoordinatesFromPostcode } from '../functions/getCoordinatesFromPostc
 import 'mapbox-gl/dist/mapbox-gl.css';
 import { Box } from '@chakra-ui/react';
 
-const MapComponent = ({ routeData, sitePostcode, token }) => {
+const MapComponent = ({ routeData, sitePostcode, token, searchResults }) => {
   const mapContainer = useRef(null);
   const map = useRef(null);
+  const markers = useRef([]);
 
   mapboxgl.accessToken = process.env.REACT_APP_MAPBOX_API_KEY;
 
@@ -19,6 +20,43 @@ const MapComponent = ({ routeData, sitePostcode, token }) => {
       zoom: 10,
     });
   }, []);
+
+  useEffect(() => {
+    if (!map.current) return;
+
+    markers.current.forEach((marker) => marker.remove());
+    markers.current = [];
+
+    if (!token || !searchResults?.site?.coordinates) return;
+
+    const siteMarker = new mapboxgl.Marker({ color: '#1A365D' })
+      .setLngLat(searchResults.site.coordinates)
+      .setPopup(new mapboxgl.Popup({ offset: 16 }).setText(`Site: ${searchResults.site.postcode}`))
+      .addTo(map.current);
+
+    markers.current.push(siteMarker);
+
+    (searchResults.suppliers || []).forEach((supplier) => {
+      if (!supplier.coordinates) return;
+
+      const popupText = `${supplier.name} - ${supplier.postcode}${supplier.distanceKilometers == null ? '' : ` - ${supplier.distanceKilometers} km`}`;
+      const marker = new mapboxgl.Marker({ color: supplier.matchCount > 1 ? '#2F855A' : '#3182CE' })
+        .setLngLat(supplier.coordinates)
+        .setPopup(new mapboxgl.Popup({ offset: 16 }).setText(popupText))
+        .addTo(map.current);
+
+      markers.current.push(marker);
+    });
+
+    const bounds = new mapboxgl.LngLatBounds();
+    markers.current.forEach((marker) => bounds.extend(marker.getLngLat()));
+    if (markers.current.length > 1) {
+      map.current.fitBounds(bounds, { padding: { top: 120, bottom: 80, left: 80, right: 80 }, maxZoom: 10 });
+    } else {
+      map.current.setCenter(searchResults.site.coordinates);
+      map.current.setZoom(10);
+    }
+  }, [searchResults, token]);
 
   useEffect(() => {
     const updateMap = async () => {

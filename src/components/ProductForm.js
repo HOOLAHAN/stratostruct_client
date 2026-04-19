@@ -1,6 +1,7 @@
 import { useState } from "react"
 import { useProductsContext } from "../hooks/useProductsContext.js"
 import { useAuthContext } from "../hooks/useAuthContext.js"
+import { apiFetch } from "../functions/apiClient.js"
 import {
   FormControl,
   FormLabel,
@@ -46,7 +47,7 @@ const ProductForm = () => {
 
     const product = {component_type, component_name}
     
-    const response = await fetch('/api/products', {
+    const response = await apiFetch('/api/products', {
       method: 'POST',
       body: JSON.stringify(product),
       headers: {
@@ -84,7 +85,6 @@ const ProductForm = () => {
       setComponentType('')
       setComponentName('')
       setEmptyFields([])
-      console.log("New Product Added", json)
       dispatchProducts({type: 'CREATE_PRODUCT', payload: json})
     }
   }

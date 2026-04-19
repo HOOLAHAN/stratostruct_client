@@ -6,7 +6,7 @@ import ProductSelectionDrawer from './ProductSelectionDrawer';
 import { isValidPostcode } from '../functions/isValidPostcode';
 import { fetchRouteData } from "../functions/fetchRouteData";
 import { validateSupplierForm } from '../functions/validateSupplierForm';
-import { handleAddToCart } from "../functions/handleAddToCart"
+import { searchSuppliers } from "../functions/searchSuppliers"
 import SearchResultsModal from "./SearchResultsModal";
 import {
   Input,
@@ -21,7 +21,7 @@ import {
   useToast
 } from '@chakra-ui/react';
 
-const ViableSupplierForm = ({ sitePostcode, setSitePostcode, setRouteData, products }) => {
+const ViableSupplierForm = ({ sitePostcode, setSitePostcode, setRouteData, products, searchResults, setSearchResults }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { user } = useAuthContext();
   const [searching, setSearching] = useState(false);
@@ -90,9 +90,30 @@ const ViableSupplierForm = ({ sitePostcode, setSitePostcode, setRouteData, produ
     setError('');
     updateHasValidPostcode(true);
     setSearching(true);
-    onClose();
-    onModalOpen();
-    setHasResults(true);
+
+    try {
+      const results = await searchSuppliers({
+        sitePostcode,
+        products: cart,
+        token: user.token,
+      });
+
+      setSearchResults(results);
+      onClose();
+      onModalOpen();
+      setHasResults(true);
+    } catch (error) {
+      setError(error.message);
+      toast({
+        title: 'Supplier search failed',
+        description: error.message,
+        status: 'error',
+        duration: 4000,
+        isClosable: true,
+      });
+    } finally {
+      setSearching(false);
+    }
   }; 
 
   const handleNewSearch = () => {
@@ -101,6 +122,7 @@ const ViableSupplierForm = ({ sitePostcode, setSitePostcode, setRouteData, produ
     setError(null);
     setCart([]);
     setRouteData(null);
+    setSearchResults(null);
     setHasResults(false);
     onClose();
     onModalClose();
@@ -144,13 +166,9 @@ const ViableSupplierForm = ({ sitePostcode, setSitePostcode, setRouteData, produ
       if (cart.find((item) => item._id === product._id)) {
         handleRemoveFromCart(product);
       } else {
-        onAddToCart(product);
+        setCart((prevCart) => [...prevCart, product]);
       }
     }
-  };
-
-  const onAddToCart = async (product) => {
-    await handleAddToCart(product, cart, user, sitePostcode, setCart);
   };
 
   const handleRemoveFromCart = (product) => {
@@ -223,6 +241,7 @@ const ViableSupplierForm = ({ sitePostcode, setSitePostcode, setRouteData, produ
         isOpen={isModalOpen}
         onClose={handleModalClose}
         cart={cart}
+        searchResults={searchResults}
         sitePostcode={sitePostcode}
         handleShowRoute={handleShowRoute}
         token={user.token}

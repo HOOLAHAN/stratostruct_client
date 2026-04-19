@@ -1,6 +1,7 @@
 import { useState } from "react"
 import { useSuppliersContext } from "../hooks/useSuppliersContext.js";
 import { useAuthContext } from "../hooks/useAuthContext.js"
+import { apiFetch } from "../functions/apiClient.js";
 import {
   FormControl,
   FormLabel,
@@ -37,7 +38,7 @@ const SupplierForm = ({ cart, clearCart }) => {
 
     const supplier = { name, postcode, products: cart };
 
-    const response = await fetch('/api/suppliers', {
+    const response = await apiFetch('/api/suppliers', {
       method: 'POST',
       body: JSON.stringify(supplier),
       headers: {
@@ -57,7 +58,6 @@ const SupplierForm = ({ cart, clearCart }) => {
       setPostcode('');
       setEmptyFields([]);
       cart = [];
-      console.log('New Supplier Added', json);
       dispatchSuppliers({ type: 'CREATE_SUPPLIER', payload: json });
       clearCart();
     }

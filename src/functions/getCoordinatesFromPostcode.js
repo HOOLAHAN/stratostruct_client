@@ -1,5 +1,7 @@
+import { apiUrl } from './apiClient';
+
 export async function getCoordinatesFromPostcode(sitePostcode, token) {
-  const url = process.env.REACT_APP_BACKEND_API_URL + `/api/mapbox/getCoordinates?postcode=${encodeURIComponent(sitePostcode)}`;
+  const url = apiUrl(`/api/mapbox/getCoordinates?postcode=${encodeURIComponent(sitePostcode)}`);
   const response = await fetch(url, {
     method: 'GET',
     headers: {

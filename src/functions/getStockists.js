@@ -1,6 +1,8 @@
+import { apiFetch } from './apiClient';
+
 export const getStockists = async (product, user) => {
   try {
-    const response = await fetch(process.env.REACT_APP_BACKEND_API_URL + `/api/suppliers/product/${product._id}`, {
+    const response = await apiFetch(`/api/suppliers/product/${product._id}`, {
       headers: {
         'Authorization': `Bearer ${user.token}`
       }

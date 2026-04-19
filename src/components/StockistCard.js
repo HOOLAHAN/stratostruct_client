@@ -9,8 +9,6 @@ const StockistCard = ({ product, index, handleShowRoute, handleRouteChange, site
       if (newRouteData) {
         handleRouteChange(newRouteData);
         onClose();
-      } else {
-        console.log('No route data returned from handleShowRoute');
       }
     }).catch(error => {
       console.error('Error fetching route data:', error);

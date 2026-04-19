@@ -1,5 +1,6 @@
 import { useProductsContext } from "../hooks/useProductsContext"
 import { useAuthContext } from "../hooks/useAuthContext.js"
+import { apiFetch } from "../functions/apiClient.js"
 
 const ProductDetails = ({ product }) => {
   const { dispatchProducts } = useProductsContext()
@@ -9,7 +10,7 @@ const ProductDetails = ({ product }) => {
     if (!user) {
       return
     }
-    const response = await fetch('/api/products/' + product._id, {
+    const response = await apiFetch('/api/products/' + product._id, {
       method: 'DELETE',
       headers: {
         'Authorization': `Bearer ${user.token}`

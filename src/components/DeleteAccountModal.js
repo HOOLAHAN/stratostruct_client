@@ -1,5 +1,6 @@
 import { useAuthContext } from "../hooks/useAuthContext";
 import { useLogout } from "../hooks/useLogout";
+import { apiFetch } from "../functions/apiClient";
 import {
   Modal,
   ModalOverlay,
@@ -18,7 +19,7 @@ const DeleteAccountModal = ({ isOpen, onClose }) => {
 
   const handleDelete = async () => {
     try {
-      const response = await fetch(`${process.env.REACT_APP_BACKEND_API_URL}/api/user/delete`, {
+      const response = await apiFetch('/api/user/delete', {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${user.token}`,

@@ -27,7 +27,6 @@ export function isTokenExpired(token) {
     const currentTime = Date.now() / 1000;
     return exp < currentTime;
   } catch (error) {
-    console.log('Error:', error.message)
     throw error; // Re-throw to ensure it's caught by tests or calling code
   }
 }

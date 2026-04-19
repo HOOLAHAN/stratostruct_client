@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useAuthContext } from './useAuthContext';
+import { apiFetch } from '../functions/apiClient';
 
 export const useSignup = () => {
   const [error, setError] = useState(null);
@@ -11,7 +12,7 @@ export const useSignup = () => {
     setError(null);
 
     try {
-      const response = await fetch(process.env.REACT_APP_BACKEND_API_URL + '/api/user/signup', {
+      const response = await apiFetch('/api/user/signup', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, company, full_name, password, role })

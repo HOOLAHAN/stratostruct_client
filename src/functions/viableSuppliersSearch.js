@@ -1,8 +1,8 @@
-export const viableSuppliersSearch = async (cartArray, setError, token) => {
-  const url = process.env.REACT_APP_BACKEND_API_URL + `/api/suppliers/suppliers-by-products`;
+import { apiFetch } from './apiClient';
 
+export const viableSuppliersSearch = async (cartArray, setError, token) => {
   try {
-    const response = await fetch(url, {
+    const response = await apiFetch('/api/suppliers/suppliers-by-products', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
