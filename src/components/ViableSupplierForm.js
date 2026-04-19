@@ -12,11 +12,11 @@ import {
   Button,
   useDisclosure,
   Center,
+  Box,
   FormControl,
   FormErrorMessage,
   HStack,
-  InputGroup,
-  InputRightElement,
+  VStack,
   useToast
 } from '@chakra-ui/react';
 
@@ -185,37 +185,62 @@ const ViableSupplierForm = ({
     <>
       {/* Step 1 - Postcode input */}
       <Center mb="4">
-        <FormControl isInvalid={error}>
-          <HStack spacing={2}>
-            <InputGroup>
+        <FormControl
+          isInvalid={error}
+          bg="white"
+          borderWidth={1}
+          borderColor={error ? 'red.300' : 'blue.100'}
+          borderRadius="md"
+          boxShadow="0 14px 36px rgba(15, 23, 42, 0.18)"
+          p={3}
+          maxW={{ base: 'calc(100vw - 32px)', md: '560px' }}
+        >
+          <VStack spacing={3} align="stretch">
+            <Box
+              display="grid"
+              gridTemplateColumns={{ base: '1fr', sm: 'minmax(240px, 1fr) auto' }}
+              gap={2}
+              alignItems="start"
+            >
               <Input
                 id="postcode"
                 value={sitePostcode}
                 onChange={handlePostcodeChange}
-                placeholder="Enter Postcode"
+                placeholder="Enter site postcode"
                 bg="white"
-                borderColor={error ? 'red.500' : 'gray.200'}
+                color="gray.900"
+                borderColor={error ? 'red.400' : 'gray.300'}
+                borderWidth={1}
+                borderRadius="md"
+                h="42px"
+                m={0}
+                mt={0}
+                mb={0}
+                minW={0}
+                _placeholder={{ color: 'gray.500' }}
+                _hover={{ borderColor: 'gray.400' }}
+                _focus={{ borderColor: 'blue.500', boxShadow: '0 0 0 1px var(--chakra-colors-blue-500)' }}
               />
-              <InputRightElement>
-                <Button
-                  h="100%"
-                  size="sm"
-                  onClick={validateAndOpenDrawer}
-                  colorScheme="blue"
-                  mt={5}
-                  isDisabled={!user}
-                >
-                  Go
-                </Button>
-              </InputRightElement>
-            </InputGroup>
-          </HStack>
-          <HStack spacing={2} justify="center">
+              <Button
+                h="42px"
+                px={6}
+                m={0}
+                mt={0}
+                mb={0}
+                alignSelf="start"
+                onClick={validateAndOpenDrawer}
+                colorScheme="blue"
+                isDisabled={!user}
+              >
+                Search
+              </Button>
+            </Box>
             {hasResults && (
-              <>
+              <HStack spacing={2} justify="center">
                 <Button
                   size="sm"
                   colorScheme="blue"
+                  variant="solid"
                   onClick={handleShowSuppliers}
                 >
                   Suppliers List
@@ -223,14 +248,16 @@ const ViableSupplierForm = ({
                 <Button
                   size="sm"
                   colorScheme="red"
+                  variant="outline"
+                  bg="white"
                   onClick={handleNewSearch}
                 >
                   Clear Results
                 </Button>
-              </>
+              </HStack>
             )}
-          </HStack>
-          <FormErrorMessage p={2} bg="white" borderRadius="md">{error}</FormErrorMessage>
+          </VStack>
+          <FormErrorMessage mt={2} p={2} bg="red.50" color="red.700" borderRadius="md">{error}</FormErrorMessage>
         </FormControl>
       </Center>
       {/* Step 2 - Product Selection */}
