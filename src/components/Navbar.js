@@ -26,7 +26,7 @@ const Navbar = () => {
   };
 
   return (
-    <Flex as="header" align="center" justify="space-between" padding="0.5rem" bg="blue.500" color="white">
+    <Flex as="header" align="center" justify="space-between" px={{ base: 3, md: 4 }} py={2} bg="blue.600" color="white" boxShadow="0 2px 10px rgba(15, 23, 42, 0.18)">
       <Box>
         <RouterLink to="/">
           <Image src={SS_logo} alt="logo" height="auto" width={{ base: "125px", md: "150px" }}/>
@@ -48,8 +48,8 @@ const Navbar = () => {
           </>
         ) : (
           <>
-            <Button size="sm" mr={2} onClick={() => setLoginOpen(true)}>Log In</Button>
-            <Button size="sm" onClick={() => setSignupOpen(true)}>Sign Up</Button>
+            <Button size="sm" mr={2} colorScheme="whiteAlpha" onClick={() => setLoginOpen(true)}>Log In</Button>
+            <Button size="sm" bg="white" color="blue.700" _hover={{ bg: 'blue.50' }} onClick={() => setSignupOpen(true)}>Sign Up</Button>
           </>
         )}
       </Flex>

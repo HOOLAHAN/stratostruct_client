@@ -15,6 +15,7 @@ import {
   VStack,
   Alert,
   AlertIcon,
+  Text,
 } from '@chakra-ui/react';
 
 const SignupModal = ({ isOpen, onClose }) => {
@@ -35,53 +36,64 @@ const SignupModal = ({ isOpen, onClose }) => {
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} isCentered>
-      <ModalOverlay />
-      <ModalContent borderRadius="lg" p={4}>
-        <ModalHeader textAlign="center" bg="white" color="blue.600" fontWeight="bold" fontSize="lg">
+      <ModalOverlay bg="blackAlpha.600" backdropFilter="blur(2px)" />
+      <ModalContent borderRadius="md" overflow="hidden" boxShadow="2xl" mx={4} maxH="92vh">
+        <ModalHeader textAlign="center" bg="blue.600" color="white" py={4}>
           Sign Up
         </ModalHeader>
-        <ModalCloseButton />
-        <ModalBody>
+        <ModalCloseButton color="white" />
+        <ModalBody bg="white" px={{ base: 5, md: 7 }} pt={5} pb={2} overflowY="auto">
+          <Text color="gray.600" textAlign="center" mb={4}>
+            Create an account to start finding nearby suppliers for your projects.
+          </Text>
           <form onSubmit={handleSubmit}>
-            <VStack spacing={4} align="stretch">
+            <VStack spacing={3} align="stretch">
               <FormControl id="email">
-                <FormLabel>Email:</FormLabel>
+                <FormLabel color="gray.700" fontWeight="semibold" mb={1}>Email</FormLabel>
                 <Input
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   borderRadius="md"
-                  borderColor="blue.300"
+                  bg="gray.50"
+                  borderColor="gray.300"
+                  _focus={{ borderColor: 'blue.500', boxShadow: '0 0 0 1px var(--chakra-colors-blue-500)' }}
                 />
               </FormControl>
               <FormControl id="company">
-                <FormLabel>Company:</FormLabel>
+                <FormLabel color="gray.700" fontWeight="semibold" mb={1}>Company</FormLabel>
                 <Input
                   type="text"
                   value={company}
                   onChange={(e) => setCompany(e.target.value)}
                   borderRadius="md"
-                  borderColor="blue.300"
+                  bg="gray.50"
+                  borderColor="gray.300"
+                  _focus={{ borderColor: 'blue.500', boxShadow: '0 0 0 1px var(--chakra-colors-blue-500)' }}
                 />
               </FormControl>
               <FormControl id="full_name">
-                <FormLabel>Full Name:</FormLabel>
+                <FormLabel color="gray.700" fontWeight="semibold" mb={1}>Full Name</FormLabel>
                 <Input
                   type="text"
                   value={full_name}
                   onChange={(e) => setFullName(e.target.value)}
                   borderRadius="md"
-                  borderColor="blue.300"
+                  bg="gray.50"
+                  borderColor="gray.300"
+                  _focus={{ borderColor: 'blue.500', boxShadow: '0 0 0 1px var(--chakra-colors-blue-500)' }}
                 />
               </FormControl>
               <FormControl id="password">
-                <FormLabel>Password:</FormLabel>
+                <FormLabel color="gray.700" fontWeight="semibold" mb={1}>Password</FormLabel>
                 <Input
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   borderRadius="md"
-                  borderColor="blue.300"
+                  bg="gray.50"
+                  borderColor="gray.300"
+                  _focus={{ borderColor: 'blue.500', boxShadow: '0 0 0 1px var(--chakra-colors-blue-500)' }}
                 />
               </FormControl>
               {error && (
@@ -93,13 +105,14 @@ const SignupModal = ({ isOpen, onClose }) => {
             </VStack>
           </form>
         </ModalBody>
-        <ModalFooter>
+        <ModalFooter bg="white" px={{ base: 5, md: 7 }} pt={3} pb={5}>
           <Button
             colorScheme="blue"
             width="full"
             onClick={handleSubmit}
             isLoading={isLoading}
             borderRadius="md"
+            minH="44px"
           >
             Sign Up
           </Button>

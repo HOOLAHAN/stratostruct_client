@@ -4,7 +4,17 @@ import { useAuthContext } from '../hooks/useAuthContext';
 import ViableSupplierForm from "../components/ViableSupplierForm";
 import { fetchProducts } from "../functions/fetchProducts";
 import MapComponent from "../components/MapComponent";
-import { Box, VStack, Alert, AlertIcon } from '@chakra-ui/react';
+import LoginModal from "../components/LoginModal";
+import SignupModal from "../components/SignupModal";
+import {
+  Box,
+  VStack,
+  Button,
+  HStack,
+  Text,
+  Heading,
+  useDisclosure,
+} from '@chakra-ui/react';
 
 const Home = () => {
   const { products, dispatchProducts } = useProductsContext();
@@ -12,6 +22,8 @@ const Home = () => {
   const [sitePostcode, setSitePostcode] = useState('');
   const [routeData, setRouteData] = useState(null);
   const [searchResults, setSearchResults] = useState(null);
+  const loginModal = useDisclosure();
+  const signupModal = useDisclosure();
 
   useEffect(() => {
     const initializeProducts = async () => {
@@ -43,10 +55,33 @@ const Home = () => {
             setSearchResults={setSearchResults}
           />
         ) : (
-          <Alert status="warning" variant="left-accent">
-            <AlertIcon />
-            Please log in to search for suppliers.
-          </Alert>
+          <Box
+            bg="white"
+            borderRadius="md"
+            boxShadow="0 18px 50px rgba(15, 23, 42, 0.20)"
+            borderWidth="1px"
+            borderColor="whiteAlpha.700"
+            p={{ base: 5, md: 6 }}
+            maxW="460px"
+            textAlign="center"
+          >
+            <Heading size="md" color="gray.800" mb={2}>
+              Search structural suppliers
+            </Heading>
+            <Text color="gray.600" mb={5}>
+              Log in or create an account to compare nearby suppliers, distances, and routes.
+            </Text>
+            <HStack spacing={3} justify="center">
+              <Button colorScheme="blue" px={8} onClick={loginModal.onOpen}>
+                Log In
+              </Button>
+              <Button variant="outline" colorScheme="blue" px={8} onClick={signupModal.onOpen}>
+                Sign Up
+              </Button>
+            </HStack>
+            <LoginModal isOpen={loginModal.isOpen} onClose={loginModal.onClose} />
+            <SignupModal isOpen={signupModal.isOpen} onClose={signupModal.onClose} />
+          </Box>
         )}
       </VStack>
     </Box>

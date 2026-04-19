@@ -15,6 +15,7 @@ import {
   VStack,
   Alert,
   AlertIcon,
+  Text,
 } from '@chakra-ui/react';
 
 const LoginModal = ({ isOpen, onClose }) => {
@@ -32,33 +33,40 @@ const LoginModal = ({ isOpen, onClose }) => {
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} isCentered>
-      <ModalOverlay />
-      <ModalContent borderRadius="lg" p={4}>
-        <ModalHeader textAlign="center" bg="white" color="blue.600" fontWeight="bold" fontSize="lg">
+      <ModalOverlay bg="blackAlpha.600" backdropFilter="blur(2px)" />
+      <ModalContent borderRadius="md" overflow="hidden" boxShadow="2xl" mx={4}>
+        <ModalHeader textAlign="center" bg="blue.600" color="white" py={5}>
           Log In
         </ModalHeader>
-        <ModalCloseButton />
-        <ModalBody>
+        <ModalCloseButton color="white" />
+        <ModalBody bg="white" px={{ base: 5, md: 8 }} pt={7} pb={2}>
+          <Text color="gray.600" textAlign="center" mb={6}>
+            Access supplier search, route comparisons, and saved account details.
+          </Text>
           <form onSubmit={handleSubmit}>
-            <VStack spacing={4} align="stretch">
+            <VStack spacing={5} align="stretch">
               <FormControl id="email">
-                <FormLabel>Email:</FormLabel>
+                <FormLabel color="gray.700" fontWeight="semibold">Email</FormLabel>
                 <Input
                   type="email"
                   onChange={(e) => setEmail(e.target.value)}
                   value={email}
                   borderRadius="md"
-                  borderColor="blue.300"
+                  bg="gray.50"
+                  borderColor="gray.300"
+                  _focus={{ borderColor: 'blue.500', boxShadow: '0 0 0 1px var(--chakra-colors-blue-500)' }}
                 />
               </FormControl>
               <FormControl id="password">
-                <FormLabel>Password:</FormLabel>
+                <FormLabel color="gray.700" fontWeight="semibold">Password</FormLabel>
                 <Input
                   type="password"
                   onChange={(e) => setPassword(e.target.value)}
                   value={password}
                   borderRadius="md"
-                  borderColor="blue.300"
+                  bg="gray.50"
+                  borderColor="gray.300"
+                  _focus={{ borderColor: 'blue.500', boxShadow: '0 0 0 1px var(--chakra-colors-blue-500)' }}
                 />
               </FormControl>
               {error && (
@@ -70,15 +78,16 @@ const LoginModal = ({ isOpen, onClose }) => {
             </VStack>
           </form>
         </ModalBody>
-        <ModalFooter>
+        <ModalFooter bg="white" px={{ base: 5, md: 8 }} pb={8}>
           <Button
             colorScheme="blue"
             width="full"
             onClick={handleSubmit}
             isLoading={isLoading}
             borderRadius="md"
+            minH="44px"
           >
-            Login
+            Log In
           </Button>
         </ModalFooter>
       </ModalContent>
