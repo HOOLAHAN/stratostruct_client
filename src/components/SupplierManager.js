@@ -5,6 +5,7 @@ import {
   Box,
   Button,
   HStack,
+  Input,
   Table,
   Tbody,
   Td,
@@ -20,6 +21,9 @@ const SupplierManager = () => {
   const { user } = useAuthContext();
   const [suppliers, setSuppliers] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [editingId, setEditingId] = useState(null);
+  const [editName, setEditName] = useState('');
+  const [editPostcode, setEditPostcode] = useState('');
   const toast = useToast();
 
   useEffect(() => {
@@ -85,6 +89,47 @@ const SupplierManager = () => {
     });
   };
 
+  const startEditing = (supplier) => {
+    setEditingId(supplier._id);
+    setEditName(supplier.name);
+    setEditPostcode(supplier.postcode);
+  };
+
+  const saveSupplier = async (supplier) => {
+    const response = await apiFetch(`/api/suppliers/${supplier._id}`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${user.token}`,
+      },
+      body: JSON.stringify({
+        name: editName,
+        postcode: editPostcode,
+      }),
+    });
+
+    const json = await response.json();
+    if (!response.ok) {
+      toast({
+        title: 'Update failed',
+        description: json.error || 'Could not update supplier',
+        status: 'error',
+        duration: 4000,
+        isClosable: true,
+      });
+      return;
+    }
+
+    setSuppliers((currentSuppliers) => currentSuppliers.map((item) => item._id === supplier._id ? json : item));
+    setEditingId(null);
+    toast({
+      title: 'Supplier updated',
+      status: 'success',
+      duration: 2500,
+      isClosable: true,
+    });
+  };
+
   return (
     <Box borderWidth={1} borderRadius="md" p={4}>
       <HStack justify="space-between" mb={4}>
@@ -108,13 +153,33 @@ const SupplierManager = () => {
           <Tbody>
             {suppliers.map((supplier) => (
               <Tr key={supplier._id}>
-                <Td fontWeight="semibold">{supplier.name}</Td>
-                <Td>{supplier.postcode}</Td>
+                <Td fontWeight="semibold">
+                  {editingId === supplier._id ? (
+                    <Input size="sm" value={editName} onChange={(event) => setEditName(event.target.value)} />
+                  ) : supplier.name}
+                </Td>
+                <Td>
+                  {editingId === supplier._id ? (
+                    <Input size="sm" value={editPostcode} onChange={(event) => setEditPostcode(event.target.value)} />
+                  ) : supplier.postcode}
+                </Td>
                 <Td isNumeric>{supplier.products?.length || 0}</Td>
                 <Td textAlign="right">
-                  <Button size="xs" colorScheme="red" variant="outline" onClick={() => deleteSupplier(supplier)}>
-                    Delete
-                  </Button>
+                  {editingId === supplier._id ? (
+                    <HStack justify="flex-end">
+                      <Button size="xs" colorScheme="blue" onClick={() => saveSupplier(supplier)}>Save</Button>
+                      <Button size="xs" variant="ghost" onClick={() => setEditingId(null)}>Cancel</Button>
+                    </HStack>
+                  ) : (
+                    <HStack justify="flex-end">
+                      <Button size="xs" variant="outline" onClick={() => startEditing(supplier)}>
+                        Edit
+                      </Button>
+                      <Button size="xs" colorScheme="red" variant="outline" onClick={() => deleteSupplier(supplier)}>
+                        Delete
+                      </Button>
+                    </HStack>
+                  )}
                 </Td>
               </Tr>
             ))}

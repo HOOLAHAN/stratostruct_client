@@ -21,7 +21,7 @@ const productTypes = [
   "Beam",
   "Wall",
   "Stair",
-  "Casettes",
+  "Cassettes",
   "Modules",
   "Cages",
   "Other",

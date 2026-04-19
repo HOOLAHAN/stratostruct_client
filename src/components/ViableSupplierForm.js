@@ -4,7 +4,6 @@ import {
 import { useAuthContext } from "../hooks/useAuthContext";
 import ProductSelectionDrawer from './ProductSelectionDrawer';
 import { isValidPostcode } from '../functions/isValidPostcode';
-import { fetchRouteData } from "../functions/fetchRouteData";
 import { validateSupplierForm } from '../functions/validateSupplierForm';
 import { searchSuppliers } from "../functions/searchSuppliers"
 import SearchResultsModal from "./SearchResultsModal";
@@ -21,7 +20,18 @@ import {
   useToast
 } from '@chakra-ui/react';
 
-const ViableSupplierForm = ({ sitePostcode, setSitePostcode, setRouteData, products, searchResults, setSearchResults }) => {
+const ViableSupplierForm = ({
+  sitePostcode,
+  setSitePostcode,
+  setRouteData,
+  products,
+  searchResults,
+  setSearchResults,
+  selectedSupplierId,
+  setSelectedSupplierId,
+  handleShowRoute,
+  handleLoadSavedSearch,
+}) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { user } = useAuthContext();
   const [searching, setSearching] = useState(false);
@@ -99,6 +109,7 @@ const ViableSupplierForm = ({ sitePostcode, setSitePostcode, setRouteData, produ
       });
 
       setSearchResults(results);
+      setSelectedSupplierId(null);
       onClose();
       onModalOpen();
       setHasResults(true);
@@ -123,6 +134,7 @@ const ViableSupplierForm = ({ sitePostcode, setSitePostcode, setRouteData, produ
     setCart([]);
     setRouteData(null);
     setSearchResults(null);
+    setSelectedSupplierId(null);
     setHasResults(false);
     onClose();
     onModalClose();
@@ -137,23 +149,17 @@ const ViableSupplierForm = ({ sitePostcode, setSitePostcode, setRouteData, produ
     setHasValidPostcode(status);
   };
 
-  const handleShowRoute = async (endPostcode) => {
-    const token = user.token;
-    // Fetch the route data
-    const fetchedRouteData = await fetchRouteData(sitePostcode, endPostcode, token);
-    if (fetchedRouteData) {
-      setRouteData(fetchedRouteData);
-      return fetchedRouteData;
-    }
-    return null;
-  };
-
   const handleRouteChange = (newRouteData) => {
     if (newRouteData) {
       setRouteData(newRouteData);
-    } else {
-      // TODO: handle the case where newRouteData is null or undefined
     }
+  };
+
+  const loadSavedSearch = (savedSearch) => {
+    setCart(savedSearch.cart || []);
+    setHasResults(true);
+    onModalOpen();
+    handleLoadSavedSearch(savedSearch);
   };
 
   const handleProductClick = (product) => {
@@ -244,9 +250,11 @@ const ViableSupplierForm = ({ sitePostcode, setSitePostcode, setRouteData, produ
         searchResults={searchResults}
         sitePostcode={sitePostcode}
         handleShowRoute={handleShowRoute}
-        token={user.token}
         handleRouteChange={handleRouteChange}
         handleNewSearch={handleNewSearch}
+        selectedSupplierId={selectedSupplierId}
+        onSupplierSelect={setSelectedSupplierId}
+        onLoadSavedSearch={loadSavedSearch}
       />
     </>
   );

@@ -3,6 +3,7 @@ import { useProductsContext } from "../hooks/useProductsContext";
 import { useAuthContext } from '../hooks/useAuthContext';
 import ViableSupplierForm from "../components/ViableSupplierForm";
 import { fetchProducts } from "../functions/fetchProducts";
+import { fetchRouteData } from "../functions/fetchRouteData";
 import MapComponent from "../components/MapComponent";
 import LoginModal from "../components/LoginModal";
 import SignupModal from "../components/SignupModal";
@@ -22,6 +23,7 @@ const Home = () => {
   const [sitePostcode, setSitePostcode] = useState('');
   const [routeData, setRouteData] = useState(null);
   const [searchResults, setSearchResults] = useState(null);
+  const [selectedSupplierId, setSelectedSupplierId] = useState(null);
   const loginModal = useDisclosure();
   const signupModal = useDisclosure();
 
@@ -35,6 +37,24 @@ const Home = () => {
     initializeProducts();
   }, [dispatchProducts, user]);
 
+  const handleShowRoute = async (endPostcode) => {
+    if (!user) return null;
+
+    const fetchedRouteData = await fetchRouteData(sitePostcode, endPostcode, user.token);
+    if (fetchedRouteData) {
+      setRouteData(fetchedRouteData);
+      return fetchedRouteData;
+    }
+    return null;
+  };
+
+  const handleLoadSavedSearch = (savedSearch) => {
+    setSitePostcode(savedSearch.sitePostcode);
+    setSearchResults(savedSearch.searchResults);
+    setRouteData(null);
+    setSelectedSupplierId(null);
+  };
+
   return (
     <Box className="home" position="relative">
       <MapComponent
@@ -42,6 +62,9 @@ const Home = () => {
         token={user ? user.token : ''}
         routeData={routeData}
         searchResults={searchResults}
+        selectedSupplierId={selectedSupplierId}
+        onSupplierRoute={handleShowRoute}
+        onSupplierSelect={setSelectedSupplierId}
       />
       <VStack spacing={4} p={5}>
         {user ? (
@@ -53,6 +76,10 @@ const Home = () => {
             routeData={routeData}
             searchResults={searchResults}
             setSearchResults={setSearchResults}
+            selectedSupplierId={selectedSupplierId}
+            setSelectedSupplierId={setSelectedSupplierId}
+            handleShowRoute={handleShowRoute}
+            handleLoadSavedSearch={handleLoadSavedSearch}
           />
         ) : (
           <Box

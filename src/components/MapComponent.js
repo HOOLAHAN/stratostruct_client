@@ -4,7 +4,7 @@ import { getCoordinatesFromPostcode } from '../functions/getCoordinatesFromPostc
 import 'mapbox-gl/dist/mapbox-gl.css';
 import { Box } from '@chakra-ui/react';
 
-const MapComponent = ({ routeData, sitePostcode, token, searchResults }) => {
+const MapComponent = ({ routeData, sitePostcode, token, searchResults, selectedSupplierId, onSupplierRoute, onSupplierSelect }) => {
   const mapContainer = useRef(null);
   const map = useRef(null);
   const markers = useRef([]);
@@ -39,12 +39,35 @@ const MapComponent = ({ routeData, sitePostcode, token, searchResults }) => {
     (searchResults.suppliers || []).forEach((supplier) => {
       if (!supplier.coordinates) return;
 
-      const popupText = `${supplier.name} - ${supplier.postcode}${supplier.distanceKilometers == null ? '' : ` - ${supplier.distanceKilometers} km`}`;
-      const marker = new mapboxgl.Marker({ color: supplier.matchCount > 1 ? '#2F855A' : '#3182CE' })
+      const popup = document.createElement('div');
+      popup.style.minWidth = '180px';
+      popup.innerHTML = `
+        <strong>${supplier.name}</strong>
+        <div>${supplier.postcode}</div>
+        <div>${supplier.distanceKilometers == null ? 'Distance N/A' : `${supplier.distanceKilometers} km`} · ${supplier.durationMinutes == null ? 'Drive N/A' : `${supplier.durationMinutes} min`}</div>
+      `;
+      const routeButton = document.createElement('button');
+      routeButton.type = 'button';
+      routeButton.textContent = 'Show route';
+      routeButton.style.marginTop = '8px';
+      routeButton.style.padding = '6px 10px';
+      routeButton.style.border = '0';
+      routeButton.style.borderRadius = '4px';
+      routeButton.style.background = '#2B6CB0';
+      routeButton.style.color = '#fff';
+      routeButton.style.cursor = 'pointer';
+      routeButton.onclick = () => {
+        onSupplierSelect?.(supplier._id);
+        onSupplierRoute?.(supplier.postcode);
+      };
+      popup.appendChild(routeButton);
+
+      const marker = new mapboxgl.Marker({ color: selectedSupplierId === supplier._id ? '#D69E2E' : supplier.matchCount > 1 ? '#2F855A' : '#3182CE' })
         .setLngLat(supplier.coordinates)
-        .setPopup(new mapboxgl.Popup({ offset: 16 }).setText(popupText))
+        .setPopup(new mapboxgl.Popup({ offset: 16 }).setDOMContent(popup))
         .addTo(map.current);
 
+      marker.getElement().addEventListener('click', () => onSupplierSelect?.(supplier._id));
       markers.current.push(marker);
     });
 
@@ -56,13 +79,12 @@ const MapComponent = ({ routeData, sitePostcode, token, searchResults }) => {
       map.current.setCenter(searchResults.site.coordinates);
       map.current.setZoom(10);
     }
-  }, [searchResults, token]);
+  }, [onSupplierRoute, onSupplierSelect, searchResults, selectedSupplierId, token]);
 
   useEffect(() => {
     const updateMap = async () => {
       // Check if token is available
       if (!token) {
-        console.warn("No token available. Clearing map route.");
         // Clear any existing route if the user logs out
         if (map.current.getSource('route')) {
           map.current.removeLayer('route');
